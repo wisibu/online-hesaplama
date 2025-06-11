@@ -1,0 +1,44 @@
+/* src/app/globals.css */
+@import "tailwindcss";
+
+:root {
+  /* --background: #ffffff; */ /* Artık layout.tsx'ten yönetildiği için yoruma alındı veya silinebilir */
+  --foreground: #171717; /* Açık tema için varsayılan yazı rengi */
+}
+
+@theme inline {
+  /* --color-background: var(--background); */ /* Artık layout.tsx'ten yönetildiği için yoruma alındı veya silinebilir */
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans); /* Eğer Geist fontlarını kullanıyorsanız bu kalabilir */
+  --font-mono: var(--font-geist-mono);  /* Eğer Geist fontlarını kullanıyorsanız bu kalabilir */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --background: #0a0a0a; */ /* Artık layout.tsx'ten yönetildiği için yoruma alındı veya silinebilir */
+    /* Karanlık modda metinlerin beyaz/açık gri olması için --foreground'ı burada eziyoruz */
+    /* Ancak layout.tsx'te body için text-gray-800 sabitlendiği için bu --foreground'ın body'ye etkisi olmayacaktır. */
+    /* Eğer başka elementlerde var(--foreground) kullanılıyorsa ve karanlık modda farklılaşması isteniyorsa bu kalabilir. */
+    /* Şimdilik sabit beyaz tema için bunu da yorumlayabiliriz veya body'deki text-gray-800'ü var(--foreground) ile değiştirebiliriz. */
+    /* En temiz yaklaşım, tema renklerini tek bir yerden yönetmektir. */
+    /* Eğer her zaman siyah yazı istiyorsak, bu :root içindeki --foreground'ı da yoruma alabiliriz. */
+    --foreground: #ededed; /* Bu, genel --foreground değişkenini karanlık modda açık yapar */
+  }
+}
+
+body {
+  /* background: var(--background); */ /* <<< YORUMA ALINDI/SİLİNDİ: Arka plan layout.tsx'teki bg-white ile kontrol edilecek */
+  color: var(--foreground);       /* Bu, varsayılan metin rengini ayarlar. layout.tsx'teki text-gray-800 ile çakışmaması için dikkat edin. */
+                                  /* Eğer layout.tsx'te body için text-gray-800 varsa, bu satırın etkisi sınırlı olabilir veya bu satırı da kaldırabilirsiniz. */
+                                  /* Daha tutarlı olması için layout.tsx'teki text-gray-800'ü kaldırıp buradan yönetebilirsiniz veya tam tersi. */
+                                  /* Şimdilik, layout.tsx'teki text-gray-800 daha spesifik olduğu için o geçerli olacaktır. */
+  /* font-family: Arial, Helvetica, sans-serif; */ /* <<< YORUMA ALINDI/SİLİNDİ: layout.tsx'teki Inter fontunun uygulanması için */
+}
+
+/* Tailwind'in base, components, utilities katmanları genellikle @import "tailwindcss"; ile veya 
+   Tailwind CLI/PostCSS yapılandırmanızda otomatik olarak eklenir.
+   Eğer elle eklemeniz gerekiyorsa (genellikle gerekmez):
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+*/
