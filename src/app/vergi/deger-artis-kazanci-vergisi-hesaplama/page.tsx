@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import CalculatorUI, { InputField, CalculationResult } from '@/components/CalculatorUI';
+import CalculatorUI, { InputField, CalculationResult, TableData } from '@/components/CalculatorUI';
 import { formatCurrency } from '@/utils/formatting';
 import RichContent from '@/components/RichContent';
 import { calculateIncomeTax, TaxBreakdown } from '../../../utils/tax';

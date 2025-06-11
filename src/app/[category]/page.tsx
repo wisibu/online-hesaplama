@@ -4,13 +4,9 @@ import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 import { FaArrowRight } from 'react-icons/fa';
 
-type PageProps = {
-  params: { category: string };
-};
-
 export async function generateMetadata(
-  { params }: PageProps,
-  parent: ResolvingMetadata
+  { params }: { params: { category: string } },
+  _parent: ResolvingMetadata
 ): Promise<Metadata> {
   const categorySlug = params.category;
   const categoryData = navLinksData.find(cat => createSlug(cat.category) === categorySlug);
@@ -34,7 +30,7 @@ export function generateStaticParams() {
   }));
 }
 
-export default async function CategoryPage({ params }: PageProps) {
+export default async function CategoryPage({ params }: { params: { category: string } }) {
   const categorySlug = params.category;
   const categoryData = navLinksData.find(cat => createSlug(cat.category) === categorySlug);
 
