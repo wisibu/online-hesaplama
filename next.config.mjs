@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
+  experimental: {
+    optimizeFonts: true
+  }
 };
 
 export default nextConfig; 
