@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  assetPrefix: './',
+  images: {
+    domains: ['localhost'],
+  },
 };
 
 export default nextConfig; 
