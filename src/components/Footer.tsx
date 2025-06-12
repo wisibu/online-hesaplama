@@ -61,19 +61,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Kategoriler (Örnek - İsteğe bağlı) */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-500 tracking-wider uppercase mb-4">
-              Popüler Kategoriler
-            </h3>
-            <ul className="space-y-3">
-              <li><Link href="/kredi" className="text-sm text-gray-600 hover:text-black hover:underline transition-colors">Kredi Hesaplama</Link></li>
-              <li><Link href="/finans" className="text-sm text-gray-600 hover:text-black hover:underline transition-colors">Finans Hesaplama</Link></li>
-              <li><Link href="/saglik" className="text-sm text-gray-600 hover:text-black hover:underline transition-colors">Sağlık Hesaplama</Link></li>
-              <li><Link href="/vergi" className="text-sm text-gray-600 hover:text-black hover:underline transition-colors">Vergi Hesaplama</Link></li>
-            </ul>
-          </div>
-          
           {/* İletişim */}
           <div>
             <h3 className="text-sm font-semibold text-gray-500 tracking-wider uppercase mb-4">

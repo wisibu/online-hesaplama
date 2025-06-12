@@ -1,61 +1,6 @@
 {
   "categories": [
     {
-      "name": "[category]",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Page",
-          "href": "/[category]/page",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
-      "name": "Gizlilik-politikasi",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Page",
-          "href": "/gizlilik-politikasi/page",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
-      "name": "Hakkimizda",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Page",
-          "href": "/hakkimizda/page",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
-      "name": "Iletisim",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Page",
-          "href": "/iletisim/page",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
-      "name": "Kullanim-kosullari",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Page",
-          "href": "/kullanim-kosullari/page",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
       "name": "Saglik",
       "iconName": "FaHeartbeat",
       "subLinks": [

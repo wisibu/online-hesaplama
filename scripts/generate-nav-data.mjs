@@ -11,9 +11,12 @@ const appDir = path.join(rootDir, 'src', 'app');
 // Klasör yapısını tarayarak menü verilerini oluştur
 function generateNavData() {
   try {
+    const allowedCategories = [
+      'kredi', 'muhasebe', 'saglik', 'finans', 'vergi', 'egitim', 'sinav', 'matematik', 'otomobil', 'yatirim', 'tasarruf', 'hesaplamalar', 'toplama'
+    ];
     const categories = [];
     const dirs = fs.readdirSync(appDir, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
+      .filter(dirent => dirent.isDirectory() && allowedCategories.includes(dirent.name.toLowerCase()))
       .map(dirent => dirent.name);
 
     for (const dir of dirs) {
