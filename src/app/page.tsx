@@ -18,10 +18,10 @@ import { iconMap } from '@/utils/iconMap';
 //   description: "Kredi, vergi, sağlık, matematik ve daha birçok kategoride ihtiyacınız olan tüm hesaplama araçları OnlineHesaplama'da. Hızlı, doğru ve kullanıcı dostu.",
 // };
 
-const allCalculators = navLinksData.flatMap(category =>
-  category.links.map(link => ({
-    name: link.title.replace(/ Hesaplama$/, "").replace(/ Hesaplamaları$/, "").replace(/ Hesaplayıcı$/, ""),
-    category: category.category,
+const allCalculators = navLinksData.categories.flatMap(category =>
+  category.subLinks.map(link => ({
+    name: link.name,
+    category: category.name,
     href: link.href
   }))
 );
@@ -78,19 +78,19 @@ export default function HomePage() {
             Hesaplama Kategorileri
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
-            {navLinksData.map(category => {
-              const categorySlug = createSlug(category.category);
+            {navLinksData.categories.map(category => {
+              const categorySlug = createSlug(category.name);
               const Icon = iconMap[category.iconName];
               return (
                 <Link
                   href={`/${categorySlug}`}
-                  key={category.category}
+                  key={category.name}
                   className="group flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-200"
                 >
                   <div className="text-4xl text-blue-600 mb-4 transition-transform duration-300 group-hover:scale-110">
                     {Icon && <Icon />}
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 text-center">{category.category}</h3>
+                  <h3 className="text-lg font-bold text-gray-800 text-center">{category.name}</h3>
                 </Link>
               );
             })}
