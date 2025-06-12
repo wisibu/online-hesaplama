@@ -1,73 +1,100 @@
-import fs from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const appDir = path.join(process.cwd(), 'src', 'app');
-const dataFile = path.join(process.cwd(), 'src', 'data', 'navLinks.json');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const extractMetadataProperty = (content, property) => {
-  // This regex is designed to be simple and fast. It looks for the metadata export.
-  const regex = new RegExp(`export const metadata:.*?${property}:\\s*['"](.*?)['"]`, 's');
-  const match = content.match(regex);
-  return match ? match[1] : null;
-};
+const rootDir = path.join(__dirname, '..');
+const appDir = path.join(rootDir, 'src', 'app');
 
-async function generateNavData() {
-  console.log('🔍 Menü verileri otomatik olarak güncelleniyor (Akıllı Tarama Modu)...');
-  
+// Klasör yapısını tarayarak menü verilerini oluştur
+function generateNavData() {
   try {
-    const navConfig = JSON.parse(await fs.readFile(dataFile, 'utf8'));
+    const categories = [];
+    const dirs = fs.readdirSync(appDir, { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
 
-    for (const category of navConfig) {
-      category.links = []; // Start fresh for each category
-      
-      const categorySlug = category.category.toLowerCase().replace(/ /g, '-').replace(/ı/g, 'i').replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ö/g, 'o').replace(/ç/g, 'c');
-      const categoryDir = path.join(appDir, categorySlug);
+    for (const dir of dirs) {
+      const categoryPath = path.join(appDir, dir);
+      const files = fs.readdirSync(categoryPath, { withFileTypes: true })
+        .filter(dirent => dirent.isFile() && dirent.name.endsWith('.tsx'))
+        .map(dirent => dirent.name);
 
-      try {
-        const subDirs = await fs.readdir(categoryDir, { withFileTypes: true });
-
-        for (const dirent of subDirs) {
-          // A directory is only a calculation page if it contains a page.tsx file.
-          if (dirent.isDirectory()) {
-            const pagePath = path.join(categoryDir, dirent.name, 'page.tsx');
-            const href = `/${categorySlug}/${dirent.name}`;
-
-            try {
-              // Check if page.tsx exists before trying to read it
-              await fs.access(pagePath); 
-              const content = await fs.readFile(pagePath, 'utf8');
-              const title = extractMetadataProperty(content, 'title');
-              const description = extractMetadataProperty(content, 'description');
-
-              if (title && description) {
-                console.log(`   -> Found: ${title}`);
-                category.links.push({ href, title, description, iconName: category.iconName });
-              }
-            } catch (pageError) {
-              // This subdirectory doesn't contain a page.tsx, so we ignore it.
-              // This is expected for folders that are not calculation pages.
-            }
-          }
-        }
-      } catch (dirError) {
-        if (dirError.code !== 'ENOENT') {
-            console.warn(`  ⚠️  Warning while scanning '${categoryDir}':`, dirError.message);
-        }
+      if (files.length > 0) {
+        const category = {
+          name: dir.charAt(0).toUpperCase() + dir.slice(1),
+          iconName: getIconName(dir),
+          subLinks: files.map(file => ({
+            name: formatTitle(file),
+            href: `/${dir}/${file.replace('.tsx', '')}`,
+            iconName: getSubIconName(file)
+          }))
+        };
+        categories.push(category);
       }
     }
 
-    // Sort links alphabetically by title for consistent ordering
-    for (const category of navConfig) {
-      category.links.sort((a, b) => a.title.localeCompare(b.title, 'tr', { numeric: true }));
-    }
-
-    await fs.writeFile(dataFile, JSON.stringify(navConfig, null, 2));
-    console.log('✅ Menu data successfully updated with all pages.');
-
+    const navData = { categories };
+    const outputPath = path.join(rootDir, 'src', 'data', 'navLinks.json');
+    fs.writeFileSync(outputPath, JSON.stringify(navData, null, 2));
+    console.log('✅ Menü verileri başarıyla güncellendi!');
   } catch (error) {
-    console.error('❌ An error occurred while updating menu data:', error);
-    process.exit(1);
+    console.error('❌ Menü verileri güncellenirken bir hata oluştu:', error);
   }
 }
 
+// Kategori için ikon adını belirle
+function getIconName(category) {
+  const iconMap = {
+    kredi: 'FaMoneyBillWave',
+    muhasebe: 'FaCalculator',
+    saglik: 'FaHeartbeat',
+    finans: 'FaChartLine',
+    vergi: 'FaFileInvoiceDollar',
+    egitim: 'FaGraduationCap',
+    sinav: 'FaClipboardList',
+    matematik: 'FaSquareRootAlt',
+    otomobil: 'FaCar'
+  };
+  return iconMap[category.toLowerCase()] || 'FaFolder';
+}
+
+// Alt menü öğesi için ikon adını belirle
+function getSubIconName(file) {
+  const iconMap = {
+    'ihtiyac-kredisi': 'FaCalculator',
+    'konut-kredisi': 'FaHome',
+    'tasit-kredisi': 'FaCar',
+    'brutten-nete-maas': 'FaMoneyBill',
+    'netten-brute-maas': 'FaMoneyBillWave',
+    'vucut-kitle-indeksi': 'FaWeight',
+    'kalori-ihtiyaci': 'FaAppleAlt',
+    'doviz-cevirici': 'FaExchangeAlt',
+    'kripto-cevirici': 'FaBitcoin',
+    'kdv-hesaplama': 'FaPercentage',
+    'gelir-vergisi': 'FaFileInvoice',
+    'not-ortalamasi': 'FaCalculator',
+    'ders-programi': 'FaCalendarAlt',
+    'puan-hesaplama': 'FaCalculator',
+    'sinav-takvimi': 'FaCalendarAlt',
+    'geometri': 'FaShapes',
+    'istatistik': 'FaChartBar',
+    'yakit-hesaplama': 'FaGasPump',
+    'arac-maliyeti': 'FaMoneyBillWave'
+  };
+  return iconMap[file.replace('.tsx', '')] || 'FaFile';
+}
+
+// Dosya adını başlığa dönüştür
+function formatTitle(file) {
+  return file
+    .replace('.tsx', '')
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+// Scripti çalıştır
 generateNavData(); 

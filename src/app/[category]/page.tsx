@@ -11,7 +11,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const categorySlug = params.category;
-  const categoryData = navLinksData.find(cat => createSlug(cat.category) === categorySlug);
+  const categoryData = navLinksData.categories.find(cat => createSlug(cat.name) === categorySlug);
 
   if (!categoryData) {
     return {
@@ -20,20 +20,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${categoryData.category} - Hesaplama Araçları`,
-    description: `Tüm ${categoryData.category.toLowerCase()} hesaplama araçları ve detaylı bilgiler.`,
+    title: `${categoryData.name} - Hesaplama Araçları`,
+    description: `Tüm ${categoryData.name.toLowerCase()} hesaplama araçları ve detaylı bilgiler.`,
   }
 }
 
 export async function generateStaticParams() {
-  return navLinksData.map(cat => ({
-    category: createSlug(cat.category),
+  return navLinksData.categories.map(cat => ({
+    category: createSlug(cat.name),
   }));
 }
 
 export default function CategoryPage({ params }: Props) {
   const categorySlug = params.category;
-  const categoryData = navLinksData.find(cat => createSlug(cat.category) === categorySlug);
+  const categoryData = navLinksData.categories.find(cat => createSlug(cat.name) === categorySlug);
 
   if (!categoryData) {
     notFound();
@@ -47,14 +47,14 @@ export default function CategoryPage({ params }: Props) {
         <div className="inline-flex items-center justify-center text-4xl sm:text-5xl text-blue-600 mb-4">
           {PageIcon && <PageIcon />}
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">{categoryData.category}</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">{categoryData.name}</h1>
         <p className="mt-2 text-md sm:text-lg text-gray-600 max-w-2xl mx-auto">
           Bu kategorideki tüm hesaplama araçlarını aşağıda bulabilirsiniz.
         </p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categoryData.links.map((link) => {
+        {categoryData.subLinks.map((link) => {
           const LinkIcon = iconMap[link.iconName];
           return (
             <Link
@@ -68,9 +68,8 @@ export default function CategoryPage({ params }: Props) {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-gray-800 group-hover:text-blue-700 transition-colors duration-200">
-                    {link.title}
+                    {link.name}
                   </h2>
-                  <p className="mt-1 text-sm text-gray-600">{link.description}</p>
                 </div>
               </div>
             </Link>

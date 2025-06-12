@@ -23,4 +23,6 @@ git commit -m "Update: $(date +'%Y-%m-%d %H:%M:%S')"
 echo "⬆️ Pushing to GitHub..."
 git push origin main
 
-echo "✅ GitHub update completed successfully!" 
+echo "✅ GitHub update completed successfully!"
+
+rm -rf .next 
