@@ -1,18 +1,6 @@
 [
   {
-    "category": "Popüler Hesaplamalar",
-    "iconName": "FaCalculator",
-    "links": [
-      { "href": "/kredi/ihtiyac-kredisi-hesaplama", "title": "İhtiyaç Kredisi Hesaplama", "description": "Aylık taksit ve geri ödeme tutarını hesaplayın.", "iconName": "FaCreditCard" },
-      { "href": "/kredi/konut-kredisi-hesaplama", "title": "Konut Kredisi Hesaplama", "description": "Konut kredisi aylık taksit ve masraflarını hesaplayın.", "iconName": "FaBuilding" },
-      { "href": "/kredi/tasit-kredisi-hesaplama", "title": "Taşıt Kredisi Hesaplama", "description": "Taşıt kredisi aylık ödeme planınızı oluşturun.", "iconName": "FaCarSide" },
-      { "href": "/muhasebe/kidem-tazminati-hesaplama", "title": "Kıdem Tazminatı Hesaplama", "description": "Kıdem tazminatı tavanını dikkate alarak hesaplama yapın.", "iconName": "FaGavel" },
-      { "href": "/muhasebe/brutten-nete-maas-hesaplama", "title": "Brütten Nete Maaş Hesaplama", "description": "Brüt maaştan net maaşı, tüm kesintileri görerek hesaplayın.", "iconName": "FaPercent" },
-      { "href": "/vergi/kdv-hesaplama", "title": "KDV Hesaplama", "description": "Dahil veya hariç KDV tutarlarını kolayca hesaplayın.", "iconName": "FaPercentage" }
-    ]
-  },
-  {
-    "category": "Kredi Hesaplama",
+    "category": "Kredi",
     "iconName": "FaCreditCard",
     "links": [
         { "href": "/kredi/ihtiyac-kredisi-hesaplama", "title": "İhtiyaç Kredisi Hesaplama", "description": "İhtiyaç kredisi faiz oranlarına göre aylık taksit ve toplam geri ödeme tutarını hesaplayın.", "iconName": "FaCreditCard" },

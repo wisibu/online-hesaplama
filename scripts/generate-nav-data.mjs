@@ -5,91 +5,68 @@ const appDir = path.join(process.cwd(), 'src', 'app');
 const dataFile = path.join(process.cwd(), 'src', 'data', 'navLinks.json');
 
 const extractMetadataProperty = (content, property) => {
+  // This regex is designed to be simple and fast. It looks for the metadata export.
   const regex = new RegExp(`export const metadata:.*?${property}:\\s*['"](.*?)['"]`, 's');
   const match = content.match(regex);
   return match ? match[1] : null;
 };
 
 async function generateNavData() {
-  console.log('🔍 Menü verileri otomatik olarak güncelleniyor...');
+  console.log('🔍 Menü verileri otomatik olarak güncelleniyor (Akıllı Tarama Modu)...');
   
   try {
-    const navLinksData = JSON.parse(await fs.readFile(dataFile, 'utf8'));
+    const navConfig = JSON.parse(await fs.readFile(dataFile, 'utf8'));
 
-    // Create a map for quick lookups of existing links
-    const existingLinksMap = new Map();
-    navLinksData.forEach(category => {
-      category.links.forEach(link => {
-        existingLinksMap.set(link.href, link);
-      });
-    });
-
-    for (const category of navLinksData) {
-      const categorySlug = category.category
-        .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/ı/g, 'i')
-        .replace(/ğ/g, 'g')
-        .replace(/ü/g, 'u')
-        .replace(/ş/g, 's')
-        .replace(/ö/g, 'o')
-        .replace(/ç/g, 'c');
-        
+    for (const category of navConfig) {
+      category.links = []; // Start fresh for each category
+      
+      const categorySlug = category.category.toLowerCase().replace(/ /g, '-').replace(/ı/g, 'i').replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ö/g, 'o').replace(/ç/g, 'c');
       const categoryDir = path.join(appDir, categorySlug);
 
       try {
         const subDirs = await fs.readdir(categoryDir, { withFileTypes: true });
-        const newLinks = [];
 
         for (const dirent of subDirs) {
+          // A directory is only a calculation page if it contains a page.tsx file.
           if (dirent.isDirectory()) {
             const pagePath = path.join(categoryDir, dirent.name, 'page.tsx');
             const href = `/${categorySlug}/${dirent.name}`;
 
-            if (existingLinksMap.has(href)) {
-              // If link already exists, keep it as is
-              newLinks.push(existingLinksMap.get(href));
-              continue;
-            }
-
-            // This is a new link, not in the JSON file
             try {
+              // Check if page.tsx exists before trying to read it
+              await fs.access(pagePath); 
               const content = await fs.readFile(pagePath, 'utf8');
               const title = extractMetadataProperty(content, 'title');
               const description = extractMetadataProperty(content, 'description');
 
               if (title && description) {
-                console.log(`  ➕ Yeni sayfa bulundu: ${title}`);
-                newLinks.push({
-                  href,
-                  title,
-                  description,
-                  iconName: category.iconName, // Default to category icon
-                });
+                console.log(`   -> Found: ${title}`);
+                category.links.push({ href, title, description, iconName: category.iconName });
               }
             } catch (pageError) {
-              // page.tsx might not exist, just ignore.
+              // This subdirectory doesn't contain a page.tsx, so we ignore it.
+              // This is expected for folders that are not calculation pages.
             }
           }
         }
-        // Update category links, preserving the original order of known links
-        // and appending new ones.
-        const knownHrefs = new Set(category.links.map(l => l.href));
-        const newlyDiscovered = newLinks.filter(l => !knownHrefs.has(l.href));
-        category.links.push(...newlyDiscovered);
-        
       } catch (dirError) {
-        // Category directory might not exist, just ignore.
-        console.warn(`  ⚠️  Uyarı: '${categoryDir}' klasörü bulunamadı, atlanıyor.`);
+        if (dirError.code !== 'ENOENT') {
+            console.warn(`  ⚠️  Warning while scanning '${categoryDir}':`, dirError.message);
+        }
       }
     }
 
-    await fs.writeFile(dataFile, JSON.stringify(navLinksData, null, 2));
-    console.log('✅ Menü verileri başarıyla güncellendi!');
+    // Sort links alphabetically by title for consistent ordering
+    for (const category of navConfig) {
+      category.links.sort((a, b) => a.title.localeCompare(b.title, 'tr', { numeric: true }));
+    }
+
+    await fs.writeFile(dataFile, JSON.stringify(navConfig, null, 2));
+    console.log('✅ Menu data successfully updated with all pages.');
 
   } catch (error) {
-    console.error('❌ Menü verileri güncellenirken bir hata oluştu:', error);
-    process.exit(1); // Exit with error code
+    console.error('❌ An error occurred while updating menu data:', error);
+    process.exit(1);
   }
 }
 
