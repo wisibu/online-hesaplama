@@ -33,12 +33,33 @@ function getAllPagesRecursive(dir, baseRoute) {
 function generateNavData() {
   try {
     const allowedCategories = [
-      'kredi', 'muhasebe', 'saglik', 'finans', 'vergi', 'egitim', 'sinav', 'matematik', 'otomobil', 'yatirim', 'tasarruf', 'toplama'
+      'kredi', 'muhasebe', 'saglik', 'finans', 'vergi', 'egitim', 'sinav', 'matematik'
     ];
     const categories = [];
     const dirs = fs.readdirSync(appDir, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory() && allowedCategories.includes(dirent.name.toLowerCase()))
+      .filter(dirent => dirent.isDirectory() && allowedCategories.includes(dirent.name.toLowerCase()) || ['tasarruf', 'toplama', 'yatirim'].includes(dirent.name.toLowerCase()))
       .map(dirent => dirent.name);
+
+    // Taşınacak alt linkler
+    let tasarrufLinks = [];
+    let toplamaLinks = [];
+    let yatirimLinks = [];
+
+    // Tasarruf
+    const tasarrufPath = path.join(appDir, 'tasarruf');
+    if (fs.existsSync(tasarrufPath)) {
+      tasarrufLinks = getAllPagesRecursive(tasarrufPath, '/tasarruf');
+    }
+    // Toplama
+    const toplamaPath = path.join(appDir, 'toplama');
+    if (fs.existsSync(toplamaPath)) {
+      toplamaLinks = getAllPagesRecursive(toplamaPath, '/toplama');
+    }
+    // Yatırım
+    const yatirimPath = path.join(appDir, 'yatirim');
+    if (fs.existsSync(yatirimPath)) {
+      yatirimLinks = getAllPagesRecursive(yatirimPath, '/yatirim');
+    }
 
     let yuzdeHesaplamaLink = null;
     // Özel: hesaplamalar/yuzde-hesaplama'yı matematik'e taşı
@@ -56,14 +77,38 @@ function generateNavData() {
     }
 
     for (const dir of dirs) {
-      if (dir === 'hesaplamalar') continue; // Hesaplamalar menüye eklenmeyecek
+      if (['hesaplamalar', 'tasarruf', 'toplama', 'yatirim'].includes(dir)) continue; // Bu menüler ana menüde olmayacak
       const categoryPath = path.join(appDir, dir);
       let subLinks = getAllPagesRecursive(categoryPath, '/' + dir);
-      // Matematik'e özel olarak Yüzde Hesaplama ekle
-      if (dir === 'matematik' && yuzdeHesaplamaLink) {
-        // Eğer zaten varsa ekleme
-        if (!subLinks.some(link => link.href === yuzdeHesaplamaLink.href)) {
+      // Matematik'e özel olarak Yüzde Hesaplama ve Toplama ekle
+      if (dir === 'matematik') {
+        if (yuzdeHesaplamaLink && !subLinks.some(link => link.href === yuzdeHesaplamaLink.href)) {
           subLinks.unshift(yuzdeHesaplamaLink);
+        }
+        if (toplamaLinks.length > 0) {
+          toplamaLinks.forEach(link => {
+            if (!subLinks.some(l => l.href === link.href)) {
+              subLinks.push(link);
+            }
+          });
+        }
+      }
+      // Finans'a tasarruf ve yatırım linklerini ekle
+      if (dir === 'finans') {
+        if (tasarrufLinks.length > 0) {
+          tasarrufLinks.forEach(link => {
+            if (!subLinks.some(l => l.href === link.href)) {
+              subLinks.push(link);
+            }
+          });
+        }
+        if (yatirimLinks.length > 0) {
+          yatirimLinks.forEach(link => {
+            // Sadece Basit Faiz ve Bileşik Faiz ekle
+            if ((/basit-faiz/i.test(link.name) || /bilesik-faiz/i.test(link.name)) && !subLinks.some(l => l.href === link.href)) {
+              subLinks.push(link);
+            }
+          });
         }
       }
       if (subLinks.length > 0) {

@@ -164,6 +164,11 @@
           "name": "Sermaye Ve Temettu Hesaplama",
           "href": "/finans/sermaye-ve-temettu-hesaplama",
           "iconName": "FaFile"
+        },
+        {
+          "name": "Sigara Parasi Biriktirme Hesaplama",
+          "href": "/tasarruf/sigara-parasi-biriktirme-hesaplama",
+          "iconName": "FaFile"
         }
       ]
     },
@@ -391,6 +396,11 @@
           "name": "Uslu Sayi Hesaplama",
           "href": "/matematik/uslu-sayi-hesaplama",
           "iconName": "FaFile"
+        },
+        {
+          "name": "Toplama",
+          "href": "/toplama",
+          "iconName": "FaFile"
         }
       ]
     },
@@ -526,27 +536,6 @@
         {
           "name": "Yolluk Hesaplama",
           "href": "/muhasebe/yolluk-hesaplama",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
-      "name": "Otomobil",
-      "iconName": "FaCar",
-      "subLinks": [
-        {
-          "name": "Aylik Arac Kredisi Hesaplama",
-          "href": "/otomobil/aylik-arac-kredisi-hesaplama",
-          "iconName": "FaFile"
-        },
-        {
-          "name": "Yakit Tuketimi Hesaplama",
-          "href": "/otomobil/yakit-tuketimi-hesaplama",
-          "iconName": "FaFile"
-        },
-        {
-          "name": "Yolculuk Suresi Hesaplama",
-          "href": "/otomobil/yolculuk-suresi-hesaplama",
           "iconName": "FaFile"
         }
       ]
@@ -799,28 +788,6 @@
       ]
     },
     {
-      "name": "Tasarruf",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Sigara Parasi Biriktirme Hesaplama",
-          "href": "/tasarruf/sigara-parasi-biriktirme-hesaplama",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
-      "name": "Toplama",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Toplama",
-          "href": "/toplama",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
       "name": "Vergi",
       "iconName": "FaFileInvoiceDollar",
       "subLinks": [
@@ -917,22 +884,6 @@
         {
           "name": "Vergi Gecikme Faizi Hesaplama",
           "href": "/vergi/vergi-gecikme-faizi-hesaplama",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
-      "name": "Yatirim",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Basit Faiz Hesaplama",
-          "href": "/yatirim/basit-faiz-hesaplama",
-          "iconName": "FaFile"
-        },
-        {
-          "name": "Bilesik Faiz Hesaplama",
-          "href": "/yatirim/bilesik-faiz-hesaplama",
           "iconName": "FaFile"
         }
       ]
