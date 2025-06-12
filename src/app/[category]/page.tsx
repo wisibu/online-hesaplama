@@ -1,36 +1,37 @@
-import { navLinksData, createSlug } from '@/data/navLinks';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata, ResolvingMetadata } from 'next';
-import { FaArrowRight } from 'react-icons/fa';
+import navLinksData from '@/data/navLinks.json';
+import { createSlug } from '@/utils/slug';
+import { iconMap } from '@/utils/iconMap';
+import { Metadata } from 'next';
 
-export async function generateMetadata(
-  { params }: { params: { category: string } },
-  _parent: ResolvingMetadata
-): Promise<Metadata> {
+type Props = {
+  params: { category: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const categorySlug = params.category;
   const categoryData = navLinksData.find(cat => createSlug(cat.category) === categorySlug);
 
   if (!categoryData) {
     return {
-      title: 'Kategori Bulunamadı',
-      description: 'Aradığınız kategori mevcut değil.',
-    };
+      title: 'Kategori Bulunamadı'
+    }
   }
 
   return {
-    title: `${categoryData.category} Hesaplama Araçları`,
-    description: `Tüm ${categoryData.category.toLowerCase()} hesaplama araçlarını bu sayfada bulabilirsiniz.`,
-  };
+    title: `${categoryData.category} - Hesaplama Araçları`,
+    description: `Tüm ${categoryData.category.toLowerCase()} hesaplama araçları ve detaylı bilgiler.`,
+  }
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return navLinksData.map(cat => ({
     category: createSlug(cat.category),
   }));
 }
 
-export default function Page({ params }: { params: { category: string } }) {
+export default function CategoryPage({ params }: Props) {
   const categorySlug = params.category;
   const categoryData = navLinksData.find(cat => createSlug(cat.category) === categorySlug);
 
@@ -38,33 +39,38 @@ export default function Page({ params }: { params: { category: string } }) {
     notFound();
   }
 
-  const { category, links, icon: CategoryIcon } = categoryData;
+  const PageIcon = iconMap[categoryData.iconName];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center mb-6 text-gray-800">
-        <CategoryIcon className="text-4xl mr-4 text-blue-600" />
-        <h1 className="text-4xl font-bold">{category} Hesaplama Araçları</h1>
-      </div>
-      <p className="mb-8 text-lg text-gray-600">
-        Bu kategorideki tüm hesaplama araçlarına aşağıdan ulaşabilirsiniz.
-      </p>
+    <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200">
+      <header className="mb-8 text-center">
+        <div className="inline-flex items-center justify-center text-4xl sm:text-5xl text-blue-600 mb-4">
+          {PageIcon && <PageIcon />}
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">{categoryData.category}</h1>
+        <p className="mt-2 text-md sm:text-lg text-gray-600 max-w-2xl mx-auto">
+          Bu kategorideki tüm hesaplama araçlarını aşağıda bulabilirsiniz.
+        </p>
+      </header>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {links.map(link => {
-          const { icon: LinkIcon } = link;
+        {categoryData.links.map((link) => {
+          const LinkIcon = iconMap[link.iconName];
           return (
-            <Link key={link.href} href={link.href} className="block group">
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-200 h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center mb-4">
-                    <LinkIcon className="text-3xl text-blue-500 mr-3" />
-                    <h2 className="text-xl font-semibold text-gray-800">{link.title}</h2>
-                  </div>
-                  <p className="text-gray-600 mb-4">{link.description}</p>
+            <Link
+              href={link.href}
+              key={link.href}
+              className="group block p-6 bg-gray-50 rounded-xl hover:bg-blue-50 hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-blue-200"
+            >
+              <div className="flex items-start">
+                <div className="text-2xl text-blue-600 mr-4 mt-1">
+                  {LinkIcon && <LinkIcon />}
                 </div>
-                <div className="flex items-center justify-end text-blue-600 font-medium">
-                  Hesapla
-                  <FaArrowRight className="ml-2 transform group-hover:translate-x-1 transition-transform" />
+                <div>
+                  <h2 className="text-lg font-bold text-gray-800 group-hover:text-blue-700 transition-colors duration-200">
+                    {link.title}
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-600">{link.description}</p>
                 </div>
               </div>
             </Link>

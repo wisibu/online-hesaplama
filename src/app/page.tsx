@@ -9,7 +9,9 @@ import {
   FaCalculator, FaClock, FaCashRegister, FaLandmark, FaCar, FaPercentage, FaMoneyBillWave
 } from 'react-icons/fa';
 import { GiReceiveMoney } from "react-icons/gi";
-import { navLinksData, createSlug } from '@/data/navLinks';
+import navLinksData from '@/data/navLinks.json';
+import { createSlug } from '@/utils/slug';
+import { iconMap } from '@/utils/iconMap';
 
 // export const metadata: Metadata = {
 //   title: "Online Hesaplama - Ücretsiz Online Hesaplama Araçları",
@@ -78,7 +80,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
             {navLinksData.map(category => {
               const categorySlug = createSlug(category.category);
-              const Icon = category.icon;
+              const Icon = iconMap[category.iconName];
               return (
                 <Link
                   href={`/${categorySlug}`}
@@ -86,7 +88,7 @@ export default function HomePage() {
                   className="group flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-200"
                 >
                   <div className="text-4xl text-blue-600 mb-4 transition-transform duration-300 group-hover:scale-110">
-                    <Icon />
+                    {Icon && <Icon />}
                   </div>
                   <h3 className="text-lg font-bold text-gray-800 text-center">{category.category}</h3>
                 </Link>
