@@ -33,13 +33,15 @@ const pageConfig = {
         { value: 'multiple', label: 'Çoğul Gebelik (İkiz vb.)' },
       ], defaultValue: 'single' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { birthDate: birthDateStr, last3MonthsBrut, pregnancyType } = inputs as { birthDate: string, last3MonthsBrut: number, pregnancyType: 'single' | 'multiple' };
+        const birthDateStr = inputs.birthDate as string;
+        const last3MonthsBrut = Number(inputs.last3MonthsBrut);
+        const pregnancyType = inputs.pregnancyType as 'single' | 'multiple';
         
         if (!birthDateStr || !last3MonthsBrut || last3MonthsBrut <=0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
         }
 
         const expectedBirthDate = new Date(birthDateStr);
@@ -59,11 +61,11 @@ const pageConfig = {
         const dailyReportFee = dailyBrutWage * (2 / 3);
         const totalReportFee = dailyReportFee * totalReportDays;
 
-        const summary = {
-            leaveStartDate: { label: 'Yasal İzin Başlangıç Tarihi', value: formatDate(leaveStartDate) },
-            leaveEndDate: { label: 'Yasal İzin Bitiş Tarihi', value: formatDate(leaveEndDate) },
-            totalLeave: { label: 'Toplam İzin Süresi', value: `${totalReportDays} gün (${totalReportDays/7} Hafta)` },
-            totalReportFee: { label: 'Toplam Doğum Parası (Rapor Ücreti)', value: formatCurrency(totalReportFee) },
+        const summary: CalculationResult['summary'] = {
+            totalReportFee: { type: 'result', label: 'Toplam Doğum Parası (Rapor Ücreti)', value: formatCurrency(totalReportFee), isHighlighted: true },
+            leaveStartDate: { type: 'info', label: 'Yasal İzin Başlangıç Tarihi', value: formatDate(leaveStartDate) },
+            leaveEndDate: { type: 'info', label: 'Yasal İzin Bitiş Tarihi', value: formatDate(leaveEndDate) },
+            totalLeave: { type: 'info', label: 'Toplam İzin Süresi', value: `${totalReportDays} gün (${totalReportDays/7} Hafta)` },
         };
           
         return { summary };

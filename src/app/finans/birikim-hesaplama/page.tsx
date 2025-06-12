@@ -19,7 +19,7 @@ const pageConfig = {
       { id: 'monthlyInvestment', label: 'Aylık Yatırım Tutarı (₺)', type: 'number', placeholder: '5000' },
       { id: 'annualRate', label: 'Yıllık Ortalama Getiri (%)', type: 'number', placeholder: '10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const futureValue = Number(inputs.futureValue);
       const monthlyInvestment = Number(inputs.monthlyInvestment);
@@ -33,9 +33,9 @@ const pageConfig = {
       const numberOfMonths = Math.log((futureValue * monthlyRate / monthlyInvestment) + 1) / Math.log(1 + monthlyRate);
       const numberOfYears = numberOfMonths / 12;
 
-      const summary = {
-        months: { label: 'Hedefe Ulaşma Süresi (Ay)', value: Math.ceil(numberOfMonths).toString() },
-        years: { label: 'Hedefe Ulaşma Süresi (Yıl)', value: formatNumber(numberOfYears) },
+      const summary: CalculationResult['summary'] = {
+        months: { type: 'result', label: 'Hedefe Ulaşma Süresi (Ay)', value: Math.ceil(numberOfMonths).toString(), isHighlighted: true },
+        years: { type: 'result', label: 'Hedefe Ulaşma Süresi (Yıl)', value: formatNumber(numberOfYears) },
       };
 
       return { summary };

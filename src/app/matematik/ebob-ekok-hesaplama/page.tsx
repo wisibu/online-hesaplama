@@ -18,7 +18,7 @@ const pageConfig = {
       { id: 'note1', label: '1. Sayı', type: 'number', placeholder: 'Örn: 48' },
       { id: 'note2', label: '2. Sayı', type: 'number', placeholder: 'Örn: 60' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
 
         const gcd = (a: number, b: number): number => {
@@ -35,15 +35,15 @@ const pageConfig = {
             .filter(num => !isNaN(num) && Number.isInteger(num) && num > 0);
 
         if (numbers.length < 2) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen en az iki pozitif tam sayı girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen en az iki pozitif tam sayı girin.' } } };
         }
 
         const ebob = numbers.reduce((a, b) => gcd(a, b));
         const ekok = numbers.reduce((a, b) => lcm(a, b));
 
-        const summary = {
-            ebob: { label: 'EBOB (En Büyük Ortak Bölen)', value: formatNumber(ebob), isHighlighted: true },
-            ekok: { label: 'EKOK (En Küçük Ortak Kat)', value: formatNumber(ekok), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            ebob: { type: 'result', label: 'EBOB (En Büyük Ortak Bölen)', value: formatNumber(ebob), isHighlighted: true },
+            ekok: { type: 'result', label: 'EKOK (En Küçük Ortak Kat)', value: formatNumber(ekok), isHighlighted: true },
         };
           
         return { summary };

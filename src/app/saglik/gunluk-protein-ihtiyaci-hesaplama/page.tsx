@@ -23,13 +23,13 @@ const pageConfig = {
         { value: 'cok', label: 'Çok Aktif (Kas geliştirme, haftada 6-7 gün ağır antrenman)' },
       ], defaultValue: 'hafif' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { kilo, hedef } = inputs as { kilo: number, hedef: string };
 
         if (!kilo || kilo <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir kilo değeri girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir kilo değeri girin.' } } };
         }
 
         const proteinRanges = {
@@ -45,6 +45,7 @@ const pageConfig = {
 
         const summary: CalculationResult['summary'] = {
             proteinAraligi: { 
+                type: 'result',
                 label: "Önerilen Günlük Protein Miktarı", 
                 value: `${formatNumber(minProtein, 0)} - ${formatNumber(maxProtein, 0)} gram`, 
                 isHighlighted: true, 

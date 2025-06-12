@@ -24,7 +24,7 @@ const pageConfig = {
             { value: 'years', label: 'Yıl' },
       ], defaultValue: 'days' }
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const principal = Number(inputs.principal);
       const annualRate = Number(inputs.interestRate) / 100;
@@ -42,10 +42,10 @@ const pageConfig = {
       const interestAmount = principal * annualRate * termInYears;
       const totalAmount = principal + interestAmount;
 
-      const summary = {
-        totalAmount: { label: 'Dönem Sonu Toplam Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
-        totalInterest: { label: 'Toplam Faiz Getirisi', value: formatCurrency(interestAmount) },
-        principal: { label: 'Yatırılan Anapara', value: formatCurrency(principal) },
+      const summary: CalculationResult['summary'] = {
+        totalAmount: { type: 'result', label: 'Dönem Sonu Toplam Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
+        totalInterest: { type: 'result', label: 'Toplam Faiz Getirisi', value: formatCurrency(interestAmount) },
+        principal: { type: 'info', label: 'Yatırılan Anapara', value: formatCurrency(principal) },
       };
 
       return { summary };

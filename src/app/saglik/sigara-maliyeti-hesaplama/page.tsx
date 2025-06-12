@@ -19,13 +19,13 @@ const pageConfig = {
       { id: 'paketFiyati', label: 'Bir Paket Sigaranın Fiyatı (TL)', type: 'number', placeholder: '60' },
       { id: 'pakettekiSigara', label: 'Paketteki Sigara Sayısı (Adet)', type: 'number', defaultValue: '20' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { gunlukSigara, paketFiyati, pakettekiSigara } = inputs as { gunlukSigara: number, paketFiyati: number, pakettekiSigara: number };
 
         if (!gunlukSigara || !paketFiyati || !pakettekiSigara || gunlukSigara <= 0 || paketFiyati <= 0 || pakettekiSigara <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanlara geçerli pozitif değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanlara geçerli pozitif değerler girin.' } } };
         }
 
         const tekSigaraFiyati = paketFiyati / pakettekiSigara;
@@ -35,12 +35,12 @@ const pageConfig = {
         const yillikMaliyet = gunlukMaliyet * 365.25; // Ortalama yıl günü
 
         const summary: CalculationResult['summary'] = {
-            gunluk: { label: "Günlük Maliyet", value: formatCurrency(gunlukMaliyet) },
-            haftalik: { label: "Haftalık Maliyet", value: formatCurrency(haftalikMaliyet) },
-            aylik: { label: "Aylık Maliyet", value: formatCurrency(aylikMaliyet), isHighlighted: true },
-            yillik: { label: "Yıllık Maliyet", value: formatCurrency(yillikMaliyet), isHighlighted: true },
-            besYillik: { label: "5 Yılda Tasarruf", value: formatCurrency(yillikMaliyet * 5) },
-            onYillik: { label: "10 Yılda Tasarruf", value: formatCurrency(yillikMaliyet * 10) },
+            gunluk: { type: 'info', label: "Günlük Maliyet", value: formatCurrency(gunlukMaliyet) },
+            haftalik: { type: 'info', label: "Haftalık Maliyet", value: formatCurrency(haftalikMaliyet) },
+            aylik: { type: 'result', label: "Aylık Maliyet", value: formatCurrency(aylikMaliyet), isHighlighted: true },
+            yillik: { type: 'result', label: "Yıllık Maliyet", value: formatCurrency(yillikMaliyet), isHighlighted: true },
+            besYillik: { type: 'info', label: "5 Yılda Tasarruf", value: formatCurrency(yillikMaliyet * 5) },
+            onYillik: { type: 'info', label: "10 Yılda Tasarruf", value: formatCurrency(yillikMaliyet * 10) },
         };
           
         return { summary, disclaimer: "Bu hesaplama, ortalama değerlere dayanmaktadır ve enflasyon gibi faktörleri içermez. Gerçek maliyetler değişiklik gösterebilir." };

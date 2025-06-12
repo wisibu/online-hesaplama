@@ -55,7 +55,7 @@ const pageConfig = {
         const type = transferType as 'veraset' | 'ivazsiz';
 
         if (isNaN(amount) || amount <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
         }
 
         const exemption = type === 'veraset' && isSpouseOrChild ? exemptions2024.evlatlik : exemptions2024.ivazsiz;
@@ -63,7 +63,7 @@ const pageConfig = {
 
         if (netTaxableAmount === 0) {
             return { summary: { 
-                info: { label: 'Bilgi', value: `Tutar, ${formatCurrency(exemption)} olan istisna sınırının altında kaldığı için vergi hesaplanmamıştır.` }
+                info: { type: 'info', label: 'Bilgi', value: `Tutar, ${formatCurrency(exemption)} olan istisna sınırının altında kaldığı için vergi hesaplanmamıştır.` }
             }};
         }
 
@@ -82,11 +82,11 @@ const pageConfig = {
             previousLimit = bracket.limit;
         }
 
-        const summary = {
-            initialAmount: { label: 'Beyan Edilen Tutar', value: formatCurrency(amount) },
-            exemption: { label: 'Uygulanan İstisna', value: formatCurrency(exemption) },
-            taxableBase: { label: 'Vergi Matrahı', value: formatCurrency(netTaxableAmount) },
-            totalTax: { label: 'Hesaplanan Vergi', value: formatCurrency(totalTax), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            initialAmount: { type: 'info', label: 'Beyan Edilen Tutar', value: formatCurrency(amount) },
+            exemption: { type: 'info', label: 'Uygulanan İstisna', value: formatCurrency(exemption) },
+            taxableBase: { type: 'info', label: 'Vergi Matrahı', value: formatCurrency(netTaxableAmount) },
+            totalTax: { type: 'result', label: 'Hesaplanan Vergi', value: formatCurrency(totalTax), isHighlighted: true },
         };
           
         return { summary };

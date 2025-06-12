@@ -35,10 +35,10 @@ const findPercentile = (ay: number, cinsiyet: 'erkek' | 'kiz', olcum: number, ty
     return "Normal aralıkta";
 };
 
-export const calculateBebekGelisim = async (type: GelisimType, inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+export const calculateBebekGelisim = async (type: GelisimType, inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
     const { birthDate, cinsiyet, olcum } = inputs as { birthDate: string, cinsiyet: 'kiz' | 'erkek', olcum: number };
     if (!birthDate || !cinsiyet || !olcum || olcum <= 0) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
     }
 
     const dogum = new Date(birthDate);
@@ -50,11 +50,11 @@ export const calculateBebekGelisim = async (type: GelisimType, inputs: { [key: s
     ay = ay <= 0 ? 0 : ay;
     
     if (dogum > bugun) {
-      return { summary: { error: { label: 'Hata', value: 'Doğum tarihi bugünden ileri bir tarih olamaz.' } } };
+      return { summary: { error: { type: 'error', label: 'Hata', value: 'Doğum tarihi bugünden ileri bir tarih olamaz.' } } };
     }
 
     if(ay > 36) {
-         return { summary: { error: { label: 'Hata', value: 'Hesaplama 0-36 ay arası bebekler için yapılmaktadır.' } } };
+         return { summary: { error: { type: 'error', label: 'Hata', value: 'Hesaplama 0-36 ay arası bebekler için yapılmaktadır.' } } };
     }
 
     const percentileResult = findPercentile(ay, cinsiyet, olcum, type);
@@ -62,8 +62,8 @@ export const calculateBebekGelisim = async (type: GelisimType, inputs: { [key: s
     const data = details.data[cinsiyet].find((d: PercentileData) => d.ay === ay);
 
     const summary: CalculationResult['summary'] = {
-        yas: { label: "Bebeğin Yaşı", value: `${ay} aylık` },
-        percentile: { label: "Persentil Durumu", value: percentileResult, isHighlighted: true },
+        yas: { type: 'info', label: "Bebeğin Yaşı", value: `${ay} aylık` },
+        percentile: { type: 'result', label: "Persentil Durumu", value: percentileResult, isHighlighted: true },
     };
     
     const table = data ? {

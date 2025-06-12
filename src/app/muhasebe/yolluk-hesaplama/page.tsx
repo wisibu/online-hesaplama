@@ -49,20 +49,20 @@ const pageConfig = {
       const days = Number(inputs.days);
 
       if (!titleKey || !gundelikler[titleKey]) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir unvan seçin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir unvan seçin.' } } };
       }
        if (isNaN(days) || days <= 0) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir gün sayısı girin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir gün sayısı girin.' } } };
       }
 
       const dailyAllowance = gundelikler[titleKey];
       const totalAllowance = dailyAllowance * days;
 
       const summary: CalculationResult['summary'] = {
-        dailyAllowance: { label: 'Bir Günlük Yurt İçi Gündelik Tutarı', value: formatCurrency(dailyAllowance) },
-        totalDays: { label: 'Görev Süresi', value: `${days} gün` },
-        totalAllowance: { label: 'Toplam Harcırah (Yolluk) Tutarı', value: formatCurrency(totalAllowance), isHighlighted: true },
-        info: { label: 'Not', value: 'Hesaplama, konaklama ve diğer ek unsurlar hariç temel gündelik üzerinden yapılmıştır. Harcırah ödemeleri damga vergisi hariç gelir vergisinden muaftır.'}
+        totalAllowance: { type: 'result', label: 'Toplam Harcırah (Yolluk) Tutarı', value: formatCurrency(totalAllowance), isHighlighted: true },
+        dailyAllowance: { type: 'info', label: 'Bir Günlük Yurt İçi Gündelik Tutarı', value: formatCurrency(dailyAllowance) },
+        totalDays: { type: 'info', label: 'Görev Süresi', value: `${days} gün` },
+        info: { type: 'info', label: 'Not', value: 'Hesaplama, konaklama ve diğer ek unsurlar hariç temel gündelik üzerinden yapılmıştır. Harcırah ödemeleri damga vergisi hariç gelir vergisinden muaftır.'}
       };
 
       return { summary };

@@ -35,13 +35,14 @@ const pageConfig = {
         { value: 7.5, label: 'En Yüksek (Tavan)' },
       ], defaultValue: '1' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { days, rateMultiplier } = inputs as { days: number, rateMultiplier: number };
+        const days = Number(inputs.days);
+        const rateMultiplier = Number(inputs.rateMultiplier);
         
         if (!days || days <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir gün sayısı girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir gün sayısı girin.' } } };
         }
 
         const selectedDailyRate = ASGARI_UCRET_GUNLUK * rateMultiplier * BORCLANMA_ORANI;
@@ -49,10 +50,10 @@ const pageConfig = {
         const totalAmountLowest = EN_DUSUK_GUNLUK_BORCLANMA * days;
         const totalAmountHighest = EN_YUKSEK_GUNLUK_BORCLANMA * days;
 
-        const summary = {
-            selectedAmount: { label: 'Seçtiğiniz Düzeye Göre Toplam Ödeme', value: formatCurrency(totalAmountSelected) },
-            lowestAmount: { label: `En Düşük Toplam Ödeme (${formatCurrency(EN_DUSUK_GUNLUK_BORCLANMA)}/gün)`, value: formatCurrency(totalAmountLowest) },
-            highestAmount: { label: `En Yüksek Toplam Ödeme (${formatCurrency(EN_YUKSEK_GUNLUK_BORCLANMA)}/gün)`, value: formatCurrency(totalAmountHighest) },
+        const summary: CalculationResult['summary'] = {
+            selectedAmount: { type: 'result', label: 'Seçtiğiniz Düzeye Göre Toplam Ödeme', value: formatCurrency(totalAmountSelected), isHighlighted: true },
+            lowestAmount: { type: 'info', label: `En Düşük Toplam Ödeme (${formatCurrency(EN_DUSUK_GUNLUK_BORCLANMA)}/gün)`, value: formatCurrency(totalAmountLowest) },
+            highestAmount: { type: 'info', label: `En Yüksek Toplam Ödeme (${formatCurrency(EN_YUKSEK_GUNLUK_BORCLANMA)}/gün)`, value: formatCurrency(totalAmountHighest) },
         };
           
         return { summary };

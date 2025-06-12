@@ -17,14 +17,14 @@ const pageConfig = {
     inputFields: [
       { id: 'number', label: 'Sayı', type: 'number', placeholder: 'Örn: 1984' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const numStr = String(inputs.number);
         const num = Number(inputs.number);
 
         if (isNaN(num) || !Number.isInteger(num)) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen bir tam sayı girin.' } } };
+            return { summary: { result: { type: 'error', label: 'Hata', value: 'Lütfen bir tam sayı girin.' } } };
         }
 
         const digits = numStr.split('');
@@ -40,13 +40,12 @@ const pageConfig = {
         });
 
         const table = {
-          title: "Sayı Çözümlemesi",
           headers: ["Rakam", "Basamak Adı", "Basamak Değeri"],
           rows: breakdown.map(item => [item.digit, item.placeName, item.placeValue])
         };
 
-        const summary = {
-          total: { label: "Sayının Okunuşu", value: formatNumber(num) } // A simple representation
+        const summary: CalculationResult['summary'] = {
+          total: { type: 'result', label: "Sayının Okunuşu", value: formatNumber(num), isHighlighted: true }
         }
           
         return { summary, table };

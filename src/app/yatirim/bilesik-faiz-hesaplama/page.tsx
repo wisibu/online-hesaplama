@@ -25,7 +25,7 @@ const pageConfig = {
         { value: '12', label: 'Aylık' },
       ]},
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const principal = Number(inputs.principal);
@@ -34,17 +34,17 @@ const pageConfig = {
         const n = Number(inputs.compoundFrequency);
 
         if (isNaN(principal) || isNaN(rate) || isNaN(years) || principal <= 0 || rate <= 0 || years <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları pozitif değerlerle doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları pozitif değerlerle doldurun.' } } };
         }
 
         // Bileşik Faiz Formülü: A = P * (1 + r/n)^(n*t)
         const totalAmount = principal * Math.pow(1 + rate / n, n * years);
         const totalInterest = totalAmount - principal;
 
-        const summary = {
-            principal: { label: 'Başlangıç Anapara', value: formatCurrency(principal) },
-            totalInterest: { label: 'Toplam Faiz Getirisi', value: formatCurrency(totalInterest) },
-            totalAmount: { label: 'Vade Sonu Toplam Tutar', value: formatCurrency(totalAmount) },
+        const summary: CalculationResult['summary'] = {
+            principal: { type: 'info', label: 'Başlangıç Anapara', value: formatCurrency(principal) },
+            totalInterest: { type: 'info', label: 'Toplam Faiz Getirisi', value: formatCurrency(totalInterest) },
+            totalAmount: { type: 'result', label: 'Vade Sonu Toplam Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
         };
           
         return { summary };

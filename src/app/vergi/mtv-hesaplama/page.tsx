@@ -108,13 +108,13 @@ const pageConfig = {
       { id: 'vehicleValue', label: 'KDV Hariç Araç Değeri', type: 'select', options: [], displayCondition: { field: 'registrationDate', value: 'post2018' }, dependentField: 'engineCC', dependentOptions: valueBracketsByCC},
 
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { registrationDate, vehicleAge, engineCC, vehicleValue } = inputs;
 
         if (!registrationDate || !vehicleAge || !engineCC) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doldurun.' } } };
         }
         
         const ageIndex = parseInt(vehicleAge as string, 10);
@@ -125,20 +125,20 @@ const pageConfig = {
             annualMtv = table[ageIndex];
         } else {
             if (!vehicleValue) {
-              return { summary: { error: { label: 'Hata', value: 'Lütfen araç değerini seçin.' } } };
+              return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen araç değerini seçin.' } } };
             }
             const table = mtvDataPost2018[engineCC as keyof typeof mtvDataPost2018][vehicleValue as keyof typeof mtvDataPost2018[keyof typeof mtvDataPost2018]];
             annualMtv = table[ageIndex];
         }
 
         if (!annualMtv) {
-            return { summary: { error: { label: 'Hata', value: 'Hesaplama yapılamadı. Lütfen girdileri kontrol edin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Hesaplama yapılamadı. Lütfen girdileri kontrol edin.' } } };
         }
 
-        const summary = {
-            annualMtv: { label: 'Yıllık MTV Tutarı', value: formatCurrency(annualMtv), isHighlighted: true },
-            installment: { label: '1. Taksit (Ocak)', value: formatCurrency(annualMtv / 2) },
-            installment2: { label: '2. Taksit (Temmuz)', value: formatCurrency(annualMtv / 2) },
+        const summary: CalculationResult['summary'] = {
+            annualMtv: { type: 'result', label: 'Yıllık MTV Tutarı', value: formatCurrency(annualMtv), isHighlighted: true },
+            installment: { type: 'info', label: '1. Taksit (Ocak)', value: formatCurrency(annualMtv / 2) },
+            installment2: { type: 'info', label: '2. Taksit (Temmuz)', value: formatCurrency(annualMtv / 2) },
         };
           
         return { summary };

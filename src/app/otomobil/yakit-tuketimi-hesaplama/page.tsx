@@ -30,23 +30,27 @@ const pageConfig = {
       { id: 'fuelPrice', label: 'Yakıt Litre Fiyatı (TL)', type: 'number', placeholder: '42.5' },
 
       // Yolculuk Maliyeti Hesaplama
-      { id: 'consumptionPer100km_input', label: 'Araç Tüketimi (Litre / 100 km)', type: 'number', placeholder: '7.5', displayCondition: (inputs) => inputs.calculationType === 'calculateCost' },
+      { id: 'consumptionPer100km_input', label: 'Araç Tüketimi (Litre / 100 km)', type: 'number', placeholder: '7.5', 
+        displayCondition: { field: 'calculationType', value: 'calculateCost' } 
+      },
       
       // Tüketim Hesaplama
-      { id: 'fuelConsumed', label: 'Harcanan Toplam Yakıt (Litre)', type: 'number', placeholder: '35', displayCondition: (inputs) => inputs.calculationType === 'calculateConsumption' },
+      { id: 'fuelConsumed', label: 'Harcanan Toplam Yakıt (Litre)', type: 'number', placeholder: '35', 
+        displayCondition: { field: 'calculationType', value: 'calculateConsumption' }
+      },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { calculationType, distance, fuelPrice, consumptionPer100km_input, fuelConsumed } = inputs as any;
 
         if (!distance || !fuelPrice || distance <= 0 || fuelPrice <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen mesafe ve yakıt fiyatı için pozitif değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen mesafe ve yakıt fiyatı için pozitif değerler girin.' } } };
         }
 
         if (calculationType === 'calculateCost') {
             if (!consumptionPer100km_input || consumptionPer100km_input <= 0) {
-              return { summary: { error: { label: 'Hata', value: 'Lütfen araç tüketimi için geçerli bir değer girin.' } } };
+              return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen araç tüketimi için geçerli bir değer girin.' } } };
             }
             const totalFuelNeeded = (distance * consumptionPer100km_input) / 100;
             const totalCost = totalFuelNeeded * fuelPrice;
@@ -54,16 +58,16 @@ const pageConfig = {
 
             return {
               summary: {
-                totalCost: { label: 'Toplam Yolculuk Maliyeti', value: formatCurrency(totalCost), isHighlighted: true },
-                totalFuel: { label: 'Gereken Toplam Yakıt', value: `${formatNumber(totalFuelNeeded)} Litre` },
-                costPerKm: { label: 'Kilometre Başına Maliyet', value: formatCurrency(costPerKm) },
+                totalCost: { type: 'result', label: 'Toplam Yolculuk Maliyeti', value: formatCurrency(totalCost), isHighlighted: true },
+                totalFuel: { type: 'info', label: 'Gereken Toplam Yakıt', value: `${formatNumber(totalFuelNeeded)} Litre` },
+                costPerKm: { type: 'info', label: 'Kilometre Başına Maliyet', value: formatCurrency(costPerKm) },
               }
             };
         }
 
         if (calculationType === 'calculateConsumption') {
             if (!fuelConsumed || fuelConsumed <= 0) {
-              return { summary: { error: { label: 'Hata', value: 'Lütfen harcanan yakıt için geçerli bir değer girin.' } } };
+              return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen harcanan yakıt için geçerli bir değer girin.' } } };
             }
             const consumptionPer100km = (fuelConsumed / distance) * 100;
             const totalCost = fuelConsumed * fuelPrice;
@@ -71,9 +75,9 @@ const pageConfig = {
 
             return {
               summary: {
-                consumption: { label: 'Ortalama Tüketim (100 km)', value: `${formatNumber(consumptionPer100km)} Litre`, isHighlighted: true },
-                totalCost: { label: 'Toplam Yakıt Maliyeti', value: formatCurrency(totalCost) },
-                costPerKm: { label: 'Kilometre Başına Maliyet', value: formatCurrency(costPerKm) },
+                consumption: { type: 'result', label: 'Ortalama Tüketim (100 km)', value: `${formatNumber(consumptionPer100km)} Litre`, isHighlighted: true },
+                totalCost: { type: 'info', label: 'Toplam Yakıt Maliyeti', value: formatCurrency(totalCost) },
+                costPerKm: { type: 'info', label: 'Kilometre Başına Maliyet', value: formatCurrency(costPerKm) },
               }
             };
         }

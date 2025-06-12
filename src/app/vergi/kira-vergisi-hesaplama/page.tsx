@@ -34,11 +34,11 @@ const pageConfig = {
         const expenses = Number(realExpenses || 0);
 
         if (isNaN(income) || income <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir yıllık gelir tutarı girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir yıllık gelir tutarı girin.' } } };
         }
 
         if (income <= KONUT_ISTISNA_2024) {
-             return { summary: { info: { label: 'Bilgi', value: `Yıllık geliriniz ${formatCurrency(KONUT_ISTISNA_2024)} olan istisna tutarının altında olduğu için vergiye tabi değildir.` } } };
+             return { summary: { info: { type: 'info', label: 'Bilgi', value: `Yıllık geliriniz ${formatCurrency(KONUT_ISTISNA_2024)} olan istisna tutarının altında olduğu için vergiye tabi değildir.` } } };
         }
 
         const incomeAfterExemption = income - KONUT_ISTISNA_2024;
@@ -52,18 +52,18 @@ const pageConfig = {
         const taxableIncome = incomeAfterExemption - deductibleExpense;
         
         if (taxableIncome <= 0) {
-            return { summary: { info: { label: 'Bilgi', 'value': 'Giderler düşüldükten sonra vergiye tabi matrah kalmamıştır.' } } };
+            return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Giderler düşüldükten sonra vergiye tabi matrah kalmamıştır.' } } };
         }
 
         const taxData = calculateIncomeTax(taxableIncome);
 
-        const summary = {
-            annualIncome: { label: 'Yıllık Kira Geliri', value: formatCurrency(income) },
-            exemption: { label: '2024 Konut İstisnası', value: formatCurrency(KONUT_ISTISNA_2024) },
-            incomeAfterExemption: { label: 'İstisna Sonrası Gelir', value: formatCurrency(incomeAfterExemption) },
-            deductibleExpense: { label: 'İndirilen Gider', value: formatCurrency(deductibleExpense) },
-            taxableBase: { label: 'Vergi Matrahı', value: formatCurrency(taxableIncome) },
-            totalTax: { label: 'Hesaplanan Gelir Vergisi', value: formatCurrency(taxData.totalTax), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            annualIncome: { type: 'info', label: 'Yıllık Kira Geliri', value: formatCurrency(income) },
+            exemption: { type: 'info', label: '2024 Konut İstisnası', value: formatCurrency(KONUT_ISTISNA_2024) },
+            incomeAfterExemption: { type: 'info', label: 'İstisna Sonrası Gelir', value: formatCurrency(incomeAfterExemption) },
+            deductibleExpense: { type: 'info', label: 'İndirilen Gider', value: formatCurrency(deductibleExpense) },
+            taxableBase: { type: 'info', label: 'Vergi Matrahı', value: formatCurrency(taxableIncome) },
+            totalTax: { type: 'result', label: 'Hesaplanan Gelir Vergisi', value: formatCurrency(taxData.totalTax), isHighlighted: true },
         };
         
         const table: CalculationResult['table'] = {

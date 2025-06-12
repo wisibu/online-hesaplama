@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import AdBanner from '@/components/AdBanner';
 
 export const metadata: Metadata = {
   title: "İdeal Kilo Hesaplama",
@@ -20,7 +19,6 @@ const Page = () => {
         <p className="text-lg text-gray-600 mb-6">
           İdeal kilo hesaplaması, artık size daha kapsamlı bir sağlık analizi sunan <strong>Vücut Kitle İndeksi (VKİ)</strong> hesaplayıcımızın bir parçasıdır. Yeni aracımız size tek bir rakam yerine, boyunuza uygun sağlıklı kilo aralığını gösterir.
         </p>
-        <AdBanner />
         <div className="mt-8">
             <p className="text-gray-700 mb-4">
                 Lütfen aşağıdaki butona tıklayarak VKİ'nizi ve ideal kilo aralığınızı öğrenin.

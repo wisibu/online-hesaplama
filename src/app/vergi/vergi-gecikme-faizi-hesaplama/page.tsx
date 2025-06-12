@@ -28,14 +28,14 @@ const pageConfig = {
         const amount = Number(principal);
 
         if (isNaN(amount) || amount <= 0 || !dueDate || !paymentDate) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları eksiksiz doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları eksiksiz doldurun.' } } };
         }
 
         const start = new Date(dueDate as string);
         const end = new Date(paymentDate as string);
 
         if (start >= end) {
-            return { summary: { info: { label: 'Bilgi', value: 'Vade tarihinde veya öncesinde ödeme yapıldığı için gecikme faizi hesaplanmaz.' } } };
+            return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Vade tarihinde veya öncesinde ödeme yapıldığı için gecikme faizi hesaplanmaz.' } } };
         }
         
         let totalMonths = (end.getFullYear() - start.getFullYear()) * 12;
@@ -53,10 +53,10 @@ const pageConfig = {
 
         const totalPayment = amount + interest;
 
-        const summary = {
-            principal: { label: 'Vergi Anaparası', value: formatCurrency(amount) },
-            interest: { label: 'Hesaplanan Gecikme Faizi', value: formatCurrency(interest) },
-            total: { label: 'Toplam Ödenecek Tutar', value: formatCurrency(totalPayment), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            principal: { type: 'info', label: 'Vergi Anaparası', value: formatCurrency(amount) },
+            interest: { type: 'info', label: 'Hesaplanan Gecikme Faizi', value: formatCurrency(interest) },
+            total: { type: 'result', label: 'Toplam Ödenecek Tutar', value: formatCurrency(totalPayment), isHighlighted: true },
         };
           
         return { summary };

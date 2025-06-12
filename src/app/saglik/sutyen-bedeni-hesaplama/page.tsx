@@ -44,13 +44,13 @@ const pageConfig = {
       { id: 'bantOlcusu', label: 'Bant Ölçüsü (cm)', type: 'number', placeholder: '78', note: 'Göğüs kafesinizin hemen altından, sırtınızdan öne doğru ölçün.' },
       { id: 'kupOlcusu', label: 'Kup Ölçüsü (cm)', type: 'number', placeholder: '94', note: 'Göğüslerinizin en dolgun, en uç noktasından ölçün.' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { bantOlcusu, kupOlcusu } = inputs as { bantOlcusu: number, kupOlcusu: number };
 
         if (!bantOlcusu || !kupOlcusu || bantOlcusu <= 0 || kupOlcusu <= 0 || kupOlcusu <= bantOlcusu) {
-            return { summary: { error: { label: 'Hata', value: 'Kup ölçüsü, bant ölçüsünden büyük olmalıdır. Lütfen ölçümlerinizi kontrol edin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Kup ölçüsü, bant ölçüsünden büyük olmalıdır. Lütfen ölçümlerinizi kontrol edin.' } } };
         }
         
         const beden = getBandSize(bantOlcusu);
@@ -64,8 +64,8 @@ const pageConfig = {
 
 
         const summary: CalculationResult['summary'] = {
-            beden: { label: 'Hesaplanan Bedeniniz', value: `${beden}${kup}`, isHighlighted: true },
-            caprazBeden: { label: 'Olası Çapraz (Kardeş) Beden', value: caprazBeden, note: 'Sırt bandı daha bol, kup kısmı daha dar bir alternatiftir.' },
+            beden: { type: 'result', label: 'Hesaplanan Bedeniniz', value: `${beden}${kup}`, isHighlighted: true },
+            caprazBeden: { type: 'info', label: 'Olası Çapraz (Kardeş) Beden', value: caprazBeden, note: 'Sırt bandı daha bol, kup kısmı daha dar bir alternatiftir.' },
         };
           
         return { summary, disclaimer: "Bu hesaplama bir başlangıç noktasıdır. Sütyen markaları ve modelleri arasında kalıp farkları olabilir. En doğru sonuç için farklı modeller denemeniz önerilir." };

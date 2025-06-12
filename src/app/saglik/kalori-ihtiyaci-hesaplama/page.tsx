@@ -44,20 +44,24 @@ const pageConfig = {
         { value: 'very_active', label: 'Aşırı Aktif (Ağır iş/egzersiz)' },
       ]},
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { gender, age, weight, height, activityLevel } = inputs;
 
+        if (!age || !weight || !height || Number(age) <= 0 || Number(weight) <= 0 || Number(height) <= 0) {
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen yaş, kilo ve boy için geçerli pozitif değerler girin.' } } };
+        }
+
         const bmr = calculateBMR(gender as 'male'|'female', Number(weight), Number(height), Number(age));
         const dailyCalories = bmr * activityMultipliers[activityLevel as keyof typeof activityMultipliers];
 
-        const summary = {
-            bmr: { label: 'Bazal Metabolizma Hızı (BMR)', value: `${formatNumber(bmr, 0)} kcal/gün` },
-            maintenance: { label: 'Kilo Korumak İçin (TDEE)', value: `${formatNumber(dailyCalories, 0)} kcal/gün` },
-            mildLoss: { label: 'Hafif Kilo Kaybı İçin (~0.25 kg/hafta)', value: `${formatNumber(dailyCalories - 250, 0)} kcal/gün` },
-            loss: { label: 'Kilo Kaybı İçin (~0.5 kg/hafta)', value: `${formatNumber(dailyCalories - 500, 0)} kcal/gün` },
-            gain: { label: 'Kilo Almak İçin (~0.5 kg/hafta)', value: `${formatNumber(dailyCalories + 500, 0)} kcal/gün` },
+        const summary: CalculationResult['summary'] = {
+            bmr: { type: 'info', label: 'Bazal Metabolizma Hızı (BMR)', value: `${formatNumber(bmr, 0)} kcal/gün` },
+            maintenance: { type: 'result', label: 'Kilo Korumak İçin (TDEE)', value: `${formatNumber(dailyCalories, 0)} kcal/gün`, isHighlighted: true },
+            mildLoss: { type: 'info', label: 'Hafif Kilo Kaybı İçin (~0.25 kg/hafta)', value: `${formatNumber(dailyCalories - 250, 0)} kcal/gün` },
+            loss: { type: 'info', label: 'Kilo Kaybı İçin (~0.5 kg/hafta)', value: `${formatNumber(dailyCalories - 500, 0)} kcal/gün` },
+            gain: { type: 'info', label: 'Kilo Almak İçin (~0.5 kg/hafta)', value: `${formatNumber(dailyCalories + 500, 0)} kcal/gün` },
         };
           
         return { summary };

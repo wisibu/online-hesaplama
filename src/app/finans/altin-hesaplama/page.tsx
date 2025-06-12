@@ -30,7 +30,7 @@ const pageConfig = {
         defaultValue: 'gram'
       },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const amount = Number(inputs.amount);
       const goldType = String(inputs.goldType);
@@ -53,10 +53,10 @@ const pageConfig = {
 
       const totalValue = amount * rate;
       
-      const summary = {
-        totalValue: { label: 'Toplam Tutar', value: formatCurrency(totalValue), isHighlighted: true },
-        amount: { label: 'Miktar', value: `${amount} ${goldType}` },
-        rate: { label: 'Birim Fiyatı (Yaklaşık)', value: formatCurrency(rate) },
+      const summary: CalculationResult['summary'] = {
+        totalValue: { type: 'result', label: 'Toplam Tutar', value: formatCurrency(totalValue), isHighlighted: true },
+        amount: { type: 'info', label: 'Miktar', value: `${amount} ${goldType}` },
+        rate: { type: 'info', label: 'Birim Fiyatı (Yaklaşık)', value: formatCurrency(rate) },
       };
 
       return { summary };

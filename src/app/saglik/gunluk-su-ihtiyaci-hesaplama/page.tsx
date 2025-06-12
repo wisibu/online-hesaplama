@@ -23,13 +23,13 @@ const pageConfig = {
         { value: '1500', label: 'Yoğun Egzersiz (90+ dakika ağır antrenman)' },
       ], defaultValue: '500' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { kilo, aktivite } = inputs as { kilo: number, aktivite: number };
 
         if (!kilo || kilo <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir kilo değeri girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir kilo değeri girin.' } } };
         }
 
         const baseIntakeMl = kilo * 35;
@@ -38,6 +38,7 @@ const pageConfig = {
 
         const summary: CalculationResult['summary'] = {
             suIhtiyaci: { 
+                type: 'result',
                 label: "Önerilen Günlük Su Tüketimi", 
                 value: `${formatNumber(totalIntakeL, 2)} litre`, 
                 isHighlighted: true, 

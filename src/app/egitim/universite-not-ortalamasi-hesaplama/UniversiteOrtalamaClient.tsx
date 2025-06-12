@@ -56,9 +56,9 @@ const UniversiteOrtalamaClient = () => {
         const gano100luk = yuzlukKarsiliklari[gano4lukStr] || (gano4luk * 25);
 
         const summary: CalculationResult['summary'] = {
-            gano4: { label: "Ortalama (4'lük Sistem)", value: formatNumber(gano4luk, 2), isHighlighted: true },
-            gano100: { label: "Ortalama (100'lük Sistem)", value: formatNumber(gano100luk, 2) },
-            toplamKredi: { label: "Toplam Kredi (AKTS)", value: formatNumber(toplamKredi) },
+            gano4: { type: 'result', label: "Ortalama (4'lük Sistem)", value: formatNumber(gano4luk, 2), isHighlighted: true },
+            gano100: { type: 'result', label: "Ortalama (100'lük Sistem)", value: formatNumber(gano100luk, 2) },
+            toplamKredi: { type: 'result', label: "Toplam Kredi (AKTS)", value: formatNumber(toplamKredi) },
         };
         
         setResult({ summary });
@@ -105,9 +105,9 @@ const UniversiteOrtalamaClient = () => {
                     <h3 className="text-lg font-bold text-gray-800 mb-2">Hesaplama Sonucu</h3>
                     <div className="space-y-2">
                         {Object.values(result.summary).map((item, i) => (
-                           <div key={i} className={`flex justify-between items-center p-2 rounded-md ${item.isHighlighted ? 'bg-blue-100' : ''}`}>
+                           <div key={i} className={`flex justify-between items-center p-2 rounded-md ${!!item.isHighlighted ? 'bg-blue-100' : ''}`}>
                                 <span className="text-sm font-semibold text-gray-700">{item.label}</span>
-                                <span className={`font-bold text-lg ${item.isHighlighted ? 'text-blue-700' : 'text-gray-800'}`}>{item.value}</span>
+                                <span className={`font-bold text-lg ${!!item.isHighlighted ? 'text-blue-700' : 'text-gray-800'}`}>{item.value}</span>
                             </div>
                         ))}
                     </div>

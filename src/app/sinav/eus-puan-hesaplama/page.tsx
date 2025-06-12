@@ -22,7 +22,7 @@ const pageConfig = {
       { id: 'dogru', label: 'Doğru Sayısı', type: 'number', placeholder: '70' },
       { id: 'yanlis', label: 'Yanlış Sayısı', type: 'number', placeholder: '20' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       
       const dogru = Number(inputs.dogru);
@@ -30,7 +30,7 @@ const pageConfig = {
       const totalQuestions = 100;
 
       if ( (dogru + yanlis > totalQuestions) || dogru < 0 || yanlis < 0 || isNaN(dogru) || isNaN(yanlis) ) {
-          return { summary: { error: { label: 'Hata', value: `Toplam doğru ve yanlış sayısı ${totalQuestions} sayısını geçemez.` } } };
+          return { summary: { error: { type: 'error', label: 'Hata', value: `Toplam doğru ve yanlış sayısı ${totalQuestions} sayısını geçemez.` } } };
       }
 
       const net = dogru - (yanlis / 4);
@@ -38,9 +38,9 @@ const pageConfig = {
       // Gerçek hesaplama standart sapma ve ortalamaya dayalıdır. Bu basitleştirilmiş bir modeldir.
       const eusPuani = EUS_BASE_PUAN + (net * EUS_KATSAYI);
 
-      const summary = {
-        eusPuani: { label: 'Tahmini EUS Puanı', value: formatNumber(eusPuani, 2), isHighlighted: true },
-        net: { label: 'Net Sayınız', value: formatNumber(net, 2) },
+      const summary: CalculationResult['summary'] = {
+        eusPuani: { type: 'result', label: 'Tahmini EUS Puanı', value: formatNumber(eusPuani, 2), isHighlighted: true },
+        net: { type: 'info', label: 'Net Sayınız', value: formatNumber(net, 2) },
       };
         
       return { summary };

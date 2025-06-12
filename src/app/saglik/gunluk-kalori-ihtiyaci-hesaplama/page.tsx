@@ -27,13 +27,13 @@ const pageConfig = {
         { value: '1.9', label: 'Ekstra Aktif (Çok ağır egzersiz, fiziksel iş)' },
       ], defaultValue: '1.375' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { cinsiyet, yas, boy, kilo, aktivite } = inputs as { cinsiyet: 'kadin' | 'erkek', yas: number, boy: number, kilo: number, aktivite: number };
 
         if (!yas || !boy || !kilo || yas <=0 || boy <= 0 || kilo <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanlara geçerli pozitif değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanlara geçerli pozitif değerler girin.' } } };
         }
 
         // Mifflin-St Jeor Formülü
@@ -47,10 +47,10 @@ const pageConfig = {
         const gunlukKalori = bmh * aktivite;
 
         const summary: CalculationResult['summary'] = {
-            bmh: { label: "Bazal Metabolizma Hızı (BMH)", value: `${formatNumber(bmh, 0)} kcal/gün`, note: "Hiç hareket etmeseniz bile vücudunuzun harcadığı enerji." },
-            gunlukKalori: { label: "Günlük Kalori İhtiyacı", value: `${formatNumber(gunlukKalori, 0)} kcal/gün`, isHighlighted: true, note: "Mevcut kilonuzu korumak için gereken kalori." },
-            kiloVermek: { label: "Kilo Vermek İçin (Hafif)", value: `${formatNumber(gunlukKalori - 300, 0)} kcal/gün` },
-            kiloAlmak: { label: "Kilo Almak İçin (Hafif)", value: `${formatNumber(gunlukKalori + 300, 0)} kcal/gün` },
+            bmh: { type: 'info', label: "Bazal Metabolizma Hızı (BMH)", value: `${formatNumber(bmh, 0)} kcal/gün`, note: "Hiç hareket etmeseniz bile vücudunuzun harcadığı enerji." },
+            gunlukKalori: { type: 'result', label: "Günlük Kalori İhtiyacı", value: `${formatNumber(gunlukKalori, 0)} kcal/gün`, isHighlighted: true, note: "Mevcut kilonuzu korumak için gereken kalori." },
+            kiloVermek: { type: 'info', label: "Kilo Vermek İçin (Hafif)", value: `${formatNumber(gunlukKalori - 300, 0)} kcal/gün` },
+            kiloAlmak: { type: 'info', label: "Kilo Almak İçin (Hafif)", value: `${formatNumber(gunlukKalori + 300, 0)} kcal/gün` },
         };
           
         return { summary, disclaimer: "Bu sonuçlar bir tahmindir. Kişisel sağlık hedefleriniz için bir diyetisyen veya doktora danışmanız önerilir." };

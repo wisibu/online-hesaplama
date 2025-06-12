@@ -40,12 +40,12 @@ const pageConfig = {
         const otvR = Number(otvRate || 0) / 100;
 
         if (isNaN(val) || val <= 0 || isNaN(ship) || ship < 0 || isNaN(rate) || rate <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli değerler girin.' } } };
         }
         
         const totalValueEUR = val + ship;
         if (totalValueEUR > 1500) {
-            return { summary: { error: { label: 'Uyarı', value: '1500 Avro üzerindeki gönderiler için ticari beyan gerekir, bu hesaplayıcı uygun değildir.' } } };
+            return { summary: { error: { type: 'error', label: 'Uyarı', value: '1500 Avro üzerindeki gönderiler için ticari beyan gerekir, bu hesaplayıcı uygun değildir.' } } };
         }
 
         const gümrükMatrahi = totalValueEUR * rate;
@@ -65,17 +65,17 @@ const pageConfig = {
         const toplamMaliyet = gümrükMatrahi + toplamVergi;
 
         const summary: CalculationResult['summary'] = {
-            totalValue: { label: 'Ürünün Toplam Değeri (€)', value: `€${val + ship}` },
-            taxBase: { label: 'Gümrük Vergisi Matrahı (TL)', value: formatCurrency(gümrükMatrahi) },
-            customsDuty: { label: `Gümrük Vergisi (%${gümrükVergiOrani * 100})`, value: formatCurrency(gümrükVergisi) },
-            vat: { label: 'KDV (%20)', value: formatCurrency(kdvVergisi) },
-            stampDuty: { label: 'Damga Vergisi', value: formatCurrency(DAMGA_VERGISI) },
-            totalTax: { label: 'Toplam Vergi Yükü', value: formatCurrency(toplamVergi), isHighlighted: true },
-            totalCost: { label: 'Genel Toplam (Maliyet)', value: formatCurrency(toplamMaliyet) },
+            totalValue: { type: 'info', label: 'Ürünün Toplam Değeri (€)', value: `€${val + ship}` },
+            taxBase: { type: 'info', label: 'Gümrük Vergisi Matrahı (TL)', value: formatCurrency(gümrükMatrahi) },
+            customsDuty: { type: 'info', label: `Gümrük Vergisi (%${gümrükVergiOrani * 100})`, value: formatCurrency(gümrükVergisi) },
+            vat: { type: 'info', label: 'KDV (%20)', value: formatCurrency(kdvVergisi) },
+            stampDuty: { type: 'info', label: 'Damga Vergisi', value: formatCurrency(DAMGA_VERGISI) },
+            totalTax: { type: 'result', label: 'Toplam Vergi Yükü', value: formatCurrency(toplamVergi), isHighlighted: true },
+            totalCost: { type: 'result', label: 'Genel Toplam (Maliyet)', value: formatCurrency(toplamMaliyet) },
         };
 
         if (hasOtv) {
-            summary.otv = { label: `ÖTV (%${otvR * 100})`, value: formatCurrency(otvVergisi) };
+            summary.otv = { type: 'info', label: `ÖTV (%${otvR * 100})`, value: formatCurrency(otvVergisi) };
         }
           
         return { summary };

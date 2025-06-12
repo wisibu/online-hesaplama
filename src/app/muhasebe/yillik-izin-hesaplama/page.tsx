@@ -21,7 +21,7 @@ const pageConfig = {
 
         const startDateStr = inputs.startDate as string;
         if (!startDateStr) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen işe giriş tarihini seçin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen işe giriş tarihini seçin.' } } };
         }
 
         const startDate = new Date(startDateStr);
@@ -29,7 +29,7 @@ const pageConfig = {
         today.setHours(0, 0, 0, 0);
 
         if (isNaN(startDate.getTime()) || startDate > today) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir işe giriş tarihi girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir işe giriş tarihi girin.' } } };
         }
 
         const differenceInMs = today.getTime() - startDate.getTime();
@@ -38,9 +38,9 @@ const pageConfig = {
         if (yearsOfService < 1) {
              return {
                 summary: {
-                    serviceDuration: { label: 'Hizmet Süreniz', value: `${Math.floor(yearsOfService * 12)} ay ${Math.floor(yearsOfService * 365.25 % 30.44)} gün` },
-                    annualLeaveDays: { label: 'Hak Edilen İzin Günü', value: '0 gün' },
-                    info: { label: 'Bilgi', value: 'Yıllık izne hak kazanmak için en az 1 yıl çalışmış olmak gerekir.' }
+                    annualLeaveDays: { type: 'result', label: 'Hak Edilen İzin Günü', value: '0 gün', isHighlighted: true },
+                    serviceDuration: { type: 'info', label: 'Hizmet Süreniz', value: `${Math.floor(yearsOfService * 12)} ay ${Math.floor(yearsOfService * 365.25 % 30.44)} gün` },
+                    info: { type: 'info', label: 'Bilgi', value: 'Yıllık izne hak kazanmak için en az 1 yıl çalışmış olmak gerekir.' }
                 }
             };
         }
@@ -58,8 +58,8 @@ const pageConfig = {
         const serviceMonths = Math.floor((yearsOfService - serviceYears) * 12);
 
         const summary: CalculationResult['summary'] = {
-            serviceDuration: { label: 'Hizmet Süreniz', value: `${serviceYears} yıl ${serviceMonths} ay` },
-            annualLeaveDays: { label: 'Hak Edilen Yıllık İzin Günü', value: `${leaveDays} iş günü` },
+            annualLeaveDays: { type: 'result', label: 'Hak Edilen Yıllık İzin Günü', value: `${leaveDays} iş günü`, isHighlighted: true },
+            serviceDuration: { type: 'info', label: 'Hizmet Süreniz', value: `${serviceYears} yıl ${serviceMonths} ay` },
         };
 
         return { summary };

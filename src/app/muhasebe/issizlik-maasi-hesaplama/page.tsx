@@ -26,13 +26,17 @@ const pageConfig = {
       { id: 'maas3', label: 'Son 2. Ay Brüt Maaş', type: 'number', placeholder: '25000' },
       { id: 'maas4', label: 'Son 1. Ay Brüt Maaş', type: 'number', placeholder: '25000' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { primGun, maas1, maas2, maas3, maas4 } = inputs as { primGun: number, maas1: number, maas2: number, maas3: number, maas4: number };
+        const primGun = Number(inputs.primGun);
+        const maas1 = Number(inputs.maas1);
+        const maas2 = Number(inputs.maas2);
+        const maas3 = Number(inputs.maas3);
+        const maas4 = Number(inputs.maas4);
 
         if (!primGun || primGun < 600 || !maas1 || !maas2 || !maas3 || !maas4) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doğru doldurun. En az 600 prim günü gereklidir.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru doldurun. En az 600 prim günü gereklidir.' } } };
         }
 
         let sureAy = 0;
@@ -50,12 +54,12 @@ const pageConfig = {
         const netIssizlikMaasi = brutIssizlikMaasi - damgaVergisi;
         const toplamOdeme = netIssizlikMaasi * sureAy;
 
-        const summary = {
-            sure: { label: 'Maaş Alma Süresi', value: `${sureAy} Ay` },
-            aylikNetMaas: { label: 'Aylık Net İşsizlik Maaşı', value: formatCurrency(netIssizlikMaasi) },
-            aylikBrutMaas: { label: 'Aylık Brüt İşsizlik Maaşı', value: formatCurrency(brutIssizlikMaasi) },
-            toplamOdeme: { label: `Toplam Net Ödeme (${sureAy} ay)`, value: formatCurrency(toplamOdeme) },
-            damgaVergisi: { label: 'Aylık Damga Vergisi Kesintisi', value: formatCurrency(damgaVergisi) },
+        const summary: CalculationResult['summary'] = {
+            aylikNetMaas: { type: 'result', label: 'Aylık Net İşsizlik Maaşı', value: formatCurrency(netIssizlikMaasi), isHighlighted: true },
+            sure: { type: 'info', label: 'Maaş Alma Süresi', value: `${sureAy} Ay` },
+            toplamOdeme: { type: 'info', label: `Toplam Net Ödeme (${sureAy} ay)`, value: formatCurrency(toplamOdeme) },
+            aylikBrutMaas: { type: 'info', label: 'Aylık Brüt İşsizlik Maaşı', value: formatCurrency(brutIssizlikMaasi) },
+            damgaVergisi: { type: 'info', label: 'Aylık Damga Vergisi Kesintisi', value: formatCurrency(damgaVergisi) },
         };
           
         return { summary };

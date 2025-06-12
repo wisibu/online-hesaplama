@@ -22,7 +22,7 @@ const pageConfig = {
       { id: 'amount', label: 'Tutar (TL)', type: 'number', placeholder: '10000' },
       { id: 'kdvRate', label: 'KDV Oranı (%)', type: 'number', placeholder: '20' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const calculationType = inputs.calculationType as 'grossToNet' | 'netToGross';
@@ -31,7 +31,7 @@ const pageConfig = {
         const stopajRate = 0.20; // Sabit %20
 
         if (isNaN(amount) || amount <= 0 || isNaN(kdvRate) || kdvRate < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tutar ve KDV oranı girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tutar ve KDV oranı girin.' } } };
         }
 
         let brütUcret: number, stopaj: number, netUcret: number, kdv: number, tahsilEdilecekTutar: number;
@@ -50,12 +50,12 @@ const pageConfig = {
             kdv = brütUcret * kdvRate;
         }
 
-        const summary = {
-            brütUcret: { label: 'Brüt Ücret', value: formatCurrency(brütUcret) },
-            stopaj: { label: `Gelir Vergisi Stopajı (%${stopajRate * 100})`, value: formatCurrency(stopaj) },
-            netUcret: { label: 'Net Ücret', value: formatCurrency(netUcret) },
-            kdv: { label: `Hesaplanan KDV (%${kdvRate * 100})`, value: formatCurrency(kdv) },
-            tahsilEdilecekTutar: { label: 'Müşteriden Tahsil Edilecek Tutar', value: formatCurrency(tahsilEdilecekTutar) },
+        const summary: CalculationResult['summary'] = {
+            tahsilEdilecekTutar: { type: 'result', label: 'Müşteriden Tahsil Edilecek Tutar', value: formatCurrency(tahsilEdilecekTutar), isHighlighted: true },
+            brütUcret: { type: 'info', label: 'Brüt Ücret', value: formatCurrency(brütUcret) },
+            stopaj: { type: 'info', label: `Gelir Vergisi Stopajı (%${stopajRate * 100})`, value: formatCurrency(stopaj) },
+            netUcret: { type: 'info', label: 'Net Ücret', value: formatCurrency(netUcret) },
+            kdv: { type: 'info', label: `Hesaplanan KDV (%${kdvRate * 100})`, value: formatCurrency(kdv) },
         };
           
         return { summary };

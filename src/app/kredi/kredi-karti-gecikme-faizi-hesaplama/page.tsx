@@ -18,7 +18,7 @@ const pageConfig = {
       { id: 'minPayment', label: 'Asgari Ödeme Tutarı (₺)', type: 'number', placeholder: 'Örn: 1500' },
       { id: 'paymentMade', label: 'Yaptığınız Ödeme (₺)', type: 'number', placeholder: 'Örn: 0' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const debt = Number(inputs.debt);
       const minPayment = Number(inputs.minPayment);
@@ -54,10 +54,10 @@ const pageConfig = {
       
       const toplamFaiz = akdiFaizTutari + gecikmeFaiziTutari;
 
-      const summary = {
-        akdiFaiz: { label: `Akdi Faiz Tutarı (%${(AKDI_FAIZ_ORANI * 100).toFixed(2)})`, value: formatCurrency(akdiFaizTutari) },
-        gecikmeFaizi: { label: `Gecikme Faizi Tutarı (%${(GECIKME_FAIZ_ORANI * 100).toFixed(2)})`, value: formatCurrency(gecikmeFaiziTutari) },
-        toplamFaiz: { label: 'Toplam Faiz Tutarı', value: formatCurrency(toplamFaiz) },
+      const summary: CalculationResult['summary'] = {
+        toplamFaiz: { type: 'result', label: 'Toplam Faiz Tutarı', value: formatCurrency(toplamFaiz), isHighlighted: true },
+        akdiFaiz: { type: 'info', label: `Akdi Faiz Tutarı (%${(AKDI_FAIZ_ORANI * 100).toFixed(2)})`, value: formatCurrency(akdiFaizTutari) },
+        gecikmeFaizi: { type: 'info', label: `Gecikme Faizi Tutarı (%${(GECIKME_FAIZ_ORANI * 100).toFixed(2)})`, value: formatCurrency(gecikmeFaiziTutari) },
       };
 
       return { summary };

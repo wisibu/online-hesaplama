@@ -18,7 +18,7 @@ const pageConfig = {
       { id: 'correct', label: 'Doğru Sayısı', type: 'number', placeholder: '38' },
       { id: 'incorrect', label: 'Yanlış Sayısı', type: 'number', placeholder: '10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const correct = Number(inputs.correct);
       const incorrect = Number(inputs.incorrect);
@@ -26,16 +26,16 @@ const pageConfig = {
       const passingScore = 70;
       
       if (isNaN(correct) || isNaN(incorrect) || correct < 0 || incorrect < 0 || (correct + incorrect > totalQuestions)) {
-        return { summary: { error: { label: 'Hata', value: `Doğru ve yanlış sayıları toplamı ${totalQuestions} arasında olmalıdır.` } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: `Doğru ve yanlış sayıları toplamı ${totalQuestions} arasında olmalıdır.` } } };
       }
 
       // Her soru 2 puandır. Yanlışlar doğruyu götürmez.
       const score = correct * 2;
       
-      const summary = {
-        score: { label: 'İSG Sınav Puanınız', value: formatNumber(score), isHighlighted: true },
-        status: { label: 'Sınav Sonucu', value: score >= passingScore ? 'Başarılı ✅' : 'Başarısız ❌' },
-        minCorrect: { label: 'Geçmek için gereken min. doğru', value: `${passingScore / 2}` },
+      const summary: CalculationResult['summary'] = {
+        score: { type: 'result', label: 'İSG Sınav Puanınız', value: formatNumber(score), isHighlighted: true },
+        status: { type: 'info', label: 'Sınav Sonucu', value: score >= passingScore ? 'Başarılı ✅' : 'Başarısız ❌' },
+        minCorrect: { type: 'info', label: 'Geçmek için gereken min. doğru', value: `${passingScore / 2}` },
       };
 
       return { summary };

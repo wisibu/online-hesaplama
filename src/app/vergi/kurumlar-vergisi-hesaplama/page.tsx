@@ -25,17 +25,17 @@ const pageConfig = {
         const taxableIncome = Number(inputs.taxableIncome);
 
         if (isNaN(taxableIncome) || taxableIncome < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir matrah girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir matrah girin.' } } };
         }
 
         const taxAmount = taxableIncome * KURUMLAR_VERGISI_ORANI;
         const netProfit = taxableIncome - taxAmount;
 
-        const summary = {
-            taxableIncome: { label: 'Vergi Matrahı', value: formatCurrency(taxableIncome) },
-            taxRate: { label: 'Kurumlar Vergisi Oranı', value: `%${KURUMLAR_VERGISI_ORANI * 100}` },
-            taxAmount: { label: 'Hesaplanan Kurumlar Vergisi', value: formatCurrency(taxAmount), isHighlighted: true },
-            netProfit: { label: 'Vergi Sonrası Net Kar', value: formatCurrency(netProfit) },
+        const summary: CalculationResult['summary'] = {
+            taxableIncome: { type: 'info', label: 'Vergi Matrahı', value: formatCurrency(taxableIncome) },
+            taxRate: { type: 'info', label: 'Kurumlar Vergisi Oranı', value: `%${KURUMLAR_VERGISI_ORANI * 100}` },
+            taxAmount: { type: 'result', label: 'Hesaplanan Kurumlar Vergisi', value: formatCurrency(taxAmount), isHighlighted: true },
+            netProfit: { type: 'result', label: 'Vergi Sonrası Net Kar', value: formatCurrency(netProfit) },
         };
           
         return { summary };

@@ -30,13 +30,7 @@ export function generateStaticParams() {
   }));
 }
 
-type PageProps = {
-  params: {
-    category: string;
-  }
-}
-
-export default async function Page({ params }: PageProps) {
+export default function Page({ params }: { params: any }) {
   const categorySlug = params.category;
   const categoryData = navLinksData.find(cat => createSlug(cat.category) === categorySlug);
 

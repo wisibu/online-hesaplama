@@ -99,7 +99,7 @@ const pageConfig = {
         const engellilik = Number(inputs.engellilik);
 
         if (isNaN(brut) || brut <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir brüt maaş girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir brüt maaş girin.' } } };
         }
 
         const months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
@@ -115,10 +115,10 @@ const pageConfig = {
         const totalNet = results.reduce((acc, r) => acc + r.netMaas, 0);
         const avgNet = totalNet / 12;
 
-        const summary = {
-            avgNet: { label: 'Yıllık Ortalama Net Maaş', value: formatCurrency(avgNet), isHighlighted: true },
-            totalBrut: { label: 'Yıllık Toplam Brüt Maaş', value: formatCurrency(brut * 12) },
-            totalNet: { label: 'Yıllık Toplam Net Maaş', value: formatCurrency(totalNet) },
+        const summary: CalculationResult['summary'] = {
+            avgNet: { type: 'result', label: 'Yıllık Ortalama Net Maaş', value: formatCurrency(avgNet), isHighlighted: true },
+            totalBrut: { type: 'info', label: 'Yıllık Toplam Brüt Maaş', value: formatCurrency(brut * 12) },
+            totalNet: { type: 'info', label: 'Yıllık Toplam Net Maaş', value: formatCurrency(totalNet) },
         };
         
         const table: TableData = {

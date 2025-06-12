@@ -23,7 +23,7 @@ const pageConfig = {
         { value: 'down', label: 'Aşağı Yuvarla' },
       ]},
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const num = Number(inputs.number);
@@ -31,7 +31,7 @@ const pageConfig = {
         const method = inputs.method as 'nearest' | 'up' | 'down';
 
         if (isNaN(num) || isNaN(digits) || !Number.isInteger(digits) || digits < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir sayı ve ondalık basamak sayısı girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir sayı ve ondalık basamak sayısı girin.' } } };
         }
 
         const factor = Math.pow(10, digits);
@@ -50,9 +50,9 @@ const pageConfig = {
                 break;
         }
 
-        const summary = {
-            original: { label: 'Orijinal Sayı', value: String(num) },
-            result: { label: 'Yuvarlanmış Sonuç', value: formatNumber(result, digits) },
+        const summary: CalculationResult['summary'] = {
+            result: { type: 'result', label: 'Yuvarlanmış Sonuç', value: formatNumber(result, digits), isHighlighted: true },
+            original: { type: 'info', label: 'Orijinal Sayı', value: String(num) },
         };
           
         return { summary };

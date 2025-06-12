@@ -18,14 +18,14 @@ const pageConfig = {
       { id: 'packsPerDay', label: 'Günde İçilen Paket Sayısı', type: 'number', placeholder: '1' },
       { id: 'pricePerPack', label: 'Paket Fiyatı (TL)', type: 'number', placeholder: '60' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const packsPerDay = Number(inputs.packsPerDay);
         const pricePerPack = Number(inputs.pricePerPack);
 
         if (isNaN(packsPerDay) || isNaN(pricePerPack) || packsPerDay <= 0 || pricePerPack <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli değerler girin.' } } };
         }
 
         const dailyCost = packsPerDay * pricePerPack;
@@ -33,11 +33,11 @@ const pageConfig = {
         const monthlyCost = dailyCost * 30; // Ortalama ay 30 gün
         const yearlyCost = dailyCost * 365;
 
-        const summary = {
-            daily: { label: 'Günlük Tasarruf', value: formatCurrency(dailyCost) },
-            weekly: { label: 'Haftalık Tasarruf', value: formatCurrency(weeklyCost) },
-            monthly: { label: 'Aylık Tasarruf', value: formatCurrency(monthlyCost) },
-            yearly: { label: 'Yıllık Tasarruf', value: formatCurrency(yearlyCost) },
+        const summary: CalculationResult['summary'] = {
+            daily: { type: 'info', label: 'Günlük Tasarruf', value: formatCurrency(dailyCost) },
+            weekly: { type: 'info', label: 'Haftalık Tasarruf', value: formatCurrency(weeklyCost) },
+            monthly: { type: 'result', label: 'Aylık Tasarruf', value: formatCurrency(monthlyCost) },
+            yearly: { type: 'result', label: 'Yıllık Tasarruf', value: formatCurrency(yearlyCost), isHighlighted: true },
         };
           
         return { summary };

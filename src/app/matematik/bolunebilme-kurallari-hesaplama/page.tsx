@@ -72,18 +72,17 @@ const pageConfig = {
     inputFields: [
       { id: 'number', label: 'Sayı', type: 'number', placeholder: 'Örn: 12345' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const num = Number(inputs.number);
         if (isNaN(num) || !Number.isInteger(num) || num < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen pozitif bir tam sayı girin.' } } };
+            return { summary: { result: { type: 'error', label: 'Hata', value: 'Lütfen pozitif bir tam sayı girin.' } } };
         }
 
         const results = checkDivisibility(num);
 
         const table = {
-          title: "Bölünebilme Sonuçları",
           headers: ["Bölen Sayı", "Bölünüyor Mu?", "Kural"],
           rows: results.map(res => [
               String(res.divisor), 
@@ -91,8 +90,12 @@ const pageConfig = {
               res.rule
             ])
         };
+        
+        const summary : CalculationResult['summary'] = {
+            number: { type: 'result', label: 'Analiz Edilen Sayı', value: num, isHighlighted: true },
+        };
           
-        return { summary: {}, table };
+        return { summary, table };
     },
   },
   content: {

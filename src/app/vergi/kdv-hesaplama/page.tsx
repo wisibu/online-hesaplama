@@ -46,7 +46,7 @@ const pageConfig = {
         const numKdvRate = Number(kdvRate);
 
         if (isNaN(numAmount) || numAmount <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
         }
 
         let basePrice, kdvAmount, totalPrice;
@@ -62,9 +62,9 @@ const pageConfig = {
         }
         
         const summary: CalculationResult['summary'] = {
-            basePrice: { label: 'KDV Hariç Tutar (Matrah)', value: formatCurrency(basePrice) },
-            kdvAmount: { label: `KDV Tutarı (%${numKdvRate * 100})`, value: formatCurrency(kdvAmount) },
-            totalPrice: { label: 'KDV Dahil Toplam Tutar', value: formatCurrency(totalPrice), isHighlighted: true },
+            basePrice: { type: 'info', label: 'KDV Hariç Tutar (Matrah)', value: formatCurrency(basePrice) },
+            kdvAmount: { type: 'info', label: `KDV Tutarı (%${numKdvRate * 100})`, value: formatCurrency(kdvAmount) },
+            totalPrice: { type: 'result', label: 'KDV Dahil Toplam Tutar', value: formatCurrency(totalPrice), isHighlighted: true },
         };
           
         return { summary };

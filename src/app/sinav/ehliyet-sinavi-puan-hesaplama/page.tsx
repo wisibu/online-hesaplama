@@ -17,23 +17,23 @@ const pageConfig = {
     inputFields: [
       { id: 'correct', label: 'Doğru Cevap Sayısı', type: 'number', placeholder: '40' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const correct = Number(inputs.correct);
       const totalQuestions = 50;
       const passingScore = 70;
       
       if (isNaN(correct) || correct < 0 || correct > totalQuestions) {
-        return { summary: { error: { label: 'Hata', value: `Doğru sayısı 0 ile ${totalQuestions} arasında olmalıdır.` } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: `Doğru sayısı 0 ile ${totalQuestions} arasında olmalıdır.` } } };
       }
 
       // Her soru 2 puandır. Yanlışlar doğruyu götürmez.
       const score = correct * 2;
       
-      const summary = {
-        score: { label: 'Ehliyet Sınav Puanınız', value: formatNumber(score), isHighlighted: true },
-        status: { label: 'Sınav Sonucu', value: score >= passingScore ? 'Başarılı, direksiyon sınavına girebilirsiniz! ✅' : 'Başarısız, tekrar denemelisiniz. ❌' },
-        minCorrect: { label: 'Geçmek için gereken min. doğru', value: `${passingScore / 2}` },
+      const summary: CalculationResult['summary'] = {
+        score: { type: 'result', label: 'Ehliyet Sınav Puanınız', value: formatNumber(score), isHighlighted: true },
+        status: { type: 'info', label: 'Sınav Sonucu', value: score >= passingScore ? 'Başarılı, direksiyon sınavına girebilirsiniz! ✅' : 'Başarısız, tekrar denemelisiniz. ❌' },
+        minCorrect: { type: 'info', label: 'Geçmek için gereken min. doğru', value: `${passingScore / 2}` },
       };
 
       return { summary };

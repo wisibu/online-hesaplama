@@ -18,13 +18,13 @@ const pageConfig = {
       { id: 'sonAdetTarihi', label: 'Son Adetinizin İlk Günü', type: 'date', defaultValue: new Date().toISOString().split('T')[0] },
       { id: 'donguSuresi', label: 'Ortalama Adet Döngüsü Süresi (Gün)', type: 'number', defaultValue: '28' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { sonAdetTarihi: sonAdetTarihiStr, donguSuresi } = inputs as { sonAdetTarihi: string, donguSuresi: number };
         
         if (!sonAdetTarihiStr || !donguSuresi || donguSuresi < 15 || donguSuresi > 45) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tarih ve döngü süresi (15-45 gün arası) girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tarih ve döngü süresi (15-45 gün arası) girin.' } } };
         }
 
         const sonAdet = new Date(sonAdetTarihiStr);
@@ -42,9 +42,9 @@ const pageConfig = {
         dogurganBitis.setDate(dogurganBitis.getDate() + 1);
 
         const summary: CalculationResult['summary'] = {
-            sonrakiAdet: { label: "Tahmini Sonraki Adet Tarihi", value: formatDate(sonrakiAdet), isHighlighted: true },
-            yumurtlamaGunu: { label: "Tahmini Yumurtlama Günü", value: formatDate(yumurtlamaGunu) },
-            dogurganlikAraligi: { label: "Doğurganlık Penceresi (Tahmini)", value: `${formatDate(dogurganBaslangic)} - ${formatDate(dogurganBitis)}` },
+            sonrakiAdet: { type: 'result', label: "Tahmini Sonraki Adet Tarihi", value: formatDate(sonrakiAdet), isHighlighted: true },
+            yumurtlamaGunu: { type: 'info', label: "Tahmini Yumurtlama Günü", value: formatDate(yumurtlamaGunu) },
+            dogurganlikAraligi: { type: 'info', label: "Doğurganlık Penceresi (Tahmini)", value: `${formatDate(dogurganBaslangic)} - ${formatDate(dogurganBitis)}` },
         };
           
         return { summary, disclaimer: "Bu hesaplama yalnızca tahmini değerler sunar ve tıbbi bir teşhis veya doğum kontrol yöntemi olarak kullanılmamalıdır. Adet düzensizlikleriniz veya sağlık endişeleriniz için lütfen bir doktora danışın." };

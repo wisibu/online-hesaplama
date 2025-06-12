@@ -18,7 +18,7 @@ const pageConfig = {
       { id: 'correct', label: 'Doğru Sayısı', type: 'number', placeholder: '40' },
       { id: 'incorrect', label: 'Yanlış Sayısı', type: 'number', placeholder: '10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const correct = Number(inputs.correct);
       const incorrect = Number(inputs.incorrect);
@@ -26,15 +26,15 @@ const pageConfig = {
       const totalQuestions = 50; 
       
       if (isNaN(correct) || isNaN(incorrect) || correct < 0 || incorrect < 0 || (correct + incorrect > totalQuestions)) {
-        return { summary: { error: { label: 'Hata', value: `Doğru ve yanlış sayıları toplamı ${totalQuestions} sayısını geçemez.` } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: `Doğru ve yanlış sayıları toplamı ${totalQuestions} sayısını geçemez.` } } };
       }
 
       // MBSTS'de yanlışlar doğruyu götürmez. Puan, (Doğru Sayısı / Toplam Soru Sayısı) * 100 formülü ile hesaplanır.
       const score = (correct / totalQuestions) * 100;
       
-      const summary = {
-        score: { label: 'MBSTS Puanınız', value: formatNumber(score, 2), isHighlighted: true },
-        correct: { label: 'Doğru Cevap Sayısı', value: formatNumber(correct) },
+      const summary: CalculationResult['summary'] = {
+        score: { type: 'result', label: 'MBSTS Puanınız', value: formatNumber(score, 2), isHighlighted: true },
+        correct: { type: 'info', label: 'Doğru Cevap Sayısı', value: formatNumber(correct) },
       };
 
       return { summary };

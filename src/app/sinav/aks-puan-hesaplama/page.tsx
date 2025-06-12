@@ -18,14 +18,14 @@ const pageConfig = {
       { id: 'correct', label: 'Doğru Sayısı', type: 'number', placeholder: '75' },
       { id: 'incorrect', label: 'Yanlış Sayısı', type: 'number', placeholder: '15' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const correct = Number(inputs.correct);
       const incorrect = Number(inputs.incorrect);
       const totalQuestions = 100;
       
       if (isNaN(correct) || isNaN(incorrect) || correct < 0 || incorrect < 0 || (correct + incorrect > totalQuestions)) {
-        return { summary: { error: { label: 'Hata', value: 'Doğru ve yanlış sayıları toplamı 100\'ü geçemez.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Doğru ve yanlış sayıları toplamı 100\'ü geçemez.' } } };
       }
 
       // AKS'de 3 yanlış 1 doğruyu götürür.
@@ -34,10 +34,10 @@ const pageConfig = {
       const score = Math.max(0, netCorrect); 
       const successScore = 60;
       
-      const summary = {
-        score: { label: 'AKS Puanınız', value: formatNumber(score, 2), isHighlighted: true },
-        netCorrect: { label: 'Net Doğru Sayısı', value: formatNumber(netCorrect, 2) },
-        status: { label: 'Başarı Durumu', value: score >= successScore ? 'Başarılı ✅' : 'Başarısız ❌' },
+      const summary: CalculationResult['summary'] = {
+        score: { type: 'result', label: 'AKS Puanınız', value: formatNumber(score, 2), isHighlighted: true },
+        netCorrect: { type: 'info', label: 'Net Doğru Sayısı', value: formatNumber(netCorrect, 2) },
+        status: { type: 'info', label: 'Başarı Durumu', value: score >= successScore ? 'Başarılı ✅' : 'Başarısız ❌' },
       };
 
       return { summary };

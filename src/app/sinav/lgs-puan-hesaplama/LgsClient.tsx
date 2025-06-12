@@ -34,7 +34,7 @@ const LgsClient = () => {
         { id: `${ders.id}_yanlis`, label: `${ders.label} Yanlış`, type: 'number' as const, placeholder: '0', belongsTo: ders.id },
     ]);
 
-    const calculate = async (inputs: { [key: string]: any }): Promise<CalculationResult | null> => {
+    const calculate = async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         const nets: { [key: string]: number } = {};
         let totalHamPuan = 0;
 
@@ -42,7 +42,7 @@ const LgsClient = () => {
             const dogru = Number(inputs[`${ders.id}_dogru`]) || 0;
             const yanlis = Number(inputs[`${ders.id}_yanlis`]) || 0;
             if (dogru + yanlis > ders.max) {
-                 return { summary: { error: { label: 'Hata', value: `${ders.label} dersindeki doğru ve yanlış toplamı ${ders.max} sayısını geçemez.` } } };
+                 return { summary: { error: { type: 'error', label: 'Hata', value: `${ders.label} dersindeki doğru ve yanlış toplamı ${ders.max} sayısını geçemez.` } } };
             }
             nets[ders.id] = dogru - (yanlis / 3);
         }
@@ -55,12 +55,12 @@ const LgsClient = () => {
         // Ham puanı 100-500 arasına ölçeklendiren basitleştirilmiş formül
         const lgsPuani = ((totalHamPuan / LGS_MAX_HAM_PUAN) * (LGS_MAX_PUAN - LGS_MIN_PUAN)) + LGS_MIN_PUAN;
 
-        const summary = {
-            lgsPuani: { label: 'Tahmini LGS Puanınız', value: formatNumber(lgsPuani, 3), isHighlighted: true },
-            totalHamPuan: { label: 'Ağırlıklı Ham Puanınız', value: formatNumber(totalHamPuan, 2) },
-            turkceNet: { label: 'Türkçe Net', value: formatNumber(nets.turkce, 2) },
-            matNet: { label: 'Matematik Net', value: formatNumber(nets.mat, 2) },
-            fenNet: { label: 'Fen Bilimleri Net', value: formatNumber(nets.fen, 2) },
+        const summary: CalculationResult['summary'] = {
+            lgsPuani: { type: 'result', label: 'Tahmini LGS Puanınız', value: formatNumber(lgsPuani, 3), isHighlighted: true },
+            totalHamPuan: { type: 'info', label: 'Ağırlıklı Ham Puanınız', value: formatNumber(totalHamPuan, 2) },
+            turkceNet: { type: 'info', label: 'Türkçe Net', value: formatNumber(nets.turkce, 2) },
+            matNet: { type: 'info', label: 'Matematik Net', value: formatNumber(nets.mat, 2) },
+            fenNet: { type: 'info', label: 'Fen Bilimleri Net', value: formatNumber(nets.fen, 2) },
         };
         
         return { summary };

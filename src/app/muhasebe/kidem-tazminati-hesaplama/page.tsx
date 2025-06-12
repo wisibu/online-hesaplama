@@ -23,13 +23,15 @@ const pageConfig = {
       { id: 'endDate', label: 'İşten Çıkış Tarihi', type: 'date', defaultValue: new Date().toISOString().split('T')[0] },
       { id: 'brutUcret', label: 'Son Giydirilmiş Brüt Ücret (TL)', type: 'number', placeholder: '40000' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { startDate: startStr, endDate: endStr, brutUcret } = inputs as { startDate: string, endDate: string, brutUcret: number };
+        const startStr = inputs.startDate as string;
+        const endStr = inputs.endDate as string;
+        const brutUcret = Number(inputs.brutUcret);
 
         if (!startStr || !endStr || !brutUcret || brutUcret <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
         }
 
         const startDate = new Date(startStr);
@@ -38,7 +40,7 @@ const pageConfig = {
         const hizmetSuresiGun = Math.floor(hizmetSuresiMs / (1000 * 60 * 60 * 24)) + 1; // +1 gün dahil edilir
         
         if (hizmetSuresiGun < 365) {
-            return { summary: { info: { label: 'Bilgi', value: 'Kıdem tazminatına hak kazanmak için en az 1 yıl çalışmış olmak gerekir.' } } };
+            return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Kıdem tazminatına hak kazanmak için en az 1 yıl çalışmış olmak gerekir.' } } };
         }
 
         const hizmetYili = Math.floor(hizmetSuresiGun / 365);
@@ -55,13 +57,13 @@ const pageConfig = {
         const damgaVergisi = brutKidemTazminati * DAMGA_VERGISI_ORANI;
         const netKidemTazminati = brutKidemTazminati - damgaVergisi;
 
-        const summary = {
-            hizmetSuresi: { label: 'Hizmet Süresi', value: `${hizmetYili} yıl, ${kalanGun} gün` },
-            esasUcret: { label: 'Hesaplamaya Esas Ücret', value: formatCurrency(esasUcret) },
-            brutTazminat: { label: 'Brüt Kıdem Tazminatı', value: formatCurrency(brutKidemTazminati) },
-            damgaVergisi: { label: 'Damga Vergisi Kesintisi', value: formatCurrency(damgaVergisi) },
-            netTazminat: { label: 'Net Kıdem Tazminatı', value: formatCurrency(netKidemTazminati) },
-            tavanBilgisi: { label: `2024 Kıdem Tavanı (Ocak-Haziran)`, value: formatCurrency(KIDEM_TAVANI) },
+        const summary: CalculationResult['summary'] = {
+            netTazminat: { type: 'result', label: 'Net Kıdem Tazminatı', value: formatCurrency(netKidemTazminati), isHighlighted: true },
+            hizmetSuresi: { type: 'info', label: 'Hizmet Süresi', value: `${hizmetYili} yıl, ${kalanGun} gün` },
+            esasUcret: { type: 'info', label: 'Hesaplamaya Esas Ücret', value: formatCurrency(esasUcret) },
+            brutTazminat: { type: 'info', label: 'Brüt Kıdem Tazminatı', value: formatCurrency(brutKidemTazminati) },
+            damgaVergisi: { type: 'info', label: 'Damga Vergisi Kesintisi', value: formatCurrency(damgaVergisi) },
+            tavanBilgisi: { type: 'info', label: `2024 Kıdem Tavanı (Ocak-Haziran)`, value: formatCurrency(KIDEM_TAVANI) },
         };
           
         return { summary };

@@ -17,20 +17,20 @@ const pageConfig = {
     inputFields: [
       { id: 'correct', label: 'Doğru Cevap Sayısı', type: 'number', placeholder: '70' },
     ] as InputField[],
-    calculate: async (inputs: { [key:string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key:string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const correct = Number(inputs.correct);
       const totalQuestions = 80;
       
       if (isNaN(correct) || correct < 0 || correct > totalQuestions) {
-        return { summary: { error: { label: 'Hata', value: `Doğru sayısı 0 ile ${totalQuestions} arasında olmalıdır.` } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: `Doğru sayısı 0 ile ${totalQuestions} arasında olmalıdır.` } } };
       }
 
       const score = correct * 1.25;
       
-      const summary = {
-        score: { label: 'YÖKDİL Puanınız', value: formatNumber(score), isHighlighted: true },
-        correct: { label: 'Doğru Cevap Sayısı', value: formatNumber(correct) },
+      const summary: CalculationResult['summary'] = {
+        score: { type: 'result', label: 'YÖKDİL Puanınız', value: formatNumber(score), isHighlighted: true },
+        correct: { type: 'info', label: 'Doğru Cevap Sayısı', value: formatNumber(correct) },
       };
 
       return { summary };

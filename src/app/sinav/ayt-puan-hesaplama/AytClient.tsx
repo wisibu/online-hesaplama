@@ -41,7 +41,7 @@ const AytClient = () => {
         ])
     ];
 
-    const calculate = async (inputs: { [key: string]: any }): Promise<CalculationResult | null> => {
+    const calculate = async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         const tytPuan = Number(inputs.tytPuan);
         const obp = Number(inputs.obp);
         
@@ -52,7 +52,7 @@ const AytClient = () => {
             const dogru = Number(inputs[`${ders.id}_dogru`]) || 0;
             const yanlis = Number(inputs[`${ders.id}_yanlis`]) || 0;
             if(dogru + yanlis > ders.max) {
-                 return { summary: { error: { label: 'Hata', value: `${ders.label} dersindeki doğru ve yanlış toplamı ${ders.max} sayısını geçemez.` } } };
+                 return { summary: { error: { type: 'error', label: 'Hata', value: `${ders.label} dersindeki doğru ve yanlış toplamı ${ders.max} sayısını geçemez.` } } };
             }
             nets[ders.id] = dogru - (yanlis / 4);
         }
@@ -76,12 +76,12 @@ const AytClient = () => {
             DIL: hamPuanlar.DIL > 0 ? hamPuanlar.DIL + tytYerlestirme + obpKatki : 0,
         };
         
-        const summary = {
-            say: { label: 'SAY Yerleştirme Puanı', value: formatNumber(yerlestirmePuanlari.SAY), isHighlighted: true },
-            soz: { label: 'SÖZ Yerleştirme Puanı', value: formatNumber(yerlestirmePuanlari.SOZ), isHighlighted: true },
-            ea: { label: 'EA Yerleştirme Puanı', value: formatNumber(yerlestirmePuanlari.EA), isHighlighted: true },
-            dil: { label: 'DİL Yerleştirme Puanı', value: formatNumber(yerlestirmePuanlari.DIL), isHighlighted: true },
-            obpKatki: { label: 'OBP Katkısı (+)', value: formatNumber(obpKatki) },
+        const summary: CalculationResult['summary'] = {
+            say: { type: 'result', label: 'SAY Yerleştirme Puanı', value: formatNumber(yerlestirmePuanlari.SAY), isHighlighted: true },
+            soz: { type: 'result', label: 'SÖZ Yerleştirme Puanı', value: formatNumber(yerlestirmePuanlari.SOZ), isHighlighted: true },
+            ea: { type: 'result', label: 'EA Yerleştirme Puanı', value: formatNumber(yerlestirmePuanlari.EA), isHighlighted: true },
+            dil: { type: 'result', label: 'DİL Yerleştirme Puanı', value: formatNumber(yerlestirmePuanlari.DIL), isHighlighted: true },
+            obpKatki: { type: 'info', label: 'OBP Katkısı (+)', value: formatNumber(obpKatki) },
         };
 
         return { summary };

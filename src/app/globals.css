@@ -1,5 +1,7 @@
 /* src/app/globals.css */
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   /* --background: #ffffff; */ /* Artık layout.tsx'ten yönetildiği için yoruma alındı veya silinebilir */

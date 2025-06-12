@@ -29,14 +29,19 @@ export default function Header() {
   const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
   const desktopDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const navLinks = navLinksData.map(data => ({
-    name: data.category,
-    href: `/${createSlug(data.category)}`,
-    subLinks: data.items.map(item => ({
-        name: item.replace(/ Hesaplama$/, "").replace(/ Hesaplamaları$/, "").replace(/ Hesaplayıcı$/, ""),
-        href: `/${createSlug(data.category)}/${createSlug(item)}`
-    }))
-  }));
+  const navLinks = navLinksData.map(data => {
+    // Check if data.links exists and is an array before mapping
+    const subLinks = Array.isArray(data.links) ? data.links.map(item => ({
+        name: item.title.replace(/ Hesaplama$/, "").replace(/ Hesaplamaları$/, "").replace(/ Hesaplayıcı$/, ""),
+        href: item.href
+    })) : [];
+
+    return {
+      name: data.category,
+      href: `/${createSlug(data.category)}`,
+      subLinks: subLinks
+    };
+  });
 
   useEffect(() => {
     setIsMobileMenuOpen(false);

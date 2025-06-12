@@ -19,29 +19,29 @@ const pageConfig = {
       { id: 'n', label: 'Toplam Eleman Sayısı (n)', type: 'number', placeholder: 'Örn: 10' },
       { id: 'r', label: 'Sıralanacak Eleman Sayısı (r)', type: 'number', placeholder: 'Örn: 3' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const n = Number(inputs.n);
         const r = Number(inputs.r);
 
         if (isNaN(n) || isNaN(r) || !Number.isInteger(n) || !Number.isInteger(r) || n < 0 || r < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen negatif olmayan tam sayılar girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen negatif olmayan tam sayılar girin.' } } };
         }
 
         if (r > n) {
-            return { summary: { error: { label: 'Hata', value: 'Sıralanacak eleman sayısı (r), toplam eleman sayısından (n) büyük olamaz.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Sıralanacak eleman sayısı (r), toplam eleman sayısından (n) büyük olamaz.' } } };
         }
 
         if (n > 1000) {
-          return { summary: { error: { label: 'Hata', value: 'Çok büyük sayılarla (n > 1000) hesaplama yapılamamaktadır.' } } };
+          return { summary: { error: { type: 'error', label: 'Hata', value: 'Çok büyük sayılarla (n > 1000) hesaplama yapılamamaktadır.' } } };
         }
 
         const result = calculatePermutation(n, r);
 
-        const summary = {
-            result: { label: `P(${n}, ${r}) Sonucu`, value: result.toString(), isHighlighted: true },
-            formula: { label: 'Formül', value: 'P(n, r) = n! / (n - r)!' }
+        const summary: CalculationResult['summary'] = {
+            result: { type: 'result', label: `P(${n}, ${r}) Sonucu`, value: result.toString(), isHighlighted: true },
+            formula: { type: 'info', label: 'Formül', value: 'P(n, r) = n! / (n - r)!' }
         };
           
         return { summary };

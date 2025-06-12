@@ -20,7 +20,7 @@ const pageConfig = {
       { id: 'days', label: 'Vade (Gün)', type: 'number', placeholder: '90' },
       { id: 'taxRate', label: 'Stopaj Oranı (%)', type: 'number', placeholder: '10', defaultValue: '10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const principal = Number(inputs.principal);
       const interestRate = Number(inputs.interestRate);
@@ -37,11 +37,11 @@ const pageConfig = {
       const netInterest = grossInterest - taxAmount;
       const totalValue = principal + netInterest;
       
-      const summary = {
-        totalValue: { label: 'Vade Sonu Toplam Net Tutar', value: formatCurrency(totalValue), isHighlighted: true },
-        netInterest: { label: 'Net Faiz Getirisi', value: formatCurrency(netInterest) },
-        grossInterest: { label: 'Brüt Faiz Getirisi', value: formatCurrency(grossInterest) },
-        taxAmount: { label: 'Stopaj Kesintisi', value: formatCurrency(taxAmount) },
+      const summary: CalculationResult['summary'] = {
+        totalValue: { type: 'result', label: 'Vade Sonu Toplam Net Tutar', value: formatCurrency(totalValue), isHighlighted: true },
+        netInterest: { type: 'result', label: 'Net Faiz Getirisi', value: formatCurrency(netInterest) },
+        grossInterest: { type: 'info', label: 'Brüt Faiz Getirisi', value: formatCurrency(grossInterest) },
+        taxAmount: { type: 'info', label: 'Stopaj Kesintisi', value: formatCurrency(taxAmount) },
       };
 
       return { summary };

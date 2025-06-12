@@ -19,20 +19,22 @@ const pageConfig = {
       { id: 'b', label: 'Değer B', type: 'number', placeholder: '4' },
       { id: 'c', label: 'Değer C', type: 'number', placeholder: '10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { a, b, c } = inputs as { a: number, b: number, c: number };
+        const a = Number(inputs.a);
+        const b = Number(inputs.b);
+        const c = Number(inputs.c);
 
-        if (!a || !b || !c || a === 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanlara geçerli değerler girin (Değer A sıfır olamaz).' } } };
+        if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) {
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanlara geçerli değerler girin (Değer A sıfır olamaz).' } } };
         }
 
         const x = (c * b) / a;
 
         const summary: CalculationResult['summary'] = {
-            formula: { label: 'Formül', value: `${a} / ${b} = ${c} / x` },
-            result: { label: 'Bilinmeyen Değer (x)', value: formatNumber(x), isHighlighted: true },
+            formula: { type: 'info', label: 'Formül', value: `${a} / ${b} = ${c} / x` },
+            result: { type: 'result', label: 'Bilinmeyen Değer (x)', value: formatNumber(x), isHighlighted: true },
         };
           
         return { summary };

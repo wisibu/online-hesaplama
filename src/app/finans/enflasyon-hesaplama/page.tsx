@@ -20,7 +20,7 @@ const pageConfig = {
       { id: 'bitisYili', label: 'Bitiş Yılı', type: 'number', placeholder: new Date().getFullYear() },
       { id: 'enflasyonOrani', label: 'Ortalama Yıllık Enflasyon Oranı (%)', type: 'number', placeholder: '25' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const tutar = Number(inputs.tutar);
       const baslangicYili = Number(inputs.baslangicYili);
@@ -33,17 +33,17 @@ const pageConfig = {
       
       const yilFarki = bitisYili - baslangicYili;
       if (yilFarki === 0) {
-          return { summary: { info: { label: 'Bilgi', value: 'Başlangıç ve bitiş yılı aynı olduğu için değer değişimi olmaz.' } } };
+          return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Başlangıç ve bitiş yılı aynı olduğu için değer değişimi olmaz.' } } };
       }
 
       const gelecekDeger = tutar * Math.pow(1 + yillikEnflasyonOrani, yilFarki);
       const artisMiktari = gelecekDeger - tutar;
       const alimGucuKaybiYuzde = (1 - (tutar / gelecekDeger)) * 100;
 
-      const summary = {
-        sonuc: { label: `${baslangicYili} yılındaki ${formatCurrency(tutar)}`, value: `${bitisYili} yılında ${formatCurrency(gelecekDeger)} değerindedir.`, isHighlighted: true },
-        artis: { label: 'Değer Artışı (Nominal)', value: formatCurrency(artisMiktari) },
-        alimGucu: { label: 'Alım Gücü Kaybı', value: `%${alimGucuKaybiYuzde.toFixed(2)}` },
+      const summary: CalculationResult['summary'] = {
+        sonuc: { type: 'result', label: `${baslangicYili} yılındaki ${formatCurrency(tutar)}`, value: `${bitisYili} yılında ${formatCurrency(gelecekDeger)} değerindedir.`, isHighlighted: true },
+        artis: { type: 'info', label: 'Değer Artışı (Nominal)', value: formatCurrency(artisMiktari) },
+        alimGucu: { type: 'info', label: 'Alım Gücü Kaybı', value: `%${alimGucuKaybiYuzde.toFixed(2)}` },
       };
 
       return { summary };

@@ -36,7 +36,7 @@ const pageConfig = {
     // This calculator needs a more complex state management for dynamic fields, 
     // which is better handled inside the component. 
     // The 'calculate' function here will be adapted to receive a list of notes and weights.
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const notes: { note: number, weight: number }[] = [];
@@ -66,7 +66,7 @@ const pageConfig = {
             // For now, we'll return a specific message.
              return {
                 summary: {
-                    error: { label: 'Hata', value: `Ağırlıkların toplamı 100 olmalıdır. Mevcut toplam: ${totalWeight}%` },
+                    error: { type: 'error', label: 'Hata', value: `Ağırlıkların toplamı 100 olmalıdır. Mevcut toplam: ${totalWeight}%` },
                 }
             };
         }
@@ -74,9 +74,9 @@ const pageConfig = {
         const weightedAverage = notes.reduce((sum, item) => sum + item.note * (item.weight / 100), 0);
         const letterGrade = getLetterGrade(weightedAverage);
 
-        const summary = {
-            weightedAverage: { label: 'Ağırlıklı Ortalama', value: formatNumber(weightedAverage) },
-            letterGrade: { label: 'Harf Notu', value: letterGrade },
+        const summary: CalculationResult['summary'] = {
+            weightedAverage: { type: 'result', label: 'Ağırlıklı Ortalama', value: formatNumber(weightedAverage), isHighlighted: true },
+            letterGrade: { type: 'result', label: 'Harf Notu', value: letterGrade },
         };
           
         return { summary };
@@ -104,12 +104,12 @@ const pageConfig = {
       }
     ]
   }
-};
+} as const;
 
 export const metadata: Metadata = {
   title: pageConfig.title,
   description: pageConfig.description,
-  keywords: pageConfig.keywords,
+  keywords: [...pageConfig.keywords],
   openGraph: {
     title: pageConfig.title,
     description: pageConfig.description,
@@ -129,10 +129,12 @@ export default function Page() {
           type: 'paired',
           buttonLabel: 'Not Alanı Ekle',
           fieldLabel: 'Not',
-          pairedFieldLabel: 'Ağırlık'
+          fieldPrefix: 'note',
+          pairedFieldLabel: 'Ağırlık',
+          pairedFieldPrefix: 'weight',
         }}
       />
-      <RichContent sections={pageConfig.content.sections} faqs={pageConfig.content.faqs} />
+      <RichContent sections={[...pageConfig.content.sections]} faqs={[...pageConfig.content.faqs]} />
     </>
   );
 }

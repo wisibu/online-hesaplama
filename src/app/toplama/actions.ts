@@ -7,14 +7,14 @@ export const calculateSum = async (inputs: { [key: string]: string | number | bo
   const numbers = Object.values(inputs).map(Number).filter(n => !isNaN(n));
   
   if (numbers.length < 2) {
-    return { summary: { error: { label: 'Hata', value: 'Lütfen en az iki sayı girin.' } } };
+    return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen en az iki sayı girin.' } } };
   }
 
   const toplam = numbers.reduce((acc, curr) => acc + curr, 0);
 
-  const summary = {
-    result: { label: 'Sayıların Toplamı', value: formatNumber(toplam), isHighlighted: true },
-    count: { label: 'Toplanan Sayı Adedi', value: `${numbers.length} adet` },
+  const summary: CalculationResult['summary'] = {
+    result: { type: 'result', label: 'Sayıların Toplamı', value: formatNumber(toplam), isHighlighted: true },
+    count: { type: 'info', label: 'Toplanan Sayı Adedi', value: `${numbers.length} adet` },
   };
 
   return { summary };

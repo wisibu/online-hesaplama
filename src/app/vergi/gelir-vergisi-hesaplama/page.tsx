@@ -26,19 +26,19 @@ const pageConfig = {
     inputFields: [
       { id: 'taxableIncome', label: 'Yıllık Toplam Vergi Matrahı (TL)', type: 'number', placeholder: 'Örn: 500000' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const taxableIncome = Number(inputs.taxableIncome);
 
         if (isNaN(taxableIncome) || taxableIncome < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
         }
         
         if (taxableIncome === 0) {
           return {
             summary: {
-              totalTax: { label: 'Toplam Gelir Vergisi', value: formatCurrency(0), isHighlighted: true },
+              totalTax: { type: 'result', label: 'Toplam Gelir Vergisi', value: formatCurrency(0), isHighlighted: true },
             }
           };
         }
@@ -56,11 +56,11 @@ const pageConfig = {
 
         const effectiveRate = (totalTax / taxableIncome) * 100;
 
-        const summary = {
-            totalTax: { label: 'Toplam Gelir Vergisi', value: formatCurrency(totalTax), isHighlighted: true },
-            netIncome: { label: 'Vergi Sonrası Net Gelir', value: formatCurrency(taxableIncome - totalTax) },
-            taxableIncome: { label: 'Vergi Matrahı', value: formatCurrency(taxableIncome) },
-            effectiveRate: { label: 'Efektif Vergi Oranı', value: `%${formatNumber(effectiveRate)}` },
+        const summary: CalculationResult['summary'] = {
+            totalTax: { type: 'result', label: 'Toplam Gelir Vergisi', value: formatCurrency(totalTax), isHighlighted: true },
+            netIncome: { type: 'info', label: 'Vergi Sonrası Net Gelir', value: formatCurrency(taxableIncome - totalTax) },
+            taxableIncome: { type: 'info', label: 'Vergi Matrahı', value: formatCurrency(taxableIncome) },
+            effectiveRate: { type: 'info', label: 'Efektif Vergi Oranı', value: `%${formatNumber(effectiveRate)}` },
         };
           
         return { summary };

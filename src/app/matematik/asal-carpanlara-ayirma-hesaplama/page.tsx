@@ -33,7 +33,7 @@ const pageConfig = {
     inputFields: [
       { id: 'number', label: 'Sayı', type: 'number', placeholder: 'Örn: 360' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const num = Number(inputs.number);
@@ -41,7 +41,7 @@ const pageConfig = {
         if (isNaN(num) || !Number.isInteger(num) || num <= 1) {
             return {
               summary: {
-                error: { label: 'Hata', value: 'Lütfen 1\'den büyük bir tam sayı girin.' }
+                result: { type: 'error', label: 'Hata', value: 'Lütfen 1\'den büyük bir tam sayı girin.' }
               }
             };
         }
@@ -53,11 +53,12 @@ const pageConfig = {
         }, {} as Record<number, number>);
 
         const formattedFactors = Object.entries(factorCounts)
-            .map(([base, exp]) => exp > 1 ? `${base}<sup>${exp}</sup>` : `${base}`)
+            .map(([base, exp]) => exp > 1 ? `${base}^${exp}` : `${base}`)
             .join(' x ');
 
-        const summary = {
-            result: { label: 'Asal Çarpanlar', value: formattedFactors, isHtml: true },
+        const summary: CalculationResult['summary'] = {
+            result: { type: 'result', label: 'Asal Çarpanlar', value: formattedFactors, isHighlighted: true },
+            number: { type: 'info', label: 'Sayı', value: num },
         };
           
         return { summary };

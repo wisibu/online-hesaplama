@@ -19,29 +19,29 @@ const pageConfig = {
       { id: 'n', label: 'Toplam Eleman Sayısı (n)', type: 'number', placeholder: 'Örn: 10' },
       { id: 'r', label: 'Seçilecek Eleman Sayısı (r)', type: 'number', placeholder: 'Örn: 3' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const n = Number(inputs.n);
         const r = Number(inputs.r);
 
         if (isNaN(n) || isNaN(r) || !Number.isInteger(n) || !Number.isInteger(r) || n < 0 || r < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen negatif olmayan tam sayılar girin.' } } };
+            return { summary: { result: { type: 'error', label: 'Hata', value: 'Lütfen negatif olmayan tam sayılar girin.' } } };
         }
 
         if (r > n) {
-            return { summary: { error: { label: 'Hata', value: 'Seçilecek eleman sayısı (r), toplam eleman sayısından (n) büyük olamaz.' } } };
+            return { summary: { result: { type: 'error', label: 'Hata', value: 'Seçilecek eleman sayısı (r), toplam eleman sayısından (n) büyük olamaz.' } } };
         }
         
         if (n > 1000) {
-          return { summary: { error: { label: 'Hata', value: 'Çok büyük sayılarla (n > 1000) hesaplama yapılamamaktadır.' } } };
+          return { summary: { result: { type: 'error', label: 'Hata', value: 'Çok büyük sayılarla (n > 1000) hesaplama yapılamamaktadır.' } } };
         }
 
         const result = calculateCombination(n, r);
 
-        const summary = {
-            result: { label: `C(${n}, ${r}) Sonucu`, value: result.toString(), isHighlighted: true },
-            formula: { label: 'Formül', value: 'C(n, r) = n! / (r! * (n - r)!)' }
+        const summary: CalculationResult['summary'] = {
+            result: { type: 'result', label: `C(${n}, ${r}) Sonucu`, value: result.toString(), isHighlighted: true },
+            formula: { type: 'info', label: 'Formül', value: 'C(n, r) = n! / (r! * (n - r)!)' }
         };
           
         return { summary };

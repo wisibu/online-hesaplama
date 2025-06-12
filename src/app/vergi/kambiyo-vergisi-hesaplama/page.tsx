@@ -25,17 +25,17 @@ const pageConfig = {
         const amount = Number(inputs.amount);
 
         if (isNaN(amount) || amount <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
         }
 
         const taxAmount = amount * KAMBIYO_VERGISI_ORANI;
         const totalAmount = amount + taxAmount;
 
-        const summary = {
-            baseAmount: { label: 'İşlem Tutarı', value: formatCurrency(amount) },
-            taxRate: { label: 'Vergi Oranı', value: `Binde 3 (%${KAMBIYO_VERGISI_ORANI * 100})` },
-            taxAmount: { label: 'Kambiyo Vergisi (BSMV)', value: formatCurrency(taxAmount) },
-            totalAmount: { label: 'Vergi Dahil Toplam Maliyet', value: formatCurrency(totalAmount), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            baseAmount: { type: 'info', label: 'İşlem Tutarı', value: formatCurrency(amount) },
+            taxRate: { type: 'info', label: 'Vergi Oranı', value: `Binde 3 (%${KAMBIYO_VERGISI_ORANI * 100})` },
+            taxAmount: { type: 'info', label: 'Kambiyo Vergisi (BSMV)', value: formatCurrency(taxAmount) },
+            totalAmount: { type: 'result', label: 'Vergi Dahil Toplam Maliyet', value: formatCurrency(totalAmount), isHighlighted: true },
         };
           
         return { summary };

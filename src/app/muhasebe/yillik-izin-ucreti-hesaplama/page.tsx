@@ -26,13 +26,15 @@ const pageConfig = {
       { id: 'unusedDays', label: 'Kullanılmayan İzin Günü Sayısı', type: 'number', placeholder: '20' },
       { id: 'taxBase', label: 'Mevcut Kümülatif Vergi Matrahı (TL)', type: 'number', placeholder: '120000', note: 'İzin ücreti hariç, bu yılki toplam vergiye esas kazancınız.' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { grossSalary, unusedDays, taxBase } = inputs as { grossSalary: number, unusedDays: number, taxBase: number };
+        const grossSalary = Number(inputs.grossSalary);
+        const unusedDays = Number(inputs.unusedDays);
+        const taxBase = Number(inputs.taxBase);
 
         if (!grossSalary || grossSalary <= 0 || !unusedDays || unusedDays < 0 || taxBase < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli ve pozitif değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli ve pozitif değerler girin.' } } };
         }
 
         const dailyGrossSalary = grossSalary / 30;
@@ -67,14 +69,14 @@ const pageConfig = {
         const totalDeductions = sgkPremium + unemploymentPremium + totalTax;
         const netLeavePay = grossLeavePay - totalDeductions;
 
-        const summary = {
-            grossLeavePay: { label: 'Brüt İzin Ücreti', value: formatCurrency(grossLeavePay) },
-            sgkCut: { label: 'SGK İşçi Payı (%14)', value: formatCurrency(sgkPremium) },
-            unemploymentCut: { label: 'İşsizlik Sig. İşçi Payı (%1)', value: formatCurrency(unemploymentPremium) },
-            incomeTax: { label: 'Gelir Vergisi', value: formatCurrency(totalTax) },
-            stampDuty: { label: 'Damga Vergisi', value: formatCurrency(0), note: 'Yıllık izin ücretinden damga vergisi kesilmez.' },
-            totalDeductions: { label: 'Toplam Kesinti', value: formatCurrency(totalDeductions), isHighlighted: true },
-            netLeavePay: { label: 'Net İzin Ücreti', value: formatCurrency(netLeavePay), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            netLeavePay: { type: 'result', label: 'Net İzin Ücreti', value: formatCurrency(netLeavePay), isHighlighted: true },
+            grossLeavePay: { type: 'info', label: 'Brüt İzin Ücreti', value: formatCurrency(grossLeavePay) },
+            sgkCut: { type: 'info', label: 'SGK İşçi Payı (%14)', value: formatCurrency(sgkPremium) },
+            unemploymentCut: { type: 'info', label: 'İşsizlik Sig. İşçi Payı (%1)', value: formatCurrency(unemploymentPremium) },
+            incomeTax: { type: 'info', label: 'Gelir Vergisi', value: formatCurrency(totalTax) },
+            stampDuty: { type: 'info', label: 'Damga Vergisi', value: formatCurrency(0), note: 'Yıllık izin ücretinden damga vergisi kesilmez.' },
+            totalDeductions: { type: 'result', label: 'Toplam Kesinti', value: formatCurrency(totalDeductions)},
         };
           
         return { summary };

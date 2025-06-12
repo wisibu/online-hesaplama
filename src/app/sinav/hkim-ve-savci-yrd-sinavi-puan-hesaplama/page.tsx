@@ -26,13 +26,13 @@ const pageConfig = {
       { id: 'alan_dogru', label: 'Alan Bilgisi Doğru (100 Soru)', type: 'number', placeholder: '80' },
       { id: 'alan_yanlis', label: 'Alan Bilgisi Yanlış', type: 'number', placeholder: '15' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { gygk_dogru, gygk_yanlis, alan_dogru, alan_yanlis } = inputs as { gygk_dogru: number, gygk_yanlis: number, alan_dogru: number, alan_yanlis: number };
 
         if ( (gygk_dogru + gygk_yanlis > 35) || (alan_dogru + alan_yanlis > 100) || [gygk_dogru, gygk_yanlis, alan_dogru, alan_yanlis].some(v => v < 0 || isNaN(v)) ) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen soru sayılarına uygun, geçerli değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen soru sayılarına uygun, geçerli değerler girin.' } } };
         }
 
         const gygkNet = gygk_dogru - (gygk_yanlis / 4);
@@ -45,11 +45,11 @@ const pageConfig = {
         // Gerçekte standart puan dönüşümü yapılır. Bu, sonucu 100'lük sisteme yaklaştıran bir modellemedir.
         const sinavPuani = Math.min(MAX_PUAN, BASE_PUAN + (agirlikliPuan / 80 * 60));
 
-        const summary = {
-            sinavPuani: { label: 'Tahmini Sınav Puanı', value: formatNumber(sinavPuani, 3), isHighlighted: true },
-            status: { label: 'Durum (70 Puan Barajı)', value: sinavPuani >= 70 ? 'Başarılı ✅' : 'Başarısız ❌' },
-            gygkNet: { label: 'Genel Yetenek-GK Net', value: formatNumber(gygkNet, 2) },
-            alanNet: { label: 'Alan Bilgisi Net', value: formatNumber(alanNet, 2) },
+        const summary: CalculationResult['summary'] = {
+            sinavPuani: { type: 'result', label: 'Tahmini Sınav Puanı', value: formatNumber(sinavPuani, 3), isHighlighted: true },
+            status: { type: 'info', label: 'Durum (70 Puan Barajı)', value: sinavPuani >= 70 ? 'Başarılı ✅' : 'Başarısız ❌' },
+            gygkNet: { type: 'info', label: 'Genel Yetenek-GK Net', value: formatNumber(gygkNet, 2) },
+            alanNet: { type: 'info', label: 'Alan Bilgisi Net', value: formatNumber(alanNet, 2) },
         };
           
         return { summary };

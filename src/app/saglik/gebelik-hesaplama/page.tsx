@@ -17,13 +17,13 @@ const pageConfig = {
     inputFields: [
       { id: 'sonAdetTarihi', label: 'Son Adet Tarihinin İlk Günü (SAT)', type: 'date', defaultValue: new Date(new Date().setMonth(new Date().getMonth() - 2)).toISOString().split('T')[0] },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { sonAdetTarihi: sonAdetTarihiStr } = inputs as { sonAdetTarihi: string };
 
         if (!sonAdetTarihiStr) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tarih girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tarih girin.' } } };
         }
 
         const sonAdet = new Date(sonAdetTarihiStr);
@@ -57,10 +57,10 @@ const pageConfig = {
             return "";
         };
 
-        const summary = {
-            gebelikSuresi: { label: "Gebelik Süresi (Tahmini)", value: `${gebelikHaftasi} hafta, ${gebelikGunu} gün`, isHighlighted: true },
-            dogumTarihi: { label: "Tahmini Doğum Tarihi", value: formatDate(dogumTarihi) },
-            bebeginBurcu: { label: "Bebeğinizin Burcu", value: getBurc(dogumTarihi) },
+        const summary: CalculationResult['summary'] = {
+            gebelikSuresi: { type: 'result', label: "Gebelik Süresi (Tahmini)", value: `${gebelikHaftasi} hafta, ${gebelikGunu} gün`, isHighlighted: true },
+            dogumTarihi: { type: 'info', label: "Tahmini Doğum Tarihi", value: formatDate(dogumTarihi) },
+            bebeginBurcu: { type: 'info', label: "Bebeğinizin Burcu", value: getBurc(dogumTarihi) },
         };
           
         return { summary };

@@ -82,7 +82,7 @@ const pageConfig = {
         const vehicleType = inputs.vehicleType as 'petrol' | 'hybrid' | 'electric';
 
         if (isNaN(basePrice) || basePrice <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir fiyat girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir fiyat girin.' } } };
         }
 
         let rateBrackets: { max_price: number, rate: number }[] | undefined;
@@ -100,13 +100,13 @@ const pageConfig = {
         }
         
         if (!rateBrackets || !engineSpec) {
-             return { summary: { error: { label: 'Hata', value: 'Lütfen araç özelliklerini tam seçin.' } } };
+             return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen araç özelliklerini tam seçin.' } } };
         }
 
         const otvRate = rateBrackets.find(r => basePrice <= r.max_price)?.rate ?? 0;
         
         if (otvRate === 0) {
-             return { summary: { error: { label: 'Hata', value: 'Uygun bir ÖTV oranı bulunamadı. Lütfen bilgileri kontrol edin.' } } };
+             return { summary: { error: { type: 'error', label: 'Hata', value: 'Uygun bir ÖTV oranı bulunamadı. Lütfen bilgileri kontrol edin.' } } };
         }
         
         const otvAmount = basePrice * otvRate;
@@ -114,13 +114,13 @@ const pageConfig = {
         const kdvAmount = kdvMatrah * 0.20; // Assuming 20% VAT
         const totalPrice = kdvMatrah + kdvAmount;
 
-        const summary = {
-            basePrice: { label: 'Aracın Vergisiz Fiyatı', value: formatCurrency(basePrice) },
-            otvRate: { label: 'Uygulanan ÖTV Oranı', value: `%${otvRate * 100}` },
-            otvAmount: { label: 'ÖTV Tutarı', value: formatCurrency(otvAmount) },
-            otvKdvMatrah: { label: 'KDV Matrahı (Araç + ÖTV)', value: formatCurrency(kdvMatrah) },
-            kdvAmount: { label: 'KDV Tutarı (%20)', value: formatCurrency(kdvAmount) },
-            totalPrice: { label: 'Vergiler Dahil Satış Fiyatı', value: formatCurrency(totalPrice), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            basePrice: { type: 'info', label: 'Aracın Vergisiz Fiyatı', value: formatCurrency(basePrice) },
+            otvRate: { type: 'info', label: 'Uygulanan ÖTV Oranı', value: `%${otvRate * 100}` },
+            otvAmount: { type: 'info', label: 'ÖTV Tutarı', value: formatCurrency(otvAmount) },
+            otvKdvMatrah: { type: 'info', label: 'KDV Matrahı (Araç + ÖTV)', value: formatCurrency(kdvMatrah) },
+            kdvAmount: { type: 'info', label: 'KDV Tutarı (%20)', value: formatCurrency(kdvAmount) },
+            totalPrice: { type: 'result', label: 'Vergiler Dahil Satış Fiyatı', value: formatCurrency(totalPrice), isHighlighted: true },
         };
           
         return { summary };

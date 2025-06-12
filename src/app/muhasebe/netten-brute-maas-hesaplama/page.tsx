@@ -99,7 +99,7 @@ const pageConfig = {
         { value: 3, label: '3. Derece' },
       ], defaultValue: '0' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const netMaas = Number(inputs.netMaas);
@@ -107,18 +107,18 @@ const pageConfig = {
         const engellilik = Number(inputs.engellilik);
 
         if (isNaN(netMaas) || netMaas <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir net maaş girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir net maaş girin.' } } };
         }
 
         const brutMaas = findBrutFromNet(netMaas, kumulatif, engellilik);
         const kesintiler = calculateNetFromBrut(brutMaas, kumulatif, engellilik);
 
-        const summary = {
-            brutMaas: { label: 'Gerekli Brüt Maaş', value: formatCurrency(brutMaas) },
-            netMaas: { label: 'Ele Geçecek Net Maaş', value: formatCurrency(kesintiler.netMaas) },
-            sgkKesintisi: { label: 'SGK ve İşsizlik Primi (İşçi)', value: formatCurrency(kesintiler.sgkToplamIsciKesintisi) },
-            gelirVergisi: { label: 'Gelir Vergisi', value: formatCurrency(kesintiler.odenecekGelirVergisi) },
-            damgaVergisi: { label: 'Damga Vergisi', value: formatCurrency(kesintiler.damgaVergisi) },
+        const summary: CalculationResult['summary'] = {
+            brutMaas: { type: 'result', label: 'Gerekli Brüt Maaş', value: formatCurrency(brutMaas), isHighlighted: true },
+            netMaas: { type: 'info', label: 'Ele Geçecek Net Maaş', value: formatCurrency(kesintiler.netMaas) },
+            sgkKesintisi: { type: 'info', label: 'SGK ve İşsizlik Primi (İşçi)', value: formatCurrency(kesintiler.sgkToplamIsciKesintisi) },
+            gelirVergisi: { type: 'info', label: 'Gelir Vergisi', value: formatCurrency(kesintiler.odenecekGelirVergisi) },
+            damgaVergisi: { type: 'info', label: 'Damga Vergisi', value: formatCurrency(kesintiler.damgaVergisi) },
         };
           
         return { summary };

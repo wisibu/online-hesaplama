@@ -27,18 +27,18 @@ const pageConfig = {
         const kdvRate = Number(inputs.kdvRate) / 100;
 
         if (isNaN(amount) || amount <= 0 || isNaN(kdvRate) || kdvRate < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir bedel ve KDV oranı girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir bedel ve KDV oranı girin.' } } };
         }
 
         const taxAmount = amount * KONAKLAMA_VERGISI_ORANI;
         const kdvAmount = amount * kdvRate;
         const totalAmount = amount + taxAmount + kdvAmount;
 
-        const summary = {
-            baseAmount: { label: 'KDV Hariç Konaklama Bedeli', value: formatCurrency(amount) },
-            tax: { label: `Konaklama Vergisi (%${KONAKLAMA_VERGISI_ORANI * 100})`, value: formatCurrency(taxAmount) },
-            kdv: { label: `KDV Tutarı (%${kdvRate * 100})`, value: formatCurrency(kdvAmount) },
-            total: { label: 'Toplam Ödenecek Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            baseAmount: { type: 'info', label: 'KDV Hariç Konaklama Bedeli', value: formatCurrency(amount) },
+            tax: { type: 'info', label: `Konaklama Vergisi (%${KONAKLAMA_VERGISI_ORANI * 100})`, value: formatCurrency(taxAmount) },
+            kdv: { type: 'info', label: `KDV Tutarı (%${kdvRate * 100})`, value: formatCurrency(kdvAmount) },
+            total: { type: 'result', label: 'Toplam Ödenecek Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
         };
           
         return { summary };

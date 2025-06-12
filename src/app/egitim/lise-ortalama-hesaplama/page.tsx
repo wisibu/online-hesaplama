@@ -22,7 +22,7 @@ const pageConfig = {
       { id: 'note3', label: 'Ders 3 Notu', type: 'number', placeholder: '75' },
       { id: 'weight3', label: 'Ders 3 Saati', type: 'number', placeholder: '4' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const courses: { note: number, weight: number }[] = [];
@@ -63,10 +63,10 @@ const pageConfig = {
             certificateStatus = "Teşekkür Belgesi";
         }
 
-        const summary = {
-            weightedAverage: { label: 'Ağırlıklı Dönem Ortalaması', value: formatNumber(weightedAverage) },
-            totalCredit: { label: 'Toplam Ders Saati', value: totalWeight.toString() },
-            certificateStatus: { label: 'Belge Durumu', value: certificateStatus },
+        const summary: CalculationResult['summary'] = {
+            weightedAverage: { type: 'result', label: 'Ağırlıklı Dönem Ortalaması', value: formatNumber(weightedAverage), isHighlighted: true },
+            totalCredit: { type: 'result', label: 'Toplam Ders Saati', value: totalWeight.toString() },
+            certificateStatus: { type: 'result', label: 'Belge Durumu', value: certificateStatus },
         };
           
         return { summary };
@@ -119,7 +119,9 @@ export default function Page() {
           type: 'paired',
           buttonLabel: 'Ders Ekle',
           fieldLabel: 'Ders Notu',
-          pairedFieldLabel: 'Ders Saati'
+          fieldPrefix: 'note',
+          pairedFieldLabel: 'Ders Saati',
+          pairedFieldPrefix: 'weight'
         }}
       />
       <RichContent sections={pageConfig.content.sections} faqs={pageConfig.content.faqs} />

@@ -50,13 +50,16 @@ const pageConfig = {
             { value: 'anlasma', label: 'Anlaşarak Ayrıldım (İkale)' },
       ], defaultValue: 'istenCikarildi' }
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { startDate: startStr, endDate: endStr, brutUcret, istenAyrilis } = inputs as { startDate: string, endDate: string, brutUcret: number, istenAyrilis: string };
+        const startStr = inputs.startDate as string;
+        const endStr = inputs.endDate as string;
+        const brutUcret = Number(inputs.brutUcret);
+        const istenAyrilis = inputs.istenAyrilis as string;
 
         if (!startStr || !endStr || !brutUcret || brutUcret <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
         }
 
         const startDate = new Date(startStr);
@@ -74,10 +77,10 @@ const pageConfig = {
             const damgaVergisiKidem = brutKidemTazminati * DAMGA_VERGISI_ORANI;
             const netKidemTazminati = brutKidemTazminati - damgaVergisiKidem;
 
-            summary.brutKidem = { label: 'Brüt Kıdem Tazminatı', value: formatCurrency(brutKidemTazminati) };
-            summary.netKidem = { label: 'Net Kıdem Tazminatı', value: formatCurrency(netKidemTazminati), isHighlighted: true };
+            summary.brutKidem = { type: 'info', label: 'Brüt Kıdem Tazminatı', value: formatCurrency(brutKidemTazminati) };
+            summary.netKidem = { type: 'result', label: 'Net Kıdem Tazminatı', value: formatCurrency(netKidemTazminati), isHighlighted: true };
         } else {
-             summary.kidemDurum = { label: 'Kıdem Tazminatı', value: "Hesaplama koşulları (en az 1 yıl çalışma ve geçerli fesih nedeni) sağlanmıyor." };
+             summary.kidemDurum = { type: 'info', label: 'Kıdem Tazminatı', value: "Hesaplama koşulları (en az 1 yıl çalışma ve geçerli fesih nedeni) sağlanmıyor." };
         }
 
         // İhbar Tazminatı Hesaplama
@@ -96,11 +99,11 @@ const pageConfig = {
             
             const odenecekTaraf = istenAyrilis === 'istenCikarildi' ? 'İşveren Tarafından Ödenir' : 'İşçi Tarafından Ödenir';
 
-            summary.ihbarSuresi = { label: 'Yasal İhbar Süresi', value: `${ihbarSuresiHafta} Hafta`};
-            summary.brutIhbar = { label: `Brüt İhbar Tazminatı (${odenecekTaraf})`, value: formatCurrency(brutIhbarTazminati) };
-            summary.netIhbar = { label: `Net İhbar Tazminatı (${odenecekTaraf})`, value: formatCurrency(netIhbarTazminati), isHighlighted: true };
+            summary.ihbarSuresi = { type: 'info', label: 'Yasal İhbar Süresi', value: `${ihbarSuresiHafta} Hafta`};
+            summary.brutIhbar = { type: 'info', label: `Brüt İhbar Tazminatı (${odenecekTaraf})`, value: formatCurrency(brutIhbarTazminati) };
+            summary.netIhbar = { type: 'result', label: `Net İhbar Tazminatı (${odenecekTaraf})`, value: formatCurrency(netIhbarTazminati), isHighlighted: true };
         } else {
-            summary.ihbarDurum = { label: 'İhbar Tazminatı', value: "İhbar tazminatı doğmadı (haklı fesih/anlaşma)." };
+            summary.ihbarDurum = { type: 'info', label: 'İhbar Tazminatı', value: "İhbar tazminatı doğmadı (haklı fesih/anlaşma)." };
         }
           
         return { summary };

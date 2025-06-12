@@ -18,12 +18,12 @@ const pageConfig = {
       { id: 'price', label: 'Fiyat (Liste Fiyatı)', type: 'number', placeholder: '1000' },
       { id: 'discount1', label: '1. İskonto Oranı (%)', type: 'number', placeholder: '20' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const price = Number(inputs.price);
         if (isNaN(price) || price <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir fiyat girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir fiyat girin.' } } };
         }
 
         let currentPrice = price;
@@ -37,7 +37,7 @@ const pageConfig = {
           .map(key => Number(inputs[key] || 0) / 100);
 
         if (discountRates.some(isNaN) || discountRates.some(rate => rate < 0)) {
-             return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli, negatif olmayan iskonto oranları girin.' } } };
+             return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli, negatif olmayan iskonto oranları girin.' } } };
         }
 
         for (const rate of discountRates) {
@@ -49,10 +49,10 @@ const pageConfig = {
         const totalDiscountAmount = price - currentPrice;
 
         const summary: CalculationResult['summary'] = {
-            originalPrice: { label: 'Liste Fiyatı', value: formatCurrency(price) },
-            totalDiscount: { label: 'Toplam İndirim Tutarı', value: formatCurrency(totalDiscountAmount) },
-            finalPrice: { label: 'İskontolu Net Fiyat', value: formatCurrency(currentPrice) },
-            discountCount: { label: 'Uygulanan İskonto Sayısı', value: `${discountRates.filter(r => r > 0).length} adet` },
+            finalPrice: { type: 'result', label: 'İskontolu Net Fiyat', value: formatCurrency(currentPrice), isHighlighted: true },
+            originalPrice: { type: 'info', label: 'Liste Fiyatı', value: formatCurrency(price) },
+            totalDiscount: { type: 'info', label: 'Toplam İndirim Tutarı', value: formatCurrency(totalDiscountAmount) },
+            discountCount: { type: 'info', label: 'Uygulanan İskonto Sayısı', value: `${discountRates.filter(r => r > 0).length} adet` },
         };
           
         return { summary };

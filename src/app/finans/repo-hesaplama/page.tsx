@@ -19,7 +19,7 @@ const pageConfig = {
       { id: 'interestRate', label: 'Yıllık Faiz Oranı (%)', type: 'number', placeholder: '50' },
       { id: 'term', label: 'Vade (Gün)', type: 'number', placeholder: '7' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const principal = Number(inputs.principal);
       const annualInterestRate = Number(inputs.interestRate) / 100;
@@ -36,11 +36,11 @@ const pageConfig = {
       const netIncome = grossIncome - taxAmount;
       const totalAmount = principal + netIncome;
 
-      const summary = {
-        gross: { label: 'Brüt Getiri', value: formatCurrency(grossIncome) },
-        tax: { label: `Stopaj Kesintisi (%${taxRate * 100})`, value: formatCurrency(taxAmount) },
-        net: { label: 'Net Getiri', value: formatCurrency(netIncome) },
-        total: { label: 'Vade Sonu Tutar', value: formatCurrency(totalAmount) },
+      const summary: CalculationResult['summary'] = {
+        total: { type: 'result', label: 'Vade Sonu Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
+        net: { type: 'result', label: 'Net Getiri', value: formatCurrency(netIncome) },
+        gross: { type: 'info', label: 'Brüt Getiri', value: formatCurrency(grossIncome) },
+        tax: { type: 'info', label: `Stopaj Kesintisi (%${taxRate * 100})`, value: formatCurrency(taxAmount) },
       };
 
       return { summary };

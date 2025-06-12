@@ -22,13 +22,13 @@ const pageConfig = {
             { value: 'tlden-dovize', label: 'TL\'den Döviz\'e' },
       ], defaultValue: 'dovizden-tl' }
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { tutar, kur, yon } = inputs as { tutar: number, kur: number, yon: string };
 
         if (!tutar || tutar <= 0 || !kur || kur <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tutar ve kur girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tutar ve kur girin.' } } };
         }
 
         let sonuc = 0;
@@ -46,9 +46,9 @@ const pageConfig = {
         }
         
         const summary: CalculationResult['summary'] = {
-            sonuc: { label: sonucLabel, value: formatCurrency(sonuc), isHighlighted: true },
-            anaPara: { label: anaParaLabel, value: formatCurrency(tutar) },
-            kur: { label: 'Kullanılan Kur', value: formatCurrency(kur) }
+            sonuc: { type: 'result', label: sonucLabel, value: formatCurrency(sonuc), isHighlighted: true },
+            anaPara: { type: 'info', label: anaParaLabel, value: formatCurrency(tutar) },
+            kur: { type: 'info', label: 'Kullanılan Kur', value: formatCurrency(kur) }
         };
           
         return { summary };

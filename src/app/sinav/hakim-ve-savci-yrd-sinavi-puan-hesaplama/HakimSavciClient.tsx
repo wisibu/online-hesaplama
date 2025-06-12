@@ -34,12 +34,12 @@ const HakimSavciClient = () => {
         { id: 'alan_yanlis', label: 'Alan Bilgisi Yanlış', type: 'number', placeholder: '4' },
     ];
 
-    const calculate = async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    const calculate = async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         const { examType, gy_dogru, gy_yanlis, gk_dogru, gk_yanlis, alan_dogru, alan_yanlis } = inputs;
         const typeKey = examType as keyof typeof SINAV_KATSAYILARI;
         
         if (Number(gy_dogru) + Number(gy_yanlis) > 30 || Number(gk_dogru) + Number(gk_yanlis) > 35 || Number(alan_dogru) + Number(alan_yanlis) > 35) {
-            return { summary: { error: { label: 'Hata', value: 'Soru sayılarını aştınız. (GY:30, GK:35, Alan:35)' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Soru sayılarını aştınız. (GY:30, GK:35, Alan:35)' } } };
         }
 
         const gyNet = Number(gy_dogru) - (Number(gy_yanlis) / 4);
@@ -52,10 +52,10 @@ const HakimSavciClient = () => {
         // Gerçek hesaplama standart sapma ve ortalamaya dayalıdır. Bu basitleştirilmiş bir modeldir.
         const puan = constants.BASE + (gyNet * constants.gy) + (gkNet * constants.gk) + (alanNet * constants.alan) * 2; // Alan bilgisi daha değerli
 
-        const summary = {
-            puan: { label: 'Tahmini Puanınız', value: formatNumber(puan, 2), isHighlighted: true },
-            status: { label: 'Durum', value: puan >= 70 ? 'Başarılı (70 Puan Barajı Geçildi) ✅' : 'Başarısız (70 Puan Barajı Geçilemedi) ❌' },
-            netler: { label: 'Netler (GY / GK / Alan)', value: `${formatNumber(gyNet)} / ${formatNumber(gkNet)} / ${formatNumber(alanNet)}`}
+        const summary: CalculationResult['summary'] = {
+            puan: { type: 'result', label: 'Tahmini Puanınız', value: formatNumber(puan, 2), isHighlighted: true },
+            status: { type: 'info', label: 'Durum', value: puan >= 70 ? 'Başarılı (70 Puan Barajı Geçildi) ✅' : 'Başarısız (70 Puan Barajı Geçilemedi) ❌' },
+            netler: { type: 'info', label: 'Netler (GY / GK / Alan)', value: `${formatNumber(gyNet)} / ${formatNumber(gkNet)} / ${formatNumber(alanNet)}`}
         };
         
         return { summary };

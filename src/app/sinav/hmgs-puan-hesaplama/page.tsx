@@ -30,13 +30,13 @@ const pageConfig = {
       { id: 'alan_dogru', label: 'Alan Bilgisi Doğru', type: 'number', placeholder: '55' },
       { id: 'alan_yanlis', label: 'Alan Bilgisi Yanlış', type: 'number', placeholder: '10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       
       const { gy_dogru, gy_yanlis, gk_dogru, gk_yanlis, alan_dogru, alan_yanlis } = inputs;
 
       if ( (Number(gy_dogru) + Number(gy_yanlis) > 30) || (Number(gk_dogru) + Number(gk_yanlis) > 20) || (Number(alan_dogru) + Number(alan_yanlis) > 80) ) {
-          return { summary: { error: { label: 'Hata', value: 'Soru sayılarını aştınız. (GY:30, GK:20, Alan:80)' } } };
+          return { summary: { error: { type: 'error', label: 'Hata', value: 'Soru sayılarını aştınız. (GY:30, GK:20, Alan:80)' } } };
       }
 
       const gyNet = Number(gy_dogru) - (Number(gy_yanlis) / 4);
@@ -45,10 +45,10 @@ const pageConfig = {
       
       const puan = GUY_KATSAYILARI.BASE + (gyNet * GUY_KATSAYILARI.GY) + (gkNet * GUY_KATSAYILARI.GK) + (alanNet * GUY_KATSAYILARI.ALAN);
 
-      const summary = {
-        puan: { label: 'Tahmini GUY Puanı', value: formatNumber(puan, 2), isHighlighted: true },
-        status: { label: 'Durum', value: puan >= 70 ? 'Başarılı (70 Puan Barajı Geçildi) ✅' : 'Başarısız (70 Puan Barajı Geçilemedi) ❌' },
-        alanNet: { label: 'Alan Bilgisi Neti', value: formatNumber(alanNet, 2) },
+      const summary: CalculationResult['summary'] = {
+        puan: { type: 'result', label: 'Tahmini GUY Puanı', value: formatNumber(puan, 2), isHighlighted: true },
+        status: { type: 'info', label: 'Durum', value: puan >= 70 ? 'Başarılı (70 Puan Barajı Geçildi) ✅' : 'Başarısız (70 Puan Barajı Geçilemedi) ❌' },
+        alanNet: { type: 'info', label: 'Alan Bilgisi Neti', value: formatNumber(alanNet, 2) },
       };
         
       return { summary };

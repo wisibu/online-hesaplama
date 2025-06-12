@@ -22,20 +22,22 @@ const pageConfig = {
       { id: 'vadeTarihi', label: 'Vade Tarihi', type: 'date' },
       { id: 'odemeTarihi', label: 'Ödeme Tarihi', type: 'date', defaultValue: new Date().toISOString().split('T')[0] },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { principal, vadeTarihi: vadeTarihiStr, odemeTarihi: odemeTarihiStr } = inputs as { principal: number, vadeTarihi: string, odemeTarihi: string };
+        const principal = Number(inputs.principal);
+        const vadeTarihiStr = inputs.vadeTarihi as string;
+        const odemeTarihiStr = inputs.odemeTarihi as string;
         
         if (!principal || principal <= 0 || !vadeTarihiStr || !odemeTarihiStr) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
         }
 
         const vade = new Date(vadeTarihiStr);
         const odeme = new Date(odemeTarihiStr);
 
         if (odeme <= vade) {
-            return { summary: { info: { label: 'Bilgi', value: 'Ödeme tarihi vade tarihinden önce veya aynı gün olduğu için gecikme zammı hesaplanmaz.' } } };
+            return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Ödeme tarihi vade tarihinden önce veya aynı gün olduğu için gecikme zammı hesaplanmaz.' } } };
         }
 
         let totalMonths = (odeme.getFullYear() - vade.getFullYear()) * 12;
@@ -44,7 +46,7 @@ const pageConfig = {
         const dayDifference = odeme.getDate() - vade.getDate();
         
         if (totalMonths < 0 || (totalMonths === 0 && dayDifference <= 0)) {
-             return { summary: { info: { label: 'Bilgi', value: 'Ödeme tarihi vade tarihinden önce olduğu için gecikme zammı hesaplanmaz.' } } };
+             return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Ödeme tarihi vade tarihinden önce olduğu için gecikme zammı hesaplanmaz.' } } };
         }
         
         // Ay kesirleri tam ay sayılır. Vade günü geçildiyse 1 ay başlar.
@@ -59,10 +61,10 @@ const pageConfig = {
         const gecikmeZammi = principal * AYLIK_GECIKME_ZAMMI_ORANI * totalMonths;
         const toplamOdeme = principal + gecikmeZammi;
 
-        const summary = {
-            toplamOdeme: { label: 'Toplam Ödenecek Tutar', value: formatCurrency(toplamOdeme), isHighlighted: true },
-            gecikmeZammi: { label: `Gecikme Zammı (${totalMonths} Ay)`, value: formatCurrency(gecikmeZammi) },
-            anaPara: { label: 'Ana Para', value: formatCurrency(principal) },
+        const summary: CalculationResult['summary'] = {
+            toplamOdeme: { type: 'result', label: 'Toplam Ödenecek Tutar', value: formatCurrency(toplamOdeme), isHighlighted: true },
+            gecikmeZammi: { type: 'info', label: `Gecikme Zammı (${totalMonths} Ay)`, value: formatCurrency(gecikmeZammi) },
+            anaPara: { type: 'info', label: 'Ana Para', value: formatCurrency(principal) },
         };
           
         return { summary };

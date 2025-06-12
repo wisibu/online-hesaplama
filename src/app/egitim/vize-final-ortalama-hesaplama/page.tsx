@@ -19,17 +19,17 @@ const pageConfig = {
       { id: 'vizeYuzdesi', label: 'Vize Etki Yüzdesi (%)', type: 'number', placeholder: '40' },
       { id: 'finalNotu', label: 'Final Notu', type: 'number', placeholder: '85' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { vizeNotu, vizeYuzdesi, finalNotu } = inputs as { vizeNotu: number, vizeYuzdesi: number, finalNotu: number };
 
         if ([vizeNotu, vizeYuzdesi, finalNotu].some(v => v === null || isNaN(v) || v < 0 )) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanlara pozitif sayısal değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanlara pozitif sayısal değerler girin.' } } };
         }
         
         if (vizeYuzdesi > 100) {
-             return { summary: { error: { label: 'Hata', value: 'Vize etki yüzdesi 100\'den büyük olamaz.' } } };
+             return { summary: { error: { type: 'error', label: 'Hata', value: 'Vize etki yüzdesi 100\'den büyük olamaz.' } } };
         }
         
         const finalYuzdesi = 100 - vizeYuzdesi;
@@ -50,11 +50,11 @@ const pageConfig = {
         const harfNotu = getHarfNotu(ortalama);
         const gectiMi = (ortalama >= 50 && finalNotu >= 50) ? 'Geçtiniz ✅' : 'Kaldınız ❌';
 
-        const summary = {
-            ortalama: { label: 'Ders Sonu Ortalaması', value: formatNumber(ortalama, 2), isHighlighted: true },
-            harfNotu: { label: 'Harf Notu (Tahmini)', value: harfNotu },
-            durum: { label: 'Geçme Durumu', value: gectiMi },
-            finalEtki: { label: 'Final Etki Yüzdesi', value: `%${finalYuzdesi}`},
+        const summary: CalculationResult['summary'] = {
+            ortalama: { type: 'result', label: 'Ders Sonu Ortalaması', value: formatNumber(ortalama, 2), isHighlighted: true },
+            harfNotu: { type: 'result', label: 'Harf Notu (Tahmini)', value: harfNotu },
+            durum: { type: 'result', label: 'Geçme Durumu', value: gectiMi },
+            finalEtki: { type: 'info', label: 'Final Etki Yüzdesi', value: `%${finalYuzdesi}`},
         };
           
         return { summary };

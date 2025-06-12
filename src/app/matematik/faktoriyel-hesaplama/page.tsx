@@ -17,23 +17,23 @@ const pageConfig = {
     inputFields: [
       { id: 'number', label: 'Sayı (n)', type: 'number', placeholder: 'Örn: 5' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const num = Number(inputs.number);
 
         if (isNaN(num) || !Number.isInteger(num) || num < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen pozitif bir tam sayı girin.' } } };
+            return { summary: { result: { type: 'error', label: 'Hata', value: 'Lütfen pozitif bir tam sayı girin.' } } };
         }
 
         if (num > 1000) {
-             return { summary: { error: { label: 'Hata', value: 'Sayı çok büyük. Lütfen 1000 veya daha küçük bir sayı girin.' } } };
+             return { summary: { result: { type: 'error', label: 'Hata', value: 'Sayı çok büyük. Lütfen 1000 veya daha küçük bir sayı girin.' } } };
         }
 
         const result = factorial(num);
 
-        const summary = {
-            result: { label: `${num}! Sonucu`, value: result.toString(), isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            result: { type: 'result', label: `${num}! Sonucu`, value: result.toString(), isHighlighted: true },
         };
           
         return { summary, disclaimer: "1000'den büyük sayılar için hesaplama performansı düşebilir ve sonuçlar çok uzun olabilir." };

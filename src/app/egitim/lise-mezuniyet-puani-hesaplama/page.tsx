@@ -20,7 +20,7 @@ const pageConfig = {
       { id: 'grade11', label: '11. Sınıf Yıl Sonu Başarı Puanı', type: 'number', placeholder: '92.00' },
       { id: 'grade12', label: '12. Sınıf Yıl Sonu Başarı Puanı', type: 'number', placeholder: '88.75' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const grades = [
@@ -39,9 +39,9 @@ const pageConfig = {
         // OBP = Diploma Puanı * 5
         const obp = diplomaScore * 5;
 
-        const summary = {
-            diplomaScore: { label: 'Lise Mezuniyet Puanı (Diploma Notu)', value: formatNumber(diplomaScore) },
-            obp: { label: 'Ortaöğretim Başarı Puanı (OBP)', value: formatNumber(obp) },
+        const summary: CalculationResult['summary'] = {
+            diplomaScore: { type: 'result', label: 'Lise Mezuniyet Puanı (Diploma Notu)', value: formatNumber(diplomaScore), isHighlighted: true },
+            obp: { type: 'result', label: 'Ortaöğretim Başarı Puanı (OBP)', value: formatNumber(obp) },
         };
           
         return { summary };

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import CalculatorUI, { InputField, CalculationResult, ResultTable } from '@/components/CalculatorUI';
+import CalculatorUI, { InputField, CalculationResult, TableData } from '@/components/CalculatorUI';
 import RichContent from '@/components/RichContent';
 import { formatCurrency } from '@/utils/formatting';
 
@@ -14,8 +14,7 @@ const GELIR_VERGISI_DILIMLERI = [
 
 const calculateIncomeTax = (matrah: number, kümülatifMatrah: number) => {
     let toplamVergi = 0;
-    const table: ResultTable = {
-        title: "Vergi Dilimi Dökümü",
+    const table: TableData = {
         headers: ["Vergi Dilimi (%)", "Bu Dilime Giren Tutar", "Hesaplanan Vergi"],
         rows: []
     };
@@ -60,21 +59,21 @@ const pageConfig = {
       { id: 'matrah', label: 'Gelir Vergisi Matrahı (TL)', type: 'number', placeholder: '150000' },
       { id: 'kumulatifMatrah', label: 'Mevcut Kümülatif Vergi Matrahı (Varsa) (TL)', type: 'number', placeholder: '0' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const matrah = Number(inputs.matrah);
         const kumulatifMatrah = Number(inputs.kumulatifMatrah) || 0;
 
         if (isNaN(matrah) || matrah < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir matrah girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir matrah girin.' } } };
         }
         
         const { toplamVergi, table } = calculateIncomeTax(matrah, kumulatifMatrah);
 
-        const summary = {
-            totalTax: { label: 'Toplam Gelir Vergisi', value: formatCurrency(toplamVergi) },
-            totalMatrah: { label: 'Yeni Kümülatif Matrah', value: formatCurrency(matrah + kumulatifMatrah) },
+        const summary: CalculationResult['summary'] = {
+            totalTax: { type: 'result', label: 'Toplam Gelir Vergisi', value: formatCurrency(toplamVergi), isHighlighted: true },
+            totalMatrah: { type: 'info', label: 'Yeni Kümülatif Matrah', value: formatCurrency(matrah + kumulatifMatrah) },
         };
           
         return { summary, table };

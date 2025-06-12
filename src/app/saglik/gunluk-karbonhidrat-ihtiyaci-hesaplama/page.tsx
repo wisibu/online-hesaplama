@@ -27,13 +27,13 @@ const pageConfig = {
         { value: '1.9', label: 'Ekstra Aktif (Çok ağır egzersiz, fiziksel iş)' },
       ], defaultValue: '1.375' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { cinsiyet, yas, boy, kilo, aktivite } = inputs as { cinsiyet: 'kadin' | 'erkek', yas: number, boy: number, kilo: number, aktivite: number };
 
         if (!yas || !boy || !kilo || yas <=0 || boy <= 0 || kilo <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanlara geçerli pozitif değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanlara geçerli pozitif değerler girin.' } } };
         }
 
         // Mifflin-St Jeor Formülü ile BMH
@@ -52,9 +52,9 @@ const pageConfig = {
         const maxKarbonhidrat = (gunlukKalori * 0.65) / 4;
 
         const summary: CalculationResult['summary'] = {
-            gunlukKalori: { label: "Günlük Kalori İhtiyacı", value: `${formatNumber(gunlukKalori, 0)} kcal/gün`, note: "Mevcut kilonuzu korumak için gereken kalori." },
-            karbonhidratAraligi: { label: "Önerilen Günlük Karbonhidrat Miktarı", value: `${formatNumber(minKarbonhidrat, 0)} - ${formatNumber(maxKarbonhidrat, 0)} gram`, isHighlighted: true, note: "Sağlıklı bir diyet için önerilen aralık (%45-%65)." },
-            sporcularIcin: { label: "Sporcular İçin (Yoğun Antrenman)", value: `${formatNumber((gunlukKalori * 0.60) / 4, 0)} - ${formatNumber((gunlukKalori * 0.70) / 4, 0)} gram`, note:"Performans odaklı öneri."}
+            gunlukKalori: { type: 'info', label: "Günlük Kalori İhtiyacı", value: `${formatNumber(gunlukKalori, 0)} kcal/gün`, note: "Mevcut kilonuzu korumak için gereken kalori." },
+            karbonhidratAraligi: { type: 'result', label: "Önerilen Günlük Karbonhidrat Miktarı", value: `${formatNumber(minKarbonhidrat, 0)} - ${formatNumber(maxKarbonhidrat, 0)} gram`, isHighlighted: true, note: "Sağlıklı bir diyet için önerilen aralık (%45-%65)." },
+            sporcularIcin: { type: 'info', label: "Sporcular İçin (Yoğun Antrenman)", value: `${formatNumber((gunlukKalori * 0.60) / 4, 0)} - ${formatNumber((gunlukKalori * 0.70) / 4, 0)} gram`, note:"Performans odaklı öneri."}
         };
           
         return { summary, disclaimer: "Bu sonuçlar genel önerilere dayanmaktadır. Özellikle diyabet gibi kronik bir rahatsızlığınız varsa veya özel bir diyet uyguluyorsanız bir sağlık profesyoneline danışın." };

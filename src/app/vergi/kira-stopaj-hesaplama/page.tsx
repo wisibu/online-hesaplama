@@ -30,7 +30,7 @@ const pageConfig = {
         const amount = Number(rentAmount);
 
         if (isNaN(amount) || amount <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir kira bedeli girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir kira bedeli girin.' } } };
         }
 
         let grossRent: number, netRent: number, stopajAmount: number;
@@ -48,11 +48,11 @@ const pageConfig = {
         // Damga vergisi binde 1.89 (Kira sözleşmeleri için)
         const damgaVergisi = grossRent * 0.00189;
 
-        const summary = {
-            gross: { label: 'Aylık Brüt Kira', value: formatCurrency(grossRent) },
-            stopaj: { label: `Kira Stopajı (%${KIRA_STOPAJ_ORANI * 100})`, value: formatCurrency(stopajAmount) },
-            net: { label: 'Mülk Sahibine Ödenecek Net Kira', value: formatCurrency(netRent) },
-            stampDuty: { label: 'Damga Vergisi (Binde 1.89)', value: formatCurrency(damgaVergisi) }
+        const summary: CalculationResult['summary'] = {
+            gross: { type: 'result', label: 'Aylık Brüt Kira', value: formatCurrency(grossRent) },
+            stopaj: { type: 'info', label: `Kira Stopajı (%${KIRA_STOPAJ_ORANI * 100})`, value: formatCurrency(stopajAmount) },
+            net: { type: 'result', label: 'Mülk Sahibine Ödenecek Net Kira', value: formatCurrency(netRent), isHighlighted: true },
+            stampDuty: { type: 'info', label: 'Damga Vergisi (Binde 1.89)', value: formatCurrency(damgaVergisi) }
         };
           
         return { summary };

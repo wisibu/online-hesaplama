@@ -33,7 +33,7 @@ const EkpssClient = () => {
         { id: 'gk_yanlis', label: 'Genel Kültür Yanlış', type: 'number', placeholder: '10' },
     ];
 
-    const calculate = async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    const calculate = async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         const { level, gy_dogru, gy_yanlis, gk_dogru, gk_yanlis } = inputs;
         const levelKey = level as keyof typeof EKPSS_CONSTANTS;
 
@@ -42,7 +42,7 @@ const EkpssClient = () => {
         
         // Her test 60 sorudan oluşur
         if ( (Number(gy_dogru) + Number(gy_yanlis) > 60) || (Number(gk_dogru) + Number(gk_yanlis) > 60) ) {
-            return { summary: { error: { label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 60\'ı geçemez.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 60\'ı geçemez.' } } };
         }
 
         const constants = EKPSS_CONSTANTS[levelKey];
@@ -57,10 +57,10 @@ const EkpssClient = () => {
         
         const puanTuru = levelKey === 'LISANS' ? 'P3' : (levelKey === 'ONLISANS' ? 'P2' : 'P1');
 
-        const summary = {
-            ekpssPuani: { label: `Tahmini EKPSS Puanınız (${puanTuru})`, value: formatNumber(ekpssPuani, 2), isHighlighted: true },
-            gyNet: { label: 'Genel Yetenek Neti', value: formatNumber(gyNet, 2) },
-            gkNet: { label: 'Genel Kültür Neti', value: formatNumber(gkNet, 2) },
+        const summary: CalculationResult['summary'] = {
+            ekpssPuani: { type: 'result', label: `Tahmini EKPSS Puanınız (${puanTuru})`, value: formatNumber(ekpssPuani, 2), isHighlighted: true },
+            gyNet: { type: 'info', label: 'Genel Yetenek Neti', value: formatNumber(gyNet, 2) },
+            gkNet: { type: 'info', label: 'Genel Kültür Neti', value: formatNumber(gkNet, 2) },
         };
         
         return { summary };

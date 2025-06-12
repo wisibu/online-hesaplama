@@ -46,7 +46,7 @@ const pageConfig = {
       const taxRate = Number(inputs.taxBracket);
 
       if (isNaN(grossPay) || grossPay <= 0) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir brüt tutar girin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir brüt tutar girin.' } } };
       }
 
       const stampDuty = grossPay * 0.00759;
@@ -66,14 +66,14 @@ const pageConfig = {
       const netPay = grossPay - totalDeductions;
 
       const summary: CalculationResult['summary'] = {
-        grossPay: { label: 'Brüt Huzur Hakkı', value: formatCurrency(grossPay) },
-        sgkWorkerPremium: { label: 'SGK İşçi Primi (%14)', value: formatCurrency(sgkWorkerPremium) },
-        unemploymentWorkerPremium: { label: 'İşsizlik Sig. Primi (%1)', value: formatCurrency(unemploymentWorkerPremium) },
-        incomeTaxBase: { label: 'Gelir Vergisi Matrahı', value: formatCurrency(incomeTaxBase) },
-        incomeTax: { label: `Gelir Vergisi (${taxRate * 100}%)`, value: formatCurrency(incomeTax) },
-        stampDuty: { label: 'Damga Vergisi (%0.759)', value: formatCurrency(stampDuty) },
-        totalDeductions: { label: 'Toplam Kesintiler', value: formatCurrency(totalDeductions) },
-        netPay: { label: 'Net Ele Geçen Huzur Hakkı', value: formatCurrency(netPay), isHighlighted: true },
+        netPay: { type: 'result', label: 'Net Ele Geçen Huzur Hakkı', value: formatCurrency(netPay), isHighlighted: true },
+        grossPay: { type: 'info', label: 'Brüt Huzur Hakkı', value: formatCurrency(grossPay) },
+        sgkWorkerPremium: { type: 'info', label: 'SGK İşçi Primi (%14)', value: formatCurrency(sgkWorkerPremium) },
+        unemploymentWorkerPremium: { type: 'info', label: 'İşsizlik Sig. Primi (%1)', value: formatCurrency(unemploymentWorkerPremium) },
+        incomeTaxBase: { type: 'info', label: 'Gelir Vergisi Matrahı', value: formatCurrency(incomeTaxBase) },
+        incomeTax: { type: 'info', label: `Gelir Vergisi (${taxRate * 100}%)`, value: formatCurrency(incomeTax) },
+        stampDuty: { type: 'info', label: 'Damga Vergisi (%0.759)', value: formatCurrency(stampDuty) },
+        totalDeductions: { type: 'info', label: 'Toplam Kesintiler', value: formatCurrency(totalDeductions) },
       };
 
       return { summary };

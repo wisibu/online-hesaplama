@@ -32,23 +32,23 @@ const pageConfig = {
         { value: 'other', label: 'Diğer Belgeler (Genel Oran)' },
       ]},
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const amount = Number(inputs.amount);
         const docType = inputs.documentType as keyof typeof stampDutyRates;
 
         if (isNaN(amount) || amount <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
         }
 
         const rate = stampDutyRates[docType];
         const taxAmount = amount * rate;
 
-        const summary = {
-            baseAmount: { label: 'Vergi Matrahı', value: formatCurrency(amount) },
-            rate: { label: 'Uygulanan Oran', value: `‰ ${rate * 1000}` },
-            tax: { label: 'Hesaplanan Damga Vergisi', value: formatCurrency(taxAmount) },
+        const summary: CalculationResult['summary'] = {
+            baseAmount: { type: 'info', label: 'Vergi Matrahı', value: formatCurrency(amount) },
+            rate: { type: 'info', label: 'Uygulanan Oran', value: `‰ ${rate * 1000}` },
+            tax: { type: 'result', label: 'Hesaplanan Damga Vergisi', value: formatCurrency(taxAmount), isHighlighted: true },
         };
           
         return { summary };

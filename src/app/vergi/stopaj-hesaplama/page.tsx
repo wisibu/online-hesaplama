@@ -35,7 +35,7 @@ const pageConfig = {
         { value: 'dividend', label: 'Temettü (%10)' },
       ]},
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const calculationType = inputs.calculationType as 'grossToNet' | 'netToGross';
@@ -43,7 +43,7 @@ const pageConfig = {
         const rateType = inputs.rateType as keyof typeof stopajRates;
 
         if (isNaN(amount) || amount <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir tutar girin.' } } };
         }
 
         const rate = stopajRates[rateType];
@@ -59,10 +59,10 @@ const pageConfig = {
             taxAmount = grossAmount - netAmount;
         }
 
-        const summary = {
-            gross: { label: 'Brüt Tutar', value: formatCurrency(grossAmount) },
-            tax: { label: `Stopaj Kesintisi (%${rate * 100})`, value: formatCurrency(taxAmount) },
-            net: { label: 'Net Tutar', value: formatCurrency(netAmount) },
+        const summary: CalculationResult['summary'] = {
+            gross: { type: 'result', label: 'Brüt Tutar', value: formatCurrency(grossAmount) },
+            tax: { type: 'info', label: `Stopaj Kesintisi (%${rate * 100})`, value: formatCurrency(taxAmount) },
+            net: { type: 'result', label: 'Net Tutar', value: formatCurrency(netAmount), isHighlighted: true },
         };
           
         return { summary };

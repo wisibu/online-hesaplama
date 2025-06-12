@@ -18,21 +18,31 @@ const pageConfig = {
       { id: 'base', label: 'Taban (a)', type: 'number', placeholder: 'Örn: 2' },
       { id: 'exponent', label: 'Üs (b)', type: 'number', placeholder: 'Örn: 10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const base = Number(inputs.base);
         const exponent = Number(inputs.exponent);
 
         if (isNaN(base) || isNaN(exponent)) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir taban ve üs değeri girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir taban ve üs değeri girin.' } } };
         }
         
         // Büyük sayılar için BigInt kullanalım
-        const result = BigInt(base) ** BigInt(exponent);
+        let result;
+        try {
+            if (exponent < 0) {
+                 result = Math.pow(base, exponent).toString();
+            } else {
+                 result = (BigInt(base) ** BigInt(exponent)).toString();
+            }
+        } catch (e) {
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Hesaplama sırasında bir hata oluştu. Lütfen daha küçük sayılar deneyin.' } } };
+        }
 
-        const summary = {
-            result: { label: `${base} ^ ${exponent} Sonucu`, value: result.toString() },
+
+        const summary: CalculationResult['summary'] = {
+            result: { type: 'result', label: `${base} ^ ${exponent} Sonucu`, value: result, isHighlighted: true },
         };
           
         return { summary };

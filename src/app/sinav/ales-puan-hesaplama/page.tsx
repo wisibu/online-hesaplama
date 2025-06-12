@@ -27,7 +27,7 @@ const pageConfig = {
       { id: 'soz_dogru', label: 'Sözel Doğru Sayısı', type: 'number', placeholder: '35' },
       { id: 'soz_yanlis', label: 'Sözel Yanlış Sayısı', type: 'number', placeholder: '5' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { say_dogru, say_yanlis, soz_dogru, soz_yanlis } = inputs;
@@ -36,19 +36,19 @@ const pageConfig = {
         const sozNet = Number(soz_dogru) - (Number(soz_yanlis) / 4);
         
         if ( (Number(say_dogru) + Number(say_yanlis) > 50) || (Number(soz_dogru) + Number(soz_yanlis) > 50) ) {
-            return { summary: { error: { label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 50\'yi geçemez.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 50\'yi geçemez.' } } };
         }
 
         const puanSAY = ALES_CONSTANTS.SAY.say_k * sayNet + ALES_CONSTANTS.SAY.soz_k * sozNet + ALES_CONSTANTS.SAY.base;
         const puanSOZ = ALES_CONSTANTS.SOZ.say_k * sayNet + ALES_CONSTANTS.SOZ.soz_k * sozNet + ALES_CONSTANTS.SOZ.base;
         const puanEA = ALES_CONSTANTS.EA.say_k * sayNet + ALES_CONSTANTS.EA.soz_k * sozNet + ALES_CONSTANTS.EA.base;
 
-        const summary = {
-            sayNet: { label: 'Sayısal Net', value: formatNumber(sayNet) },
-            sozNet: { label: 'Sözel Net', value: formatNumber(sozNet) },
-            puanSAY: { label: 'Sayısal Puan (ALES-SAY)', value: formatNumber(puanSAY) },
-            puanSOZ: { label: 'Sözel Puan (ALES-SÖZ)', value: formatNumber(puanSOZ) },
-            puanEA: { label: 'Eşit Ağırlık Puan (ALES-EA)', value: formatNumber(puanEA) },
+        const summary: CalculationResult['summary'] = {
+            sayNet: { type: 'info', label: 'Sayısal Net', value: formatNumber(sayNet) },
+            sozNet: { type: 'info', label: 'Sözel Net', value: formatNumber(sozNet) },
+            puanSAY: { type: 'result', label: 'Sayısal Puan (ALES-SAY)', value: formatNumber(puanSAY), isHighlighted: true },
+            puanSOZ: { type: 'result', label: 'Sözel Puan (ALES-SÖZ)', value: formatNumber(puanSOZ), isHighlighted: true },
+            puanEA: { type: 'result', label: 'Eşit Ağırlık Puan (ALES-EA)', value: formatNumber(puanEA), isHighlighted: true },
         };
           
         return { summary };

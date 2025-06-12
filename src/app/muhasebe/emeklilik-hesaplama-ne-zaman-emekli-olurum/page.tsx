@@ -62,11 +62,17 @@ export default function Page() {
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-xl p-6">
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-4">{pageContent.title}</h1>
         {pageContent.description}
-        <AdBanner />
         <div className="mt-8">
            <RichContent sections={pageContent.sections} faqs={pageContent.faqs} />
         </div>
-        <AdBanner className="mt-8" />
+        <div className="mt-8">
+            <AdBanner
+                data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || ""}
+                data-ad-slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID || ""}
+                data-ad-format="auto"
+                data-full-width-responsive="true"
+            />
+        </div>
       </div>
     </div>
   );

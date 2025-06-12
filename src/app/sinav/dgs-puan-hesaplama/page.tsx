@@ -28,17 +28,17 @@ const pageConfig = {
       { id: 'soz_yanlis', label: 'Sözel Yanlış Sayısı', type: 'number', placeholder: '5' },
       { id: 'obp', label: 'Ön Lisans Başarı Puanı (ÖBP)', type: 'number', placeholder: '75.5' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { say_dogru, say_yanlis, soz_dogru, soz_yanlis, obp } = inputs;
         const obp_val = Number(obp);
 
         if ( (Number(say_dogru) + Number(say_yanlis) > 50) || (Number(soz_dogru) + Number(soz_yanlis) > 50) ) {
-            return { summary: { error: { label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 50\'yi geçemez.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 50\'yi geçemez.' } } };
         }
         if ( isNaN(obp_val) || obp_val < 0 || obp_val > 100) {
-            return { summary: { error: { label: 'Hata', value: 'ÖBP, 0 ile 100 arasında bir değer olmalıdır.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'ÖBP, 0 ile 100 arasında bir değer olmalıdır.' } } };
         }
 
         const sayNet = Number(say_dogru) - (Number(say_yanlis) / 4);
@@ -48,10 +48,10 @@ const pageConfig = {
         const puanSOZ = DGS_CONSTANTS.SOZ.say_k * sayNet + DGS_CONSTANTS.SOZ.soz_k * sozNet + DGS_CONSTANTS.SOZ.obp_k * obp_val + DGS_CONSTANTS.SOZ.base;
         const puanEA = DGS_CONSTANTS.EA.say_k * sayNet + DGS_CONSTANTS.EA.soz_k * sozNet + DGS_CONSTANTS.EA.obp_k * obp_val + DGS_CONSTANTS.EA.base;
 
-        const summary = {
-            puanSAY: { label: 'Sayısal Puan (DGS-SAY)', value: formatNumber(puanSAY) },
-            puanSOZ: { label: 'Sözel Puan (DGS-SÖZ)', value: formatNumber(puanSOZ) },
-            puanEA: { label: 'Eşit Ağırlık Puan (DGS-EA)', value: formatNumber(puanEA) },
+        const summary: CalculationResult['summary'] = {
+            puanSAY: { type: 'result', label: 'Sayısal Puan (DGS-SAY)', value: formatNumber(puanSAY), isHighlighted: true },
+            puanSOZ: { type: 'result', label: 'Sözel Puan (DGS-SÖZ)', value: formatNumber(puanSOZ), isHighlighted: true },
+            puanEA: { type: 'result', label: 'Eşit Ağırlık Puan (DGS-EA)', value: formatNumber(puanEA), isHighlighted: true },
         };
           
         return { summary };

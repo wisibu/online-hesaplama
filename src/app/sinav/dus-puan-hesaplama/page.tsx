@@ -25,7 +25,7 @@ const pageConfig = {
       { id: 'klinik_dogru', label: 'Klinik Bilimler Doğru Sayısı', type: 'number', placeholder: '50' },
       { id: 'klinik_yanlis', label: 'Klinik Bilimler Yanlış Sayısı', type: 'number', placeholder: '15' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       
       const temel_dogru = Number(inputs.temel_dogru);
@@ -35,7 +35,7 @@ const pageConfig = {
 
       // DUS Temel Bilimler Testi 120, Klinik Bilimler Testi 80 sorudan oluşur.
       if ( (temel_dogru + temel_yanlis > 120) || (klinik_dogru + klinik_yanlis > 80) ) {
-          return { summary: { error: { label: 'Hata', value: 'Soru sayılarını aştınız. Temel: 120, Klinik: 80.' } } };
+          return { summary: { error: { type: 'error', label: 'Hata', value: 'Soru sayılarını aştınız. Temel: 120, Klinik: 80.' } } };
       }
 
       const temelNet = temel_dogru - (temel_yanlis / 4);
@@ -48,10 +48,10 @@ const pageConfig = {
       
       const dusPuani = DUS_BASE_PUAN + temelPuan + klinikPuan;
 
-      const summary = {
-        dusPuani: { label: 'Tahmini DUS Puanı', value: formatNumber(dusPuani, 2), isHighlighted: true },
-        temelNet: { label: 'Temel Bilimler Neti', value: formatNumber(temelNet, 2) },
-        klinikNet: { label: 'Klinik Bilimler Neti', value: formatNumber(klinikNet, 2) },
+      const summary: CalculationResult['summary'] = {
+        dusPuani: { type: 'result', label: 'Tahmini DUS Puanı', value: formatNumber(dusPuani, 2), isHighlighted: true },
+        temelNet: { type: 'info', label: 'Temel Bilimler Neti', value: formatNumber(temelNet, 2) },
+        klinikNet: { type: 'info', label: 'Klinik Bilimler Neti', value: formatNumber(klinikNet, 2) },
       };
         
       return { summary };

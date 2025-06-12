@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
-import CalculatorUI, { InputField, CalculationResult, ResultTable } from '@/components/CalculatorUI';
+import CalculatorUI, { InputField, CalculationResult, TableData } from '@/components/CalculatorUI';
 import RichContent from '@/components/RichContent';
 import { formatCurrency } from '@/utils/formatting';
 
 const calculateAmortization = (cost: number, salvage: number, life: number, method: 'straight-line' | 'declining-balance') => {
-    const table: ResultTable = {
-        title: "Amortisman Tablosu",
+    const table: TableData = {
         headers: ["Yıl", "Yıl Başı Değeri", "Amortisman Gideri", "Birikmiş Amortisman", "Yıl Sonu Değeri"],
         rows: []
     };
@@ -70,24 +69,28 @@ const pageConfig = {
           { value: 'declining-balance', label: 'Azalan Bakiyeler Yöntemi' }
         ], defaultValue: 'straight-line' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { cost, salvage, life, method } = inputs as { cost: number, salvage: number, life: number, method: 'straight-line' | 'declining-balance' };
+        const cost = Number(inputs.cost);
+        const salvage = Number(inputs.salvage);
+        const life = Number(inputs.life);
+        const method = inputs.method as 'straight-line' | 'declining-balance';
+
 
         if (isNaN(cost) || isNaN(salvage) || isNaN(life) || cost <= 0 || life <= 0 || salvage < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları geçerli pozitif değerlerle doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları geçerli pozitif değerlerle doldurun.' } } };
         }
         if (salvage >= cost) {
-            return { summary: { error: { label: 'Hata', value: 'Hurda değeri, varlık maliyetinden küçük olmalıdır.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Hurda değeri, varlık maliyetinden küçük olmalıdır.' } } };
         }
 
         const table = calculateAmortization(cost, salvage, life, method);
           
         return { 
             summary: {
-                totalDepreciation: { label: 'Toplam Amortisman Gideri', value: formatCurrency(cost - salvage) },
-                finalValue: { label: 'Faydalı Ömür Sonu Değeri', value: formatCurrency(salvage) }
+                totalDepreciation: { type: 'result', label: 'Toplam Amortisman Gideri', value: formatCurrency(cost - salvage), isHighlighted: true },
+                finalValue: { type: 'info', label: 'Faydalı Ömür Sonu Değeri', value: formatCurrency(salvage) }
             },
             table 
         };

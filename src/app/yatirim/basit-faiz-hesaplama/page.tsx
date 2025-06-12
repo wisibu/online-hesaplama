@@ -23,7 +23,7 @@ const pageConfig = {
         { value: 'years', label: 'Yıl' },
       ]},
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const principal = Number(inputs.principal);
@@ -32,7 +32,7 @@ const pageConfig = {
         const timeUnit = inputs.timeUnit as 'days' | 'years';
 
         if (isNaN(principal) || isNaN(rate) || isNaN(time) || principal <= 0 || rate <= 0 || time <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları pozitif değerlerle doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları pozitif değerlerle doldurun.' } } };
         }
 
         let timeInYears = time;
@@ -44,10 +44,10 @@ const pageConfig = {
         const interest = principal * rate * timeInYears;
         const totalAmount = principal + interest;
 
-        const summary = {
-            principal: { label: 'Anapara', value: formatCurrency(principal) },
-            interest: { label: 'Faiz Getirisi', value: formatCurrency(interest) },
-            total: { label: 'Vade Sonu Toplam Tutar', value: formatCurrency(totalAmount) },
+        const summary: CalculationResult['summary'] = {
+            principal: { type: 'info', label: 'Anapara', value: formatCurrency(principal) },
+            interest: { type: 'info', label: 'Faiz Getirisi', value: formatCurrency(interest) },
+            total: { type: 'result', label: 'Vade Sonu Toplam Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
         };
           
         return { summary };

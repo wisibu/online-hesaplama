@@ -22,13 +22,14 @@ const pageConfig = {
       { id: 'brutMaas', label: 'Aylık Brüt Maaş (TL)', type: 'number', placeholder: '30000' },
       { id: 'fazlaMesaiSaati', label: 'Toplam Fazla Mesai (Saat)', type: 'number', placeholder: '10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { brutMaas, fazlaMesaiSaati } = inputs as { brutMaas: number, fazlaMesaiSaati: number };
+        const brutMaas = Number(inputs.brutMaas);
+        const fazlaMesaiSaati = Number(inputs.fazlaMesaiSaati);
         
         if (!brutMaas || brutMaas <= 0 || !fazlaMesaiSaati || fazlaMesaiSaati < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları geçerli değerlerle doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları geçerli değerlerle doldurun.' } } };
         }
 
         const saatlikBrutUcret = brutMaas / NORMAL_MESAI_SAATI_AYLIK;
@@ -39,11 +40,11 @@ const pageConfig = {
         const vergiVeSgkKesintisi = toplamBrutFazlaMesai * 0.30;
         const toplamNetFazlaMesai = toplamBrutFazlaMesai - vergiVeSgkKesintisi;
 
-        const summary = {
-            toplamBrut: { label: 'Toplam Brüt Fazla Mesai Ücreti', value: formatCurrency(toplamBrutFazlaMesai), isHighlighted: true },
-            toplamNet: { label: 'Tahmini Net Fazla Mesai Ücreti', value: formatCurrency(toplamNetFazlaMesai) },
-            saatlikBrut: { label: 'Saatlik Normal Brüt Ücret', value: formatCurrency(saatlikBrutUcret) },
-            saatlikFazlaMesai: { label: 'Saatlik Zamlı Mesai Ücreti (%50)', value: formatCurrency(saatlikFazlaMesaiUcreti) },
+        const summary: CalculationResult['summary'] = {
+            toplamBrut: { type: 'result', label: 'Toplam Brüt Fazla Mesai Ücreti', value: formatCurrency(toplamBrutFazlaMesai), isHighlighted: true },
+            toplamNet: { type: 'info', label: 'Tahmini Net Fazla Mesai Ücreti', value: formatCurrency(toplamNetFazlaMesai) },
+            saatlikBrut: { type: 'info', label: 'Saatlik Normal Brüt Ücret', value: formatCurrency(saatlikBrutUcret) },
+            saatlikFazlaMesai: { type: 'info', label: 'Saatlik Zamlı Mesai Ücreti (%50)', value: formatCurrency(saatlikFazlaMesaiUcreti) },
         };
           
         return { summary };

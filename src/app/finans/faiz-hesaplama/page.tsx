@@ -19,7 +19,7 @@ const pageConfig = {
       { id: 'interestRate', label: 'Yıllık Faiz Oranı (%)', type: 'number', placeholder: 'Örn: 45' },
       { id: 'term', label: 'Vade (Gün)', type: 'number', placeholder: 'Örn: 32' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const principal = Number(inputs.principal);
       const annualInterestRate = Number(inputs.interestRate) / 100;
@@ -37,11 +37,11 @@ const pageConfig = {
       const netInterest = grossInterest - withholdingAmount;
       const totalAmount = principal + netInterest;
 
-      const summary = {
-        grossInterest: { label: 'Brüt Faiz Getirisi', value: formatCurrency(grossInterest) },
-        withholding: { label: `Stopaj Kesintisi (%${withholdingRate * 100})`, value: formatCurrency(withholdingAmount) },
-        netInterest: { label: 'Net Faiz Getirisi', value: formatCurrency(netInterest) },
-        totalAmount: { label: 'Vade Sonu Toplam Tutar', value: formatCurrency(totalAmount) },
+      const summary: CalculationResult['summary'] = {
+        totalAmount: { type: 'result', label: 'Vade Sonu Toplam Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
+        netInterest: { type: 'result', label: 'Net Faiz Getirisi', value: formatCurrency(netInterest) },
+        grossInterest: { type: 'info', label: 'Brüt Faiz Getirisi', value: formatCurrency(grossInterest) },
+        withholding: { type: 'info', label: `Stopaj Kesintisi (%${withholdingRate * 100})`, value: formatCurrency(withholdingAmount) },
       };
 
       return { summary };

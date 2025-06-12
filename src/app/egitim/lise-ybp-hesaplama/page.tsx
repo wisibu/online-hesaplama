@@ -18,7 +18,7 @@ const pageConfig = {
       { id: 'firstTerm', label: '1. Dönem Ağırlıklı Not Ortalaması', type: 'number', placeholder: '78.50' },
       { id: 'secondTerm', label: '2. Dönem Ağırlıklı Not Ortalaması', type: 'number', placeholder: '85.25' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const firstTerm = Number(inputs.firstTerm);
@@ -30,8 +30,8 @@ const pageConfig = {
 
         const ybp = (firstTerm + secondTerm) / 2;
 
-        const summary = {
-            ybp: { label: 'Yıl Sonu Başarı Puanı (YBP)', value: formatNumber(ybp) },
+        const summary: CalculationResult['summary'] = {
+            ybp: { type: 'result', label: 'Yıl Sonu Başarı Puanı (YBP)', value: formatNumber(ybp), isHighlighted: true },
         };
           
         return { summary };

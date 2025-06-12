@@ -20,7 +20,7 @@ const pageConfig = {
       { id: 'interestRate', label: 'Aylık Faiz Oranı (%)', type: 'number', placeholder: '3.5' },
       { id: 'term', label: 'Vade (Ay)', type: 'number', placeholder: '36' },
     ] as InputField[],
-    calculate: async (inputs: { [key:string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key:string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const principal = Number(inputs.principal);
@@ -28,16 +28,16 @@ const pageConfig = {
         const term = Number(inputs.term);
 
         if (isNaN(principal) || isNaN(interestRate) || isNaN(term) || principal <= 0 || interestRate <= 0 || term <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları pozitif değerlerle doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları pozitif değerlerle doldurun.' } } };
         }
 
         const { monthlyPayment, totalPayment, totalInterest, paymentSchedule } = calculateLoanDetails(principal, interestRate, term);
 
-        const summary = {
-            monthlyPayment: { label: 'Aylık Taksit Tutarı', value: formatCurrency(monthlyPayment), isHighlighted: true },
-            totalPayment: { label: 'Toplam Geri Ödeme', value: formatCurrency(totalPayment) },
-            totalInterest: { label: 'Toplam Faiz Tutarı', value: formatCurrency(totalInterest) },
-            principal: { label: 'Kredi Tutarı', value: formatCurrency(principal) },
+        const summary: CalculationResult['summary'] = {
+            monthlyPayment: { type: 'result', label: 'Aylık Taksit Tutarı', value: formatCurrency(monthlyPayment), isHighlighted: true },
+            totalPayment: { type: 'info', label: 'Toplam Geri Ödeme', value: formatCurrency(totalPayment) },
+            totalInterest: { type: 'info', label: 'Toplam Faiz Tutarı', value: formatCurrency(totalInterest) },
+            principal: { type: 'info', label: 'Kredi Tutarı', value: formatCurrency(principal) },
         };
         
         const table = {

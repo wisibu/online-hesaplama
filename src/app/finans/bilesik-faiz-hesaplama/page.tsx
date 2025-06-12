@@ -26,7 +26,7 @@ const pageConfig = {
       ], defaultValue: '1' },
       { id: 'monthlyContribution', label: 'Aylık Ek Yatırım Tutarı (₺)', type: 'number', placeholder: '0' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const principal = Number(inputs.principal);
       const annualRate = Number(inputs.annualRate) / 100;
@@ -75,11 +75,11 @@ const pageConfig = {
       totalContributions = monthlyContribution * 12 * years;
       totalInterest = futureValue - principal - totalContributions;
 
-      const summary = {
-        futureValue: { label: 'Yatırımın Gelecekteki Değeri', value: formatCurrency(futureValue), isHighlighted: true },
-        totalInterest: { label: 'Toplam Faiz Kazancı', value: formatCurrency(totalInterest) },
-        totalContributions: { label: 'Toplam Ek Yatırım Tutarı', value: formatCurrency(totalContributions) },
-        principal: { label: 'Başlangıç Anaparası', value: formatCurrency(principal) },
+      const summary: CalculationResult['summary'] = {
+        futureValue: { type: 'result', label: 'Yatırımın Gelecekteki Değeri', value: formatCurrency(futureValue), isHighlighted: true },
+        totalInterest: { type: 'result', label: 'Toplam Faiz Kazancı', value: formatCurrency(totalInterest) },
+        totalContributions: { type: 'info', label: 'Toplam Ek Yatırım Tutarı', value: formatCurrency(totalContributions) },
+        principal: { type: 'info', label: 'Başlangıç Anaparası', value: formatCurrency(principal) },
       };
 
       const table = {

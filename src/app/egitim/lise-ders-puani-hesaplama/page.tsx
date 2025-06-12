@@ -19,7 +19,7 @@ const pageConfig = {
       { id: 'note2', label: '2. Yazılı', type: 'number', placeholder: '85' },
       { id: 'note3', label: '1. Performans', type: 'number', placeholder: '90' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const notes = Object.values(inputs)
@@ -30,10 +30,10 @@ const pageConfig = {
         
         const average = notes.reduce((sum, note) => sum + note, 0) / notes.length;
 
-        const summary = {
-            noteCount: { label: 'Değerlendirilen Not Sayısı', value: notes.length.toString() },
-            average: { label: 'Ders Dönem Puanı', value: formatNumber(average) },
-            status: { label: 'Durum', value: average >= 50 ? 'Başarılı' : 'Başarısız' },
+        const summary: CalculationResult['summary'] = {
+            noteCount: { type: 'result', label: 'Değerlendirilen Not Sayısı', value: notes.length.toString() },
+            average: { type: 'result', label: 'Ders Dönem Puanı', value: formatNumber(average), isHighlighted: true },
+            status: { type: 'result', label: 'Durum', value: average >= 50 ? 'Başarılı' : 'Başarısız' },
         };
           
         return { summary };
@@ -85,7 +85,8 @@ export default function Page() {
         dynamicFieldsConfig={{
           type: 'single',
           buttonLabel: 'Not Alanı Ekle',
-          fieldLabel: 'Not'
+          fieldLabel: 'Not',
+          fieldPrefix: 'note'
         }}
       />
       <RichContent sections={pageConfig.content.sections} faqs={pageConfig.content.faqs} />

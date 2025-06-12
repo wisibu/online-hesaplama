@@ -35,7 +35,7 @@ const pageContent = {
   faqs: [
     {
       question: "AGİ yerine gelen vergi istisnası kimleri kapsıyor?",
-      answer: "Asgari ücretin vergi dışı bırakılması uygulaması, ücretle çalışan herkesi (asgari ücretli veya daha yüksek maaş alanlar) kapsamaktadır. Tüm çalışanların maaşlarının asgari ücret tutarı kadar olan kısmı gelir vergisi ve damga vergisinden muaftır."
+      answer: "Asgari ücretin vergi dışı bırakılması uygulaması, ücretle çalışan herkesi (asgari ücretli veya daha yüksek maaş alanlar) kapsamaktadır. Tüm çalışanların maaşlarının asgari ücret tutarı kadar olan kısmı gelir vergisi ve damga vergisi'nden muaftır."
     },
     {
       question: "Eski yıllara ait bir AGİ hesaplaması yapabilir miyim?",
@@ -54,11 +54,17 @@ export default function Page() {
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-xl p-6">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-4">{pageContent.title}</h1>
         <p className="text-center text-gray-600 mb-6">{pageContent.description}</p>
-        <AdBanner />
         <div className="mt-8">
            <RichContent sections={pageContent.sections} faqs={pageContent.faqs} />
         </div>
-        <AdBanner className="mt-8" />
+        <div className="mt-8">
+          <AdBanner
+              data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || ""}
+              data-ad-slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID || ""}
+              data-ad-format="auto"
+              data-full-width-responsive="true"
+            />
+        </div>
       </div>
     </div>
   );

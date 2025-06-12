@@ -29,13 +29,13 @@ const pageConfig = {
       const monthlyRate = Number(inputs.rate) / 100;
 
       if (isNaN(principal) || principal <= 0) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir borç tutarı girin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir borç tutarı girin.' } } };
       }
       if (isNaN(dueDate.getTime()) || isNaN(paymentDate.getTime()) || dueDate > paymentDate) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli vade ve ödeme tarihleri girin. Ödeme tarihi, vadeden sonra olmalıdır.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli vade ve ödeme tarihleri girin. Ödeme tarihi, vadeden sonra olmalıdır.' } } };
       }
        if (isNaN(monthlyRate) || monthlyRate <= 0) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir gecikme zammı oranı girin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir gecikme zammı oranı girin.' } } };
       }
 
       let totalMonths = (paymentDate.getFullYear() - dueDate.getFullYear()) * 12;
@@ -59,10 +59,10 @@ const pageConfig = {
       const totalPayable = principal + totalInterest;
 
       const summary: CalculationResult['summary'] = {
-        period: { label: 'Gecikme Süresi', value: `${fullMonths} ay, ${remainingDays} gün` },
-        principal: { label: 'Ana Para Borcu', value: formatCurrency(principal) },
-        totalInterest: { label: 'Hesaplanan Gecikme Zammı', value: formatCurrency(totalInterest) },
-        totalPayable: { label: 'Toplam Ödenecek Tutar', value: formatCurrency(totalPayable), isHighlighted: true },
+        period: { type: 'info', label: 'Gecikme Süresi', value: `${fullMonths} ay, ${remainingDays} gün` },
+        principal: { type: 'info', label: 'Ana Para Borcu', value: formatCurrency(principal) },
+        totalInterest: { type: 'info', label: 'Hesaplanan Gecikme Zammı', value: formatCurrency(totalInterest) },
+        totalPayable: { type: 'result', label: 'Toplam Ödenecek Tutar', value: formatCurrency(totalPayable), isHighlighted: true },
       };
 
       return { summary };

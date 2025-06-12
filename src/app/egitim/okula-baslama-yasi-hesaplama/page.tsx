@@ -20,7 +20,7 @@ const pageConfig = {
         { value: '2025', label: '2025-2026' },
       ], defaultValue: '2024' }
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { birthDate: birthDateStr, year } = inputs as { birthDate: string, year: string };
@@ -51,9 +51,9 @@ const pageConfig = {
             resultText = "Okul öncesi eğitim için henüz yaş kriterini sağlamamaktadır.";
         }
 
-        const summary = {
-            age: { label: `Eylül ${year} sonu itibarıyla yaşı`, value: `${Math.floor(ageInMonths/12)} yaş, ${ageInMonths % 12} aylık` },
-            status: { label: 'Kayıt Durumu', value: resultText, isHighlighted: true },
+        const summary: CalculationResult['summary'] = {
+            age: { type: 'result', label: `Eylül ${year} sonu itibarıyla yaşı`, value: `${Math.floor(ageInMonths/12)} yaş, ${ageInMonths % 12} aylık` },
+            status: { type: 'result', label: 'Kayıt Durumu', value: resultText, isHighlighted: true },
         };
           
         return { summary };

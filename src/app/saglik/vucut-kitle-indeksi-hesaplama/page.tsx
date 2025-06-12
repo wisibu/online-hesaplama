@@ -27,14 +27,14 @@ const pageConfig = {
       { id: 'height', label: 'Boy (cm)', type: 'number', placeholder: '175' },
       { id: 'weight', label: 'Kilo (kg)', type: 'number', placeholder: '70' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const heightCm = Number(inputs.height);
         const weight = Number(inputs.weight);
 
         if (isNaN(heightCm) || isNaN(weight) || heightCm <= 0 || weight <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen boy ve kilonuzu pozitif değerlerle girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen boy ve kilonuzu pozitif değerlerle girin.' } } };
         }
 
         const heightM = heightCm / 100;
@@ -44,10 +44,10 @@ const pageConfig = {
         const idealWeightMin = 18.5 * (heightM * heightM);
         const idealWeightMax = 24.9 * (heightM * heightM);
 
-        const summary = {
-            bmi: { label: 'Vücut Kitle İndeksiniz (VKİ)', value: formatNumber(bmi, 1) },
-            category: { label: 'Durumunuz', value: category, className: color },
-            idealWeight: { label: 'İdeal Kilo Aralığınız', value: `${formatNumber(idealWeightMin, 1)} kg - ${formatNumber(idealWeightMax, 1)} kg` },
+        const summary: CalculationResult['summary'] = {
+            bmi: { type: 'result', label: 'Vücut Kitle İndeksiniz (VKİ)', value: formatNumber(bmi, 1), isHighlighted: true },
+            category: { type: 'info', label: 'Durumunuz', value: category, className: color },
+            idealWeight: { type: 'info', label: 'İdeal Kilo Aralığınız', value: `${formatNumber(idealWeightMin, 1)} kg - ${formatNumber(idealWeightMax, 1)} kg` },
         };
           
         return { summary };

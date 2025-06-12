@@ -20,7 +20,7 @@ const Page = () => {
         <p className="text-lg text-gray-600 mb-6">
           Yumurtlama dönemi hesaplaması, artık size bir sonraki adet tarihinizi ve doğurganlık pencerenizi de gösteren <strong>Adet Günü ve Yumurtlama Hesaplama</strong> aracımızın bir parçasıdır.
         </p>
-        <AdBanner />
+        <AdBanner data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || ''} data-ad-slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID || ''} />
         <div className="mt-8">
             <p className="text-gray-700 mb-4">
                 Tüm döngü takviminizi tek bir yerden takip etmek için lütfen aşağıdaki butona tıklayın.

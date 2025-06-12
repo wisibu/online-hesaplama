@@ -19,7 +19,7 @@ const pageConfig = {
       { id: 'speed', label: 'Ortalama Hız (km/s)', type: 'number', placeholder: '90' },
       { id: 'breakTime', label: 'Toplam Mola Süresi (Dakika)', type: 'number', placeholder: '45' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const distance = Number(inputs.distance);
@@ -27,7 +27,7 @@ const pageConfig = {
         const breakTime = Number(inputs.breakTime); // Dakika
 
         if (isNaN(distance) || isNaN(speed) || isNaN(breakTime) || distance <= 0 || speed <= 0 || breakTime < 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli değerler girin (Mesafe ve Hız > 0).' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli değerler girin (Mesafe ve Hız > 0).' } } };
         }
 
         // Süre (saat) = Mesafe / Hız
@@ -39,10 +39,10 @@ const pageConfig = {
         const now = new Date();
         const arrivalTime = new Date(now.getTime() + totalTravelTimeMinutes * 60000);
 
-        const summary = {
-            drivingTime: { label: 'Sürüş Süresi', value: formatDuration(travelTimeMinutes) },
-            totalTime: { label: 'Toplam Yolculuk Süresi (Mola Dahil)', value: formatDuration(totalTravelTimeMinutes) },
-            arrivalTime: { label: 'Tahmini Varış Zamanı', value: arrivalTime.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) },
+        const summary: CalculationResult['summary'] = {
+            totalTime: { type: 'result', label: 'Toplam Yolculuk Süresi (Mola Dahil)', value: formatDuration(totalTravelTimeMinutes), isHighlighted: true },
+            drivingTime: { type: 'info', label: 'Sürüş Süresi', value: formatDuration(travelTimeMinutes) },
+            arrivalTime: { type: 'info', label: 'Tahmini Varış Zamanı', value: arrivalTime.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) },
         };
           
         return { summary };

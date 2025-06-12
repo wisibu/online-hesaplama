@@ -30,37 +30,37 @@ const pageConfig = {
       const expenses = Number(inputs.expenses || 0);
 
       if (isNaN(purchasePrice) || isNaN(salePrice) || purchasePrice <= 0 || salePrice <= 0) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli alış ve satış fiyatları girin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli alış ve satış fiyatları girin.' } } };
       }
        if (salePrice < purchasePrice) {
-        return { summary: { info: { label: 'Bilgi', value: 'Satış fiyatı alış fiyatından düşük olduğu için değer artış kazancı oluşmamıştır.' } } };
+        return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Satış fiyatı alış fiyatından düşük olduğu için değer artış kazancı oluşmamıştır.' } } };
       }
 
       // ÜFE ile endeksleme bu basit hesaplayıcıda ihmal edilmiştir.
       const grossProfit = salePrice - purchasePrice - expenses;
       
       if (grossProfit <= 0) {
-        return { summary: { info: { label: 'Bilgi', value: 'Maliyet ve masraflar düşüldüğünde kar elde edilmediği için vergi oluşmamıştır.' } } };
+        return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Maliyet ve masraflar düşüldüğünde kar elde edilmediği için vergi oluşmamıştır.' } } };
       }
       
       const taxableProfit = grossProfit - ISTISNA_2024;
 
        if (taxableProfit <= 0) {
         return { summary: { 
-            grossProfit: { label: 'Safi Değer Artışı (Kar)', value: formatCurrency(grossProfit) },
-            info: { label: 'Bilgi', value: `Kazancınız ${formatCurrency(ISTISNA_2024)} olan 2024 yılı istisna tutarının altında kaldığı için vergiye tabi değildir.` } 
+            grossProfit: { type: 'info', label: 'Safi Değer Artışı (Kar)', value: formatCurrency(grossProfit) },
+            info: { type: 'info', label: 'Bilgi', value: `Kazancınız ${formatCurrency(ISTISNA_2024)} olan 2024 yılı istisna tutarının altında kaldığı için vergiye tabi değildir.` } 
         } };
       }
       
       const incomeTax = calculateIncomeTax(taxableProfit);
 
       const summary: CalculationResult['summary'] = {
-        salePrice: { label: 'Satış Fiyatı', value: formatCurrency(salePrice) },
-        totalCost: { label: 'Toplam Maliyet (Alış + Masraflar)', value: formatCurrency(purchasePrice + expenses) },
-        grossProfit: { label: 'Safi Değer Artışı (Kar)', value: formatCurrency(grossProfit) },
-        exemption: { label: '2024 Yılı İstisna Tutarı', value: formatCurrency(ISTISNA_2024) },
-        taxableProfit: { label: 'Vergiye Tabi Matrah', value: formatCurrency(taxableProfit) },
-        incomeTax: { label: 'Hesaplanan Gelir Vergisi', value: formatCurrency(incomeTax.totalTax), isHighlighted: true },
+        salePrice: { type: 'info', label: 'Satış Fiyatı', value: formatCurrency(salePrice) },
+        totalCost: { type: 'info', label: 'Toplam Maliyet (Alış + Masraflar)', value: formatCurrency(purchasePrice + expenses) },
+        grossProfit: { type: 'info', label: 'Safi Değer Artışı (Kar)', value: formatCurrency(grossProfit) },
+        exemption: { type: 'info', label: '2024 Yılı İstisna Tutarı', value: formatCurrency(ISTISNA_2024) },
+        taxableProfit: { type: 'info', label: 'Vergiye Tabi Matrah', value: formatCurrency(taxableProfit) },
+        incomeTax: { type: 'result', label: 'Hesaplanan Gelir Vergisi', value: formatCurrency(incomeTax.totalTax), isHighlighted: true },
       };
       
       const table: CalculationResult['table'] = {

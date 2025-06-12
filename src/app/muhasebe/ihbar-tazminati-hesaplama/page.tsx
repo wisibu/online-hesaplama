@@ -29,10 +29,10 @@ const pageConfig = {
       const additionalPayments = Number(inputs.additionalPayments || 0);
 
       if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate > endDate) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli başlangıç ve bitiş tarihleri girin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli başlangıç ve bitiş tarihleri girin.' } } };
       }
       if (isNaN(grossSalary) || grossSalary <= 0) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir brüt maaş girin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir brüt maaş girin.' } } };
       }
       
       const serviceInMs = endDate.getTime() - startDate.getTime();
@@ -63,14 +63,14 @@ const pageConfig = {
       const netSeverancePay = grossSeverancePay - totalDeductions;
 
       const summary: CalculationResult['summary'] = {
-        serviceDuration: { label: 'Hizmet Süresi', value: `${Math.floor(serviceInYears)} yıl ${Math.floor((serviceInYears % 1) * 12)} ay` },
-        noticePeriod: { label: 'İhbar Süresi', value: `${noticePeriodWeeks} Hafta (${noticePeriodDays} Gün)` },
-        totalGrossPay: { label: 'Giydirilmiş Brüt Ücret', value: formatCurrency(totalGrossPay) },
-        grossSeverance: { label: 'Brüt İhbar Tazminatı', value: formatCurrency(grossSeverancePay) },
-        stampDuty: { label: 'Damga Vergisi Kesintisi', value: formatCurrency(stampDuty) },
-        incomeTax: { label: 'Gelir Vergisi Kesintisi', value: formatCurrency(incomeTax) },
-        totalDeductions: { label: 'Toplam Kesinti', value: formatCurrency(totalDeductions) },
-        netSeverance: { label: 'Net İhbar Tazminatı', value: formatCurrency(netSeverancePay), isHighlighted: true },
+        netSeverance: { type: 'result', label: 'Net İhbar Tazminatı', value: formatCurrency(netSeverancePay), isHighlighted: true },
+        serviceDuration: { type: 'info', label: 'Hizmet Süresi', value: `${Math.floor(serviceInYears)} yıl ${Math.floor((serviceInYears % 1) * 12)} ay` },
+        noticePeriod: { type: 'info', label: 'İhbar Süresi', value: `${noticePeriodWeeks} Hafta (${noticePeriodDays} Gün)` },
+        totalGrossPay: { type: 'info', label: 'Giydirilmiş Brüt Ücret', value: formatCurrency(totalGrossPay) },
+        grossSeverance: { type: 'info', label: 'Brüt İhbar Tazminatı', value: formatCurrency(grossSeverancePay) },
+        stampDuty: { type: 'info', label: 'Damga Vergisi Kesintisi', value: formatCurrency(stampDuty) },
+        incomeTax: { type: 'info', label: 'Gelir Vergisi Kesintisi', value: formatCurrency(incomeTax) },
+        totalDeductions: { type: 'info', label: 'Toplam Kesinti', value: formatCurrency(totalDeductions) },
       };
 
       return { summary };

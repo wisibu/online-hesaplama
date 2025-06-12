@@ -40,12 +40,12 @@ const KpssClient = () => {
         { id: 'gk_yanlis', label: 'Genel Kültür Yanlış', type: 'number', placeholder: '5' },
     ];
 
-    const calculate = async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    const calculate = async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         const { level, gy_dogru, gy_yanlis, gk_dogru, gk_yanlis } = inputs;
         const levelKey = level as keyof typeof KPSS_CONSTANTS;
 
         if ( (Number(gy_dogru) + Number(gy_yanlis) > 60) || (Number(gk_dogru) + Number(gk_yanlis) > 60) ) {
-            return { summary: { error: { label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 60\'ı geçemez.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 60\'ı geçemez.' } } };
         }
 
         const gyNet = Number(gy_dogru) - (Number(gy_yanlis) / 4);
@@ -59,13 +59,14 @@ const KpssClient = () => {
         Object.entries(levelConstants).forEach(([puanTuru, katsayilar]) => {
             const puan = (katsayilar.gy * gyNet) + (katsayilar.gk * gkNet) + katsayilar.base;
             summary[puanTuru] = {
+                type: 'result',
                 label: `KPSS ${puanTuru} Puanı`,
                 value: formatNumber(puan, 3),
                 isHighlighted: puanTuru === 'P3' || puanTuru === 'P93' || puanTuru === 'P94'
             };
         });
         
-        summary.nets = {label: "Netler (GY / GK)", value: `${formatNumber(gyNet, 2)} / ${formatNumber(gkNet, 2)}`};
+        summary.nets = { type: 'info', label: "Netler (GY / GK)", value: `${formatNumber(gyNet, 2)} / ${formatNumber(gkNet, 2)}`};
 
         return { summary };
     };

@@ -44,16 +44,18 @@ const pageConfig = {
         defaultValue: new Date().getFullYear().toString()
       },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
-        const { amount, baseYear, targetYear } = inputs as { amount: number, baseYear: number, targetYear: number };
+        const amount = Number(inputs.amount);
+        const baseYear = Number(inputs.baseYear);
+        const targetYear = Number(inputs.targetYear);
 
         if (!amount || amount <= 0 || !baseYear || !targetYear) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doldurun.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doldurun.' } } };
         }
         if (targetYear <= baseYear) {
-            return { summary: { error: { label: 'Hata', value: 'Değerlenecek yıl, esas yıldan büyük olmalıdır.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Değerlenecek yıl, esas yıldan büyük olmalıdır.' } } };
         }
 
         let currentValue = amount;
@@ -66,15 +68,15 @@ const pageConfig = {
                 currentValue *= (1 + rate);
                 appliedRates += `${year} yılı için uygulanan oran (%${(rate * 100).toFixed(2)})<br/>`;
             } else {
-                 return { summary: { error: { label: 'Hata', value: `${rateAnnouncedIn} yılı için yeniden değerleme oranı bulunamadı.` } } };
+                 return { summary: { error: { type: 'error', label: 'Hata', value: `${rateAnnouncedIn} yılı için yeniden değerleme oranı bulunamadı.` } } };
             }
         }
 
-        const summary = {
-            originalAmount: { label: `${baseYear} Yılı Değeri`, value: formatCurrency(amount) },
-            revaluedAmount: { label: `${targetYear} Yılı Değeri`, value: formatCurrency(currentValue) },
-            totalIncrease: { label: 'Toplam Artış', value: formatCurrency(currentValue - amount) },
-            increaseRate: { label: 'Kümülatif Artış Oranı', value: `%${(((currentValue / amount) - 1) * 100).toFixed(2)}` },
+        const summary: CalculationResult['summary'] = {
+            revaluedAmount: { type: 'result', label: `${targetYear} Yılı Değeri`, value: formatCurrency(currentValue), isHighlighted: true },
+            originalAmount: { type: 'info', label: `${baseYear} Yılı Değeri`, value: formatCurrency(amount) },
+            totalIncrease: { type: 'info', label: 'Toplam Artış', value: formatCurrency(currentValue - amount) },
+            increaseRate: { type: 'info', label: 'Kümülatif Artış Oranı', value: `%${(((currentValue / amount) - 1) * 100).toFixed(2)}` },
         };
           
         return { summary };

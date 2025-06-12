@@ -36,15 +36,15 @@ const pageConfig = {
       { id: 'boy', label: 'Boy (cm)', type: 'number', placeholder: '175' },
       { id: 'bel', label: 'Bel Çevresi (cm)', type: 'number', placeholder: '85', note: 'Göbek deliği hizasından ölçün.' },
       { id: 'boyun', label: 'Boyun Çevresi (cm)', type: 'number', placeholder: '40', note: 'Adem elmasının altından ölçün.' },
-      { id: 'kalca', label: 'Kalça Çevresi (cm)', type: 'number', placeholder: '95', displayCondition: (inputs) => inputs.cinsiyet === 'kadin', note: 'En geniş noktadan ölçün.' },
+      { id: 'kalca', label: 'Kalça Çevresi (cm)', type: 'number', placeholder: '95', displayCondition: { field: 'cinsiyet', value: 'kadin' }, note: 'En geniş noktadan ölçün.' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { cinsiyet, boy, bel, boyun, kalca } = inputs as { cinsiyet: 'kadin' | 'erkek', boy: number, bel: number, boyun: number, kalca?: number };
 
         if (!boy || !bel || !boyun || boy <= 0 || bel <= 0 || boyun <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen boy, bel ve boyun için geçerli değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen boy, bel ve boyun için geçerli değerler girin.' } } };
         }
         
         let fatPercentage = 0;
@@ -53,20 +53,20 @@ const pageConfig = {
             fatPercentage = 495 / (1.0324 - 0.19077 * Math.log10(bel - boyun) + 0.15456 * Math.log10(boy)) - 450;
         } else {
             if (!kalca || kalca <= 0) {
-                return { summary: { error: { label: 'Hata', value: 'Lütfen kalça çevresi için geçerli bir değer girin.' } } };
+                return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen kalça çevresi için geçerli bir değer girin.' } } };
             }
             fatPercentage = 495 / (1.29579 - 0.35004 * Math.log10(bel + kalca - boyun) + 0.22100 * Math.log10(boy)) - 450;
         }
         
         if (fatPercentage < 2 || fatPercentage > 50) {
-             return { summary: { error: { label: 'Hata', value: 'Girdiğiniz ölçümlerle geçerli bir sonuç hesaplanamadı. Lütfen ölçümlerinizi kontrol edin.' } } };
+             return { summary: { error: { type: 'error', label: 'Hata', value: 'Girdiğiniz ölçümlerle geçerli bir sonuç hesaplanamadı. Lütfen ölçümlerinizi kontrol edin.' } } };
         }
 
         const { category, color } = getBodyFatCategory(fatPercentage, cinsiyet);
 
         const summary: CalculationResult['summary'] = {
-            fatPercentage: { label: 'Vücut Yağ Oranınız', value: `% ${formatNumber(fatPercentage, 1)}`, isHighlighted: true },
-            category: { label: 'Sağlık Kategorisi', value: category, className: color },
+            fatPercentage: { type: 'result', label: 'Vücut Yağ Oranınız', value: `% ${formatNumber(fatPercentage, 1)}`, isHighlighted: true },
+            category: { type: 'info', label: 'Sağlık Kategorisi', value: category, className: color },
         };
           
         return { summary, disclaimer: "Bu hesaplama bir tahmin yöntemidir ve tıbbi bir teşhis yerine geçmez. Kesin sonuçlar için DEXA gibi profesyonel yöntemler kullanılır." };

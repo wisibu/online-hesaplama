@@ -20,12 +20,12 @@ const TusClient = () => {
         { id: 'klinik_yanlis', label: 'Klinik Bilimler Yanlış', type: 'number', placeholder: '15' },
     ];
 
-    const calculate = async (inputs: { [key: string]: any }): Promise<CalculationResult | null> => {
+    const calculate = async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         const { temel_dogru, temel_yanlis, klinik_dogru, klinik_yanlis } = inputs;
         
         // Her test 120 sorudan oluşur
         if ( (Number(temel_dogru) + Number(temel_yanlis) > 120) || (Number(klinik_dogru) + Number(klinik_yanlis) > 120) ) {
-            return { summary: { error: { label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 120\'yi geçemez.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Bir testteki doğru ve yanlış sayısı toplamı 120\'yi geçemez.' } } };
         }
 
         const temelNet = Number(temel_dogru) - (Number(temel_yanlis) / 4);
@@ -38,11 +38,11 @@ const TusClient = () => {
         };
         
         const summary: CalculationResult['summary'] = {
-            klinikPuan: { label: 'Klinik Tıp Puanı', value: formatNumber(puanlar.klinikPuan, 2), isHighlighted: true },
-            temelPuan: { label: 'Temel Tıp Puanı', value: formatNumber(puanlar.temelPuan, 2), isHighlighted: true },
-            agirlikliPuan: { label: 'Ağırlıklı Klinik Puan', value: formatNumber(puanlar.agirlikliPuan, 2) },
-            status: { label: 'Durum (45 Puan Barajı)', value: puanlar.klinikPuan >= PASSING_SCORE && puanlar.temelPuan >= PASSING_SCORE ? 'Başarılı ✅' : 'Başarısız ❌' },
-            nets: { label: 'Netler (Temel / Klinik)', value: `${formatNumber(temelNet, 2)} / ${formatNumber(klinikNet, 2)}` },
+            klinikPuan: { type: 'result', label: 'Klinik Tıp Puanı', value: formatNumber(puanlar.klinikPuan, 2), isHighlighted: true },
+            temelPuan: { type: 'result', label: 'Temel Tıp Puanı', value: formatNumber(puanlar.temelPuan, 2), isHighlighted: true },
+            agirlikliPuan: { type: 'info', label: 'Ağırlıklı Klinik Puan', value: formatNumber(puanlar.agirlikliPuan, 2) },
+            status: { type: 'info', label: 'Durum (45 Puan Barajı)', value: puanlar.klinikPuan >= PASSING_SCORE && puanlar.temelPuan >= PASSING_SCORE ? 'Başarılı ✅' : 'Başarısız ❌' },
+            nets: { type: 'info', label: 'Netler (Temel / Klinik)', value: `${formatNumber(temelNet, 2)} / ${formatNumber(klinikNet, 2)}` },
         };
         
         return { summary };

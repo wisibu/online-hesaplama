@@ -28,24 +28,24 @@ const PolislikClient = () => {
         return puanlama[enYakinSaniye] || 0;
     }
 
-    const calculate = async (inputs: { [key: string]: any }): Promise<CalculationResult | null> => {
+    const calculate = async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         const { sinavTuru, kpssPuani, parkurSaniyesi, mulakatPuani, cinsiyet } = inputs;
         const typeKey = sinavTuru as keyof typeof YERLESTIRME_KATSAYILARI;
         
         const katsayilar = YERLESTIRME_KATSAYILARI[typeKey];
         if (!katsayilar) return null;
 
-        const parkurPuani = getParkurPuani(Number(parkurSaniyesi), cinsiyet);
+        const parkurPuani = getParkurPuani(Number(parkurSaniyesi), cinsiyet as 'ERKEK' | 'KADIN');
         
         const yerlestirmePuani = (Number(kpssPuani) * katsayilar.kpss) + (Number(mulakatPuani) * katsayilar.mulakat) + (parkurPuani * katsayilar.parkur);
 
         const kpssLabel = sinavTuru === 'PMYO' ? 'TYT' : 'KPSS P3';
 
         const summary: CalculationResult['summary'] = {
-            yerlestirmePuani: { label: `${typeKey} Yerleştirme Puanı`, value: formatNumber(yerlestirmePuani, 3), isHighlighted: true },
-            parkurPuani: { label: 'Fiziki Yeterlilik Puanı', value: formatNumber(parkurPuani) },
-            kpssKatkisi: { label: `${kpssLabel} Katkısı (%${katsayilar.kpss*100})`, value: formatNumber(Number(kpssPuani) * katsayilar.kpss, 3) },
-            mulakatKatkisi: { label: `Mülakat Katkısı (%${katsayilar.mulakat*100})`, value: formatNumber(Number(mulakatPuani) * katsayilar.mulakat, 3) },
+            yerlestirmePuani: { type: 'result', label: `${typeKey} Yerleştirme Puanı`, value: formatNumber(yerlestirmePuani, 3), isHighlighted: true },
+            parkurPuani: { type: 'info', label: 'Fiziki Yeterlilik Puanı', value: formatNumber(parkurPuani) },
+            kpssKatkisi: { type: 'info', label: `${kpssLabel} Katkısı (%${katsayilar.kpss*100})`, value: formatNumber(Number(kpssPuani) * katsayilar.kpss, 3) },
+            mulakatKatkisi: { type: 'info', label: `Mülakat Katkısı (%${katsayilar.mulakat*100})`, value: formatNumber(Number(mulakatPuani) * katsayilar.mulakat, 3) },
         };
         
         return { summary };

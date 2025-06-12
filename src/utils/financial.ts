@@ -8,8 +8,8 @@ import { formatCurrency } from './formatting';
  * @returns Aylık taksit, toplam geri ödeme, toplam faiz ve ödeme planını içeren bir nesne.
  */
 export const calculateLoanDetails = (principal: number, monthlyInterestRate: number, term: number) => {
-    // Aylık faizi ondalık formata çevir
-    const rate = monthlyInterestRate / 100;
+    // Gelen faiz oranı zaten ondalık formatta (örn: 0.035)
+    const rate = monthlyInterestRate;
 
     const monthlyPayment = (principal * rate) / (1 - Math.pow(1 + rate, -term));
     const totalPayment = monthlyPayment * term;

@@ -19,13 +19,13 @@ const pageConfig = {
       { id: 'belCevresi', label: 'Bel Çevresi (cm)', type: 'number', placeholder: '75' },
       { id: 'kalcaCevresi', label: 'Kalça Çevresi (cm)', type: 'number', placeholder: '95' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const { cinsiyet, belCevresi, kalcaCevresi } = inputs as { cinsiyet: 'kadin' | 'erkek', belCevresi: number, kalcaCevresi: number };
 
         if (!belCevresi || !kalcaCevresi || belCevresi <= 0 || kalcaCevresi <= 0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bel ve kalça çevresi değerleri girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bel ve kalça çevresi değerleri girin.' } } };
         }
 
         const oran = belCevresi / kalcaCevresi;
@@ -56,9 +56,9 @@ const pageConfig = {
             }
         }
         
-        const summary = {
-            oran: { label: 'Bel / Kalça Oranınız', value: formatNumber(oran, 2), isHighlighted: true },
-            risk: { label: 'Sağlık Riski Kategorisi', value: risk },
+        const summary: CalculationResult['summary'] = {
+            oran: { type: 'result', label: 'Bel / Kalça Oranınız', value: formatNumber(oran, 2), isHighlighted: true },
+            risk: { type: 'info', label: 'Sağlık Riski Kategorisi', value: risk, className: riskRenk },
         };
           
         return { summary, disclaimer: "Bu hesaplama genel bir göstergedir ve tek başına tıbbi bir teşhis aracı değildir. Sağlığınızla ilgili kesin bir değerlendirme için doktora danışın." };

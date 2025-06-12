@@ -38,7 +38,7 @@ const pageConfig = {
         const tevkifatR_str = tevkifatRate as string;
 
         if (isNaN(amount) || amount <= 0 || isNaN(kdvR) || kdvR <=0) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli tutar ve KDV oranı girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli tutar ve KDV oranı girin.' } } };
         }
         
         const [numerator, denominator] = tevkifatR_str.split('/').map(Number);
@@ -49,13 +49,13 @@ const pageConfig = {
         const saticiKdv = totalKdv - tevkifEdilenKdv; // Satıcının beyan edeceği (KDV-1)
         const toplamFatura = amount + totalKdv;
 
-        const summary = {
-            base: { label: 'KDV Hariç Tutar', value: formatCurrency(amount) },
-            totalKdv: { label: `Hesaplanan KDV (%${kdvR * 100})`, value: formatCurrency(totalKdv) },
-            tevkifatRate: { label: 'Tevkifat Oranı', value: `${numerator}/${denominator}` },
-            sellerKdv: { label: 'Satıcının Beyan Edeceği KDV', value: formatCurrency(saticiKdv) },
-            buyerKdv: { label: 'Alıcının Sorumlu Olduğu KDV (Tevkif Edilen)', value: formatCurrency(tevkifEdilenKdv), isHighlighted: true },
-            total: { label: 'Fatura Genel Toplamı', value: formatCurrency(toplamFatura) },
+        const summary: CalculationResult['summary'] = {
+            base: { type: 'info', label: 'KDV Hariç Tutar', value: formatCurrency(amount) },
+            totalKdv: { type: 'info', label: `Hesaplanan KDV (%${kdvR * 100})`, value: formatCurrency(totalKdv) },
+            tevkifatRate: { type: 'info', label: 'Tevkifat Oranı', value: `${numerator}/${denominator}` },
+            sellerKdv: { type: 'info', label: 'Satıcının Beyan Edeceği KDV', value: formatCurrency(saticiKdv) },
+            buyerKdv: { type: 'result', label: 'Alıcının Sorumlu Olduğu KDV (Tevkif Edilen)', value: formatCurrency(tevkifEdilenKdv), isHighlighted: true },
+            total: { type: 'result', label: 'Fatura Genel Toplamı', value: formatCurrency(toplamFatura) },
         };
           
         return { summary };

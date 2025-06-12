@@ -35,7 +35,7 @@ const pageConfig = {
       const startDate = new Date(insuranceStartDate as string);
       
       if (!birthDate || !insuranceStartDate || !premiumDays) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen tüm alanları doldurun.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doldurun.' } } };
       }
       
       const premium = Number(premiumDays);
@@ -67,11 +67,11 @@ const pageConfig = {
       const remainingPremiumDays = Math.max(0, requiredPremiumDays - premium);
       
       const summary: CalculationResult['summary'] = {
-        info: { label: 'Emeklilik Durumunuz', value: info },
-        requiredAge: { label: 'Gerekli Yaş Şartı', value: requiredAge > 0 ? `${requiredAge} yaş` : "Yaş Şartı Yok" },
-        requiredPremiumDays: { label: 'Gerekli Prim Günü', value: `${requiredPremiumDays} gün` },
-        currentPremiumDays: { label: 'Mevcut Prim Gününüz', value: `${premium} gün` },
-        remainingPremiumDays: { label: 'Eksik Prim Gününüz', value: `${remainingPremiumDays} gün`, isHighlighted: remainingPremiumDays > 0 },
+        remainingPremiumDays: { type: 'result', label: 'Eksik Prim Gününüz', value: `${remainingPremiumDays} gün`, isHighlighted: remainingPremiumDays > 0 },
+        info: { type: 'info', label: 'Emeklilik Durumunuz', value: info },
+        requiredAge: { type: 'info', label: 'Gerekli Yaş Şartı', value: requiredAge > 0 ? `${requiredAge} yaş` : "Yaş Şartı Yok" },
+        requiredPremiumDays: { type: 'info', label: 'Gerekli Prim Günü', value: `${requiredPremiumDays} gün` },
+        currentPremiumDays: { type: 'info', label: 'Mevcut Prim Gününüz', value: `${premium} gün` },
       };
 
       return { summary };

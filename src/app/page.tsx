@@ -17,10 +17,10 @@ import { navLinksData, createSlug } from '@/data/navLinks';
 // };
 
 const allCalculators = navLinksData.flatMap(category =>
-  category.items.map(item => ({
-    name: item.replace(/ Hesaplama$/, "").replace(/ Hesaplamaları$/, "").replace(/ Hesaplayıcı$/, ""),
+  category.links.map(link => ({
+    name: link.title.replace(/ Hesaplama$/, "").replace(/ Hesaplamaları$/, "").replace(/ Hesaplayıcı$/, ""),
     category: category.category,
-    href: `/${createSlug(category.category)}/${createSlug(item)}`
+    href: link.href
   }))
 );
 

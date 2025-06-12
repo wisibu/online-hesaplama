@@ -26,7 +26,7 @@ const pageConfig = {
       const avgGrossSalary = Number(inputs.avgGrossSalary);
 
       if (isNaN(avgGrossSalary) || avgGrossSalary <= 0) {
-        return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli bir ortalama brüt maaş girin.' } } };
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir ortalama brüt maaş girin.' } } };
       }
 
       let monthlyGrossKCO = avgGrossSalary * 0.60;
@@ -41,11 +41,11 @@ const pageConfig = {
       const netKCO = monthlyGrossKCO - stampDuty;
 
       const summary: CalculationResult['summary'] = {
-        avgGrossSalary: { label: 'Ortalama Brüt Kazanç', value: formatCurrency(avgGrossSalary) },
-        monthlyGrossKCO: { label: 'Aylık Brüt Kısa Çalışma Ödeneği', value: formatCurrency(monthlyGrossKCO) },
-        ...(isCapped && { capInfo: { label: 'Bilgi', value: `Ödenek, brüt asgari ücretin %150'si olan ${formatCurrency(KCO_TAVAN_TUTARI)} tavanını aşamaz.` } }),
-        stampDuty: { label: 'Damga Vergisi Kesintisi', value: formatCurrency(stampDuty) },
-        netKCO: { label: 'Aylık Net Kısa Çalışma Ödeneği', value: formatCurrency(netKCO), isHighlighted: true },
+        netKCO: { type: 'result', label: 'Aylık Net Kısa Çalışma Ödeneği', value: formatCurrency(netKCO), isHighlighted: true },
+        avgGrossSalary: { type: 'info', label: 'Ortalama Brüt Kazanç', value: formatCurrency(avgGrossSalary) },
+        monthlyGrossKCO: { type: 'info', label: 'Aylık Brüt Kısa Çalışma Ödeneği', value: formatCurrency(monthlyGrossKCO) },
+        ...(isCapped && { capInfo: { type: 'info', label: 'Bilgi', value: `Ödenek, brüt asgari ücretin %150'si olan ${formatCurrency(KCO_TAVAN_TUTARI)} tavanını aşamaz.` } }),
+        stampDuty: { type: 'info', label: 'Damga Vergisi Kesintisi', value: formatCurrency(stampDuty) },
       };
 
       return { summary };
@@ -69,7 +69,7 @@ const pageConfig = {
       },
       {
         question: "Ödenek nasıl hesaplanır?",
-        answer: "Günlük kısa çalışma ödeneği; sigortalının son on iki aylık prime esas kazançları dikkate alınarak hesaplanan günlük ortalama brüt kazancının %60’ıdır. Bu şekilde hesaplanan kısa çalışma ödeneği miktarı, aylık asgari ücretin brüt tutarının %150’sini geçemez."
+        answer: "Günlük kısa çalışma ödeneği; sigortalının son on iki aylık prime esas kazançları dikkate alınarak hesaplanan günlük ortalama brüt kazancının %60'ıdır. Bu şekilde hesaplanan kısa çalışma ödeneği miktarı, aylık asgari ücretin brüt tutarının %150'sini geçemez."
       },
       {
         question: "KÇÖ'den vergi kesilir mi?",

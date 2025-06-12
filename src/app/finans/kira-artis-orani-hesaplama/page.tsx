@@ -18,7 +18,7 @@ const pageConfig = {
       { id: 'currentRent', label: 'Mevcut Kira Bedeli (₺)', type: 'number', placeholder: '10000' },
       { id: 'tufeRate', label: '12 Aylık TÜFE Ortalaması (%)', type: 'number', placeholder: 'Örn: 59.64' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const currentRent = Number(inputs.currentRent);
       const tufeRate = Number(inputs.tufeRate) / 100;
@@ -34,11 +34,11 @@ const pageConfig = {
       const twentyFivePercentIncrease = currentRent * 0.25;
       const newRentWithCap = currentRent + twentyFivePercentIncrease;
 
-      const summary = {
-        increaseAmount: { label: 'Kira Artış Tutarı (TÜFE)', value: formatCurrency(rentIncreaseAmount) },
-        newRent: { label: 'Yeni Kira Tutarı (TÜFE)', value: formatCurrency(newRent) },
-        increaseAmountCapped: { label: 'Kira Artış Tutarı (%25 Yasal Sınır)', value: formatCurrency(twentyFivePercentIncrease) },
-        newRentCapped: { label: 'Yeni Kira Tutarı (%25 Yasal Sınır)', value: formatCurrency(newRentWithCap) },
+      const summary: CalculationResult['summary'] = {
+        newRentCapped: { type: 'result', label: 'Yeni Kira Tutarı (%25 Yasal Sınır)', value: formatCurrency(newRentWithCap), isHighlighted: true },
+        increaseAmountCapped: { type: 'info', label: 'Kira Artış Tutarı (%25 Yasal Sınır)', value: formatCurrency(twentyFivePercentIncrease) },
+        newRent: { type: 'result', label: 'Yeni Kira Tutarı (TÜFE)', value: formatCurrency(newRent) },
+        increaseAmount: { type: 'info', label: 'Kira Artış Tutarı (TÜFE)', value: formatCurrency(rentIncreaseAmount) },
       };
 
       return { summary };

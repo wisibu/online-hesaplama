@@ -18,13 +18,13 @@ const pageConfig = {
       { id: 'temel_dogru', label: 'Temel Beceriler Doğru (80 Soru)', type: 'number', placeholder: '60' },
       { id: 'temel_yanlis', label: 'Temel Beceriler Yanlış', type: 'number', placeholder: '15' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       
       const { temel_dogru, temel_yanlis } = inputs;
       
       if ( (Number(temel_dogru) + Number(temel_yanlis) > 80) ) {
-          return { summary: { error: { label: 'Hata', value: 'Temel Beceriler testindeki soru sayısını (80) aştınız.' } } };
+          return { summary: { error: { type: 'error', label: 'Hata', value: 'Temel Beceriler testindeki soru sayısını (80) aştınız.' } } };
       }
 
       const temelNet = Number(temel_dogru) - (Number(temel_yanlis) / 4);
@@ -33,9 +33,9 @@ const pageConfig = {
       // Genellikle 500 üzerinden veya 100 üzerinden değerlendirme yapılır. Biz 100'lük sistemi baz alalım.
       const puan = (temelNet / 80) * 100;
 
-      const summary = {
-        puan: { label: 'Tahmini YÖS Puanı (100 üzerinden)', value: formatNumber(puan, 2), isHighlighted: true },
-        temelNet: { label: 'Temel Beceriler Neti', value: formatNumber(temelNet, 2) },
+      const summary: CalculationResult['summary'] = {
+        puan: { type: 'result', label: 'Tahmini YÖS Puanı (100 üzerinden)', value: formatNumber(puan, 2), isHighlighted: true },
+        temelNet: { type: 'info', label: 'Temel Beceriler Neti', value: formatNumber(temelNet, 2) },
       };
         
       return { summary };

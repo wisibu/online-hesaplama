@@ -19,7 +19,7 @@ const pageConfig = {
       { id: 'cashFlows', label: 'Nakit Akışları (Yıllık, virgülle ayırın)', type: 'text', placeholder: '20000, 30000, 40000, 50000' },
       { id: 'discountRate', label: 'İskonto Oranı (%)', type: 'number', placeholder: '10' },
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
       const initialInvestment = Number(inputs.initialInvestment);
       const cashFlowsRaw = String(inputs.cashFlows);
@@ -52,9 +52,9 @@ const pageConfig = {
         ]);
       });
 
-      const summary = {
-        npv: { label: 'Net Bugünkü Değer (NBD)', value: formatCurrency(npv) },
-        decision: { label: 'Yatırım Kararı', value: npv > 0 ? 'Kabul Edilebilir' : 'Kabul Edilemez' },
+      const summary: CalculationResult['summary'] = {
+        npv: { type: 'result', label: 'Net Bugünkü Değer (NBD)', value: formatCurrency(npv), isHighlighted: true },
+        decision: { type: 'result', label: 'Yatırım Kararı', value: npv > 0 ? 'Kabul Edilebilir ✅' : 'Kabul Edilemez ❌' },
       };
       
       const table = {

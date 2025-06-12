@@ -21,7 +21,7 @@ const pageConfig = {
       { id: 'rate', label: 'Aylık Gecikme Zammı Oranı (%)', type: 'number', placeholder: '4.5' },
 
     ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number }): Promise<CalculationResult | null> => {
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
         'use server';
         
         const principal = Number(inputs.principal);
@@ -30,10 +30,10 @@ const pageConfig = {
         const monthlyRate = Number(inputs.rate) / 100;
 
         if (isNaN(principal) || principal <= 0 || isNaN(dueDate.getTime()) || isNaN(paymentDate.getTime())) {
-            return { summary: { error: { label: 'Hata', value: 'Lütfen geçerli değerler girin.' } } };
+            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli değerler girin.' } } };
         }
         if (paymentDate <= dueDate) {
-            return { summary: { info: { label: 'Bilgi', value: 'Ödeme tarihi vade tarihinden sonra olmalıdır. Gecikme zammı hesaplanmadı.' } } };
+            return { summary: { info: { type: 'info', label: 'Bilgi', value: 'Ödeme tarihi vade tarihinden sonra olmalıdır. Gecikme zammı hesaplanmadı.' } } };
         }
 
         let totalInterest = 0;
@@ -56,10 +56,10 @@ const pageConfig = {
 
         const totalPayment = principal + totalInterest;
 
-        const summary = {
-            principal: { label: 'Borç Anapara', value: formatCurrency(principal) },
-            interest: { label: 'Hesaplanan Gecikme Zammı', value: formatCurrency(totalInterest) },
-            total: { label: 'Toplam Ödenecek Tutar', value: formatCurrency(totalPayment) },
+        const summary: CalculationResult['summary'] = {
+            principal: { type: 'info', label: 'Borç Anapara', value: formatCurrency(principal) },
+            interest: { type: 'info', label: 'Hesaplanan Gecikme Zammı', value: formatCurrency(totalInterest) },
+            total: { type: 'result', label: 'Toplam Ödenecek Tutar', value: formatCurrency(totalPayment), isHighlighted: true },
         };
           
         return { summary };
