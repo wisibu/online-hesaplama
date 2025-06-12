@@ -3,108 +3,164 @@
     "category": "Kredi",
     "iconName": "FaCreditCard",
     "links": [
-        { "href": "/kredi/ihtiyac-kredisi-hesaplama", "title": "İhtiyaç Kredisi Hesaplama", "description": "İhtiyaç kredisi faiz oranlarına göre aylık taksit ve toplam geri ödeme tutarını hesaplayın.", "iconName": "FaCreditCard" },
-        { "href": "/kredi/konut-kredisi-hesaplama", "title": "Konut Kredisi Hesaplama", "description": "Konut kredisi faiz oranlarına göre aylık taksit ve toplam geri ödeme tutarını hesaplayın.", "iconName": "FaCreditCard" },
-        { "href": "/kredi/tasit-kredisi-hesaplama", "title": "Taşıt Kredisi Hesaplama", "description": "Taşıt kredisi faiz oranlarına göre aylık taksit ve toplam geri ödeme tutarını hesaplayın.", "iconName": "FaCreditCard" },
-        { "href": "/kredi/ticari-kredi-hesaplama", "title": "Ticari Kredi Hesaplama", "description": "Ticari kredi faiz oranlarına göre aylık taksit ve toplam geri ödeme tutarını hesaplayın.", "iconName": "FaCreditCard" },
-        { "href": "/kredi/kredi-yapilandirma-hesaplama", "title": "Kredi Yapılandırma Hesaplama", "description": "Kredi yapılandırma faiz oranlarına göre aylık taksit ve toplam geri ödeme tutarını hesaplayın.", "iconName": "FaCreditCard" },
-        { "href": "/kredi/ne-kadar-kredi-alabilirim-hesaplama", "title": "Ne Kadar Kredi Alabilirim Hesaplama", "description": "Ne kadar kredi alabileceğinizi hesaplayın.", "iconName": "FaCreditCard" }
+      {
+        "href": "/kredi/ihtiyac-kredisi-hesaplama",
+        "title": "İhtiyaç Kredisi Hesaplama Aracı",
+        "description": "En uygun ihtiyaç kredisini bulun. Kredi tutarı, faiz oranı ve vade girerek aylık taksit, toplam geri ödeme ve faiz tutarını anında hesaplayın. Detaylı ödeme planınızı görün.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/is-yeri-kredisi-hesaplama",
+        "title": "İş Yeri Kredisi Hesaplama - Faiz Oranları & Taksitler | OnlineHesaplama",
+        "description": "İşletmeniz için en uygun iş yeri kredisini anında hesaplayın. 2024 güncel faiz oranlarıyla aylık taksit ve toplam geri ödeme tutarını öğrenin.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/konut-kredisi-hesaplama",
+        "title": "Konut Kredisi Hesaplama | Kredi Taksit & Faiz Oranları",
+        "description": "En uygun konut kredisi için taksit, faiz ve toplam geri ödeme tutarını hesaplayın. 10, 15, 20 yıl vade seçenekleriyle ev kredinizi planlayın.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/kredi-dosya-masrafi-hesaplama",
+        "title": "Kredi Dosya Masrafı Hesaplama (Binde 5) | OnlineHesaplama",
+        "description": "Kredi çekerken ödeyeceğiniz yasal maksimum dosya masrafını (binde 5) kolayca hesaplayın. Kredi tutarını girin, anında öğrenin.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/kredi-erken-kapatma-cezasi-hesaplama",
+        "title": "Kredi Erken Kapatma Cezası Hesaplama | OnlineHesaplama",
+        "description": "Kredinizi erken kapatmanız durumunda ödemeniz gereken yasal ceza tutarını ve toplam indirim miktarını kolayca hesaplayın.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/kredi-gecikme-faizi-hesaplama",
+        "title": "Kredi Gecikme Faizi Hesaplama | OnlineHesaplama",
+        "description": "Ödenmeyen kredi taksitleriniz için uygulanacak yasal gecikme faizi tutarını kolayca hesaplayın. Akdi faiz oranını girerek sonucu görün.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/kredi-karti-asgari-odeme-hesaplama",
+        "title": "Kredi Kartı Asgari Ödeme Hesaplama | OnlineHesaplama",
+        "description": "Kredi kartı dönem borcunuz için ödemeniz gereken yasal asgari ödeme tutarını limitinize ve borcunuza göre anında öğrenin.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/kredi-karti-asgari-odeme-tutari-hesaplama",
+        "title": "Kredi Kartı Asgari Ödeme Tutarı Hesaplama | OnlineHesaplama",
+        "description": "Kredi kartı dönem borcunuz için ödemeniz gereken yasal asgari ödeme tutarını güncel oranlara göre anında hesaplayın. Kart limitinize göre sonucu öğrenin.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/kredi-karti-islem-taksitlendirme-hesaplama",
+        "title": "Kredi Kartı İşlem Taksitlendirme Hesaplama | OnlineHesaplama",
+        "description": "Kredi kartınızla yaptığınız peşin alışverişleri sonradan nasıl taksitlendirebileceğinizi ve maliyetini anında hesaplayın. Aylık taksiti ve toplam geri ödemeyi görün.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/kredi-karti-taksitli-nakit-avans-hesaplama",
+        "title": "Taksitli Nakit Avans Hesaplama | OnlineHesaplama",
+        "description": "Kredi kartınızdan çekeceğiniz taksitli nakit avansın aylık taksitlerini, toplam geri ödeme tutarını ve faiz maliyetini anında hesaplayın.",
+        "iconName": "FaCreditCard"
+      },
+      {
+        "href": "/kredi/tasit-kredisi-hesaplama",
+        "title": "Taşıt Kredisi Hesaplama (Araba Kredisi) | OnlineHesaplama",
+        "description": "En uygun taşıt kredisini bulun. 0 ve 2. el araba kredisi için tutar, faiz ve vade girerek aylık taksit ve toplam ödeme planınızı anında görün.",
+        "iconName": "FaCreditCard"
+      }
     ]
   },
   {
     "category": "Muhasebe",
     "iconName": "FaFileInvoiceDollar",
     "links": [
-        { "href": "/muhasebe/brutten-nete-maas-hesaplama", "title": "Brütten Nete Maaş Hesaplama", "description": "Brüt maaşınızdan net maaşınızı hesaplayın.", "iconName": "FaPercent" },
-        { "href": "/muhasebe/netten-brute-maas-hesaplama", "title": "Netten Brüte Maaş Hesaplama", "description": "Net maaşınızdan brüt maaşınızı hesaplayın.", "iconName": "FaPercent" },
-        { "href": "/muhasebe/kidem-tazminati-hesaplama", "title": "Kıdem Tazminatı Hesaplama", "description": "İşten ayrılma durumunda hak ettiğiniz kıdem tazminatı tutarını hesaplayın.", "iconName": "FaGavel" },
-        { "href": "/muhasebe/ihbar-tazminati-hesaplama", "title": "İhbar Tazminatı Hesaplama", "description": "İşten ayrılma durumunda hak ettiğiniz ihbar tazminatı tutarını hesaplayın.", "iconName": "FaGavel" },
-        { "href": "/muhasebe/fazla-mesai-ucreti-hesaplama", "title": "Fazla Mesai Ücreti Hesaplama", "description": "Fazla mesai ücretinizi hesaplayın.", "iconName": "FaPercent" },
-        { "href": "/muhasebe/yillik-izin-ucreti-hesaplama", "title": "Yıllık İzin Ücreti Hesaplama", "description": "Yıllık izin ücretinizi hesaplayın.", "iconName": "FaPercent" }
+      {
+        "href": "/muhasebe/agi-nedir",
+        "title": "Asgari Geçim İndirimi (AGİ) Nedir? (Kaldırıldı) | OnlineHesaplama",
+        "description": "Asgari Geçim İndirimi (AGİ) nedir, neden ve ne zaman kaldırıldı? 2022 öncesi AGİ hesaplaması ve mevcut durum hakkında tüm bilgiler.",
+        "iconName": "FaFileInvoiceDollar"
+      },
+      {
+        "href": "/muhasebe/emeklilik-hesaplama-ne-zaman-emekli-olurum",
+        "title": "Ne Zaman Emekli Olurum? | e-Devlet SGK Emeklilik Hesaplama",
+        "description": "Emeklilik tarihinizi en doğru şekilde öğrenin. SGK",
+        "iconName": "FaFileInvoiceDollar"
+      }
     ]
   },
   {
-      "category": "Otomobil",
-      "iconName": "FaCar",
-      "links": [
-          { "href": "/otomobil/yakit-tuketimi-hesaplama", "title": "Yakıt Tüketimi Hesaplama", "description": "Yakıt tüketiminizi hesaplayın.", "iconName": "FaCar" },
-          { "href": "/otomobil/yolculuk-suresi-hesaplama", "title": "Yolculuk Süresi Hesaplama", "description": "Yolculuk sürenizi hesaplayın.", "iconName": "FaCar" },
-          { "href": "/otomobil/aylik-arac-kredisi-hesaplama", "title": "Aylık Araç Kredisi Hesaplama", "description": "Aylık araç kredinizi hesaplayın.", "iconName": "FaCar" }
-      ]
+    "category": "Otomobil",
+    "iconName": "FaCar",
+    "links": []
   },
   {
-      "category": "Vergi",
-      "iconName": "FaPercentage",
-      "links": [
-          { "href": "/vergi/kdv-hesaplama", "title": "KDV Hesaplama", "description": "KDV hesaplayın.", "iconName": "FaPercentage" },
-          { "href": "/vergi/gelir-vergisi-hesaplama", "title": "Gelir Vergisi Hesaplama", "description": "Gelir verginizi hesaplayın.", "iconName": "FaPercentage" },
-          { "href": "/vergi/emlak-vergisi-hesaplama", "title": "Emlak Vergisi Hesaplama", "description": "Emlak verginizi hesaplayın.", "iconName": "FaPercentage" },
-          { "href": "/vergi/mtv-hesaplama", "title": "MTV Hesaplama", "description": "MTV hesaplayın.", "iconName": "FaPercentage" },
-          { "href": "/vergi/otv-hesaplama", "title": "ÖTV Hesaplama", "description": "ÖTV hesaplayın.", "iconName": "FaPercentage" },
-          { "href": "/vergi/damga-vergisi-hesaplama", "title": "Damga Vergisi Hesaplama", "description": "Damga verginizi hesaplayın.", "iconName": "FaPercentage" }
-      ]
+    "category": "Vergi",
+    "iconName": "FaPercentage",
+    "links": []
   },
   {
-      "category": "Yatırım",
-      "iconName": "FaChartLine",
-      "links": [
-          { "href": "/yatirim/bilesik-faiz-hesaplama", "title": "Bileşik Faiz Hesaplama", "description": "Bileşik faiz hesaplayın.", "iconName": "FaChartLine" },
-          { "href": "/yatirim/basit-faiz-hesaplama", "title": "Basit Faiz Hesaplama", "description": "Basit faiz hesaplayın.", "iconName": "FaChartLine" }
-      ]
+    "category": "Yatırım",
+    "iconName": "FaChartLine",
+    "links": []
   },
   {
-      "category": "Finans",
-      "iconName": "FaLandmark",
-      "links": [
-          { "href": "/finans/enflasyon-hesaplama", "title": "Enflasyon Hesaplama", "description": "Enflasyon hesaplayın.", "iconName": "FaLandmark" },
-          { "href": "/finans/repo-hesaplama", "title": "Repo Hesaplama", "description": "Repo hesaplayın.", "iconName": "FaLandmark" },
-          { "href": "/finans/bono-hesaplama", "title": "Bono Hesaplama", "description": "Bono hesaplayın.", "iconName": "FaLandmark" },
-          { "href": "/finans/doviz-hesaplama", "title": "Döviz Hesaplama", "description": "Döviz hesaplayın.", "iconName": "FaLandmark" },
-          { "href": "/finans/altin-hesaplama", "title": "Altın Hesaplama", "description": "Altın hesaplayın.", "iconName": "FaLandmark" }
-      ]
+    "category": "Finans",
+    "iconName": "FaLandmark",
+    "links": [
+      {
+        "href": "/finans/gecmis-altin-fiyatlari-hesaplama",
+        "title": "Geçmiş Altın Fiyatları ve Arşivi | OnlineHesaplama",
+        "description": "Geçmişe dönük gram, çeyrek, cumhuriyet altını ve diğer altın türlerinin fiyatlarını güvenilir kaynaklardan nasıl bulacağınızı öğrenin.",
+        "iconName": "FaLandmark"
+      }
+    ]
   },
   {
-      "category": "Matematik",
-      "iconName": "FaCalculator",
-      "links": [
-          { "href": "/matematik/yuzde-hesaplama", "title": "Yüzde Hesaplama", "description": "Yüzde hesaplayın.", "iconName": "FaCalculator" },
-          { "href": "/matematik/oran-hesaplama", "title": "Oran Hesaplama", "description": "Oran hesaplayın.", "iconName": "FaCalculator" },
-          { "href": "/matematik/faktoriyel-hesaplama", "title": "Faktöriyel Hesaplama", "description": "Faktöriyel hesaplayın.", "iconName": "FaCalculator" },
-          { "href": "/matematik/permutasyon-hesaplama", "title": "Permütasyon Hesaplama", "description": "Permütasyon hesaplayın.", "iconName": "FaCalculator" },
-          { "href": "/matematik/kombinasyon-hesaplama", "title": "Kombinasyon Hesaplama", "description": "Kombinasyon hesaplayın.", "iconName": "FaCalculator" }
-      ]
+    "category": "Matematik",
+    "iconName": "FaCalculator",
+    "links": [
+      {
+        "href": "/matematik/metrekare-hesaplama",
+        "title": "Metrekare (m²) Hesaplama | Alan Hesaplayıcı",
+        "description": "Dikdörtgen, daire ve üçgen gibi farklı geometrik şekillerin alanını metrekare (m²) cinsinden kolayca hesaplayın. Pratik alan hesaplama aracı.",
+        "iconName": "FaCalculator"
+      }
+    ]
   },
   {
-      "category": "Eğitim",
-      "iconName": "FaUniversity",
-      "links": [
-          { "href": "/egitim/lise-ortalama-hesaplama", "title": "Lise Ortalama Hesaplama", "description": "Lise ortalamanızı hesaplayın.", "iconName": "FaUniversity" },
-          { "href": "/egitim/takdir-tesekkur-hesaplama", "title": "Takdir Teşekkür Hesaplama", "description": "Takdir teşekkür hesaplayın.", "iconName": "FaUniversity" },
-          { "href": "/egitim/universite-not-ortalamasi-hesaplama", "title": "Üniversite Not Ortalaması Hesaplama", "description": "Üniversite not ortalamanızı hesaplayın.", "iconName": "FaUniversity" }
-      ]
+    "category": "Eğitim",
+    "iconName": "FaUniversity",
+    "links": [
+      {
+        "href": "/egitim/e-okul-not-hesaplama",
+        "title": "e-Okul Not Ortalaması Hesaplama | OnlineHesaplama",
+        "description": "e-Okul sistemiyle uyumlu, yazılı ve performans notlarınızı girerek ders notu ortalamanızı kolayca hesaplayın. Lise ve ortaokul için uygundur.",
+        "iconName": "FaUniversity"
+      }
+    ]
   },
   {
-      "category": "Sınav",
-      "iconName": "FaGraduationCap",
-      "links": [
-          { "href": "/sinav/lgs-puan-hesaplama", "title": "LGS Puan Hesaplama", "description": "LGS puanınızı hesaplayın.", "iconName": "FaGraduationCap" },
-          { "href": "/sinav/ayt-puan-hesaplama", "title": "AYT Puan Hesaplama", "description": "AYT puanınızı hesaplayın.", "iconName": "FaGraduationCap" },
-          { "href": "/sinav/kpss-puan-hesaplama", "title": "KPSS Puan Hesaplama", "description": "KPSS puanınızı hesaplayın.", "iconName": "FaGraduationCap" },
-          { "href": "/sinav/ales-puan-hesaplama", "title": "ALES Puan Hesaplama", "description": "ALES puanınızı hesaplayın.", "iconName": "FaGraduationCap" },
-          { "href": "/sinav/dgs-puan-hesaplama", "title": "DGS Puan Hesaplama", "description": "DGS puanınızı hesaplayın.", "iconName": "FaGraduationCap" }
-      ]
+    "category": "Sınav",
+    "iconName": "FaGraduationCap",
+    "links": []
   },
   {
-      "category": "Sağlık",
-      "iconName": "FaHeartbeat",
-      "links": [
-        { "href": "/saglik/vucut-kitle-indeksi-hesaplama", "title": "Vücut Kitle İndeksi Hesaplama", "description": "Vücut kitle indeksinizi hesaplayın.", "iconName": "FaHeartbeat" },
-        { "href": "/saglik/ideal-kilo-hesaplama", "title": "İdeal Kilo Hesaplama", "description": "İdeal kilonuzu hesaplayın.", "iconName": "FaHeartbeat" },
-        { "href": "/saglik/kalori-ihtiyaci-hesaplama", "title": "Kalori İhtiyacı Hesaplama", "description": "Günlük kalori ihtiyacınızı hesaplayın.", "iconName": "FaHeartbeat" },
-        { "href": "/saglik/bazal-metabolizma-hizi-hesaplama", "title": "Bazal Metabolizma Hızı Hesaplama", "description": "Bazal metabolizma hızınızı hesaplayın.", "iconName": "FaHeartbeat" },
-        { "href": "/saglik/vucut-yag-orani-hesaplama", "title": "Vücut Yağ Oranı Hesaplama", "description": "Vücut yağ oranınızı hesaplayın.", "iconName": "FaHeartbeat" },
-        { "href": "/saglik/gebelik-hesaplama", "title": "Gebelik Hesaplama", "description": "Gebelik haftanızı ve doğum tarihinizi hesaplayın.", "iconName": "FaHeartbeat" },
-        { "href": "/saglik/yumurtlama-donemi-hesaplama", "title": "Yumurtlama Dönemi Hesaplama", "description": "Yumurtlama döneminizi hesaplayın.", "iconName": "FaHeartbeat" }
-      ]
+    "category": "Sağlık",
+    "iconName": "FaHeartbeat",
+    "links": [
+      {
+        "href": "/saglik/ideal-kilo-hesaplama",
+        "title": "İdeal Kilo Hesaplama",
+        "description": "İdeal kilo hesaplaması artık Vücut Kitle İndeksi (VKİ) aracımızın bir parçasıdır. Boyunuza göre sağlıklı kilo aralığınızı hemen öğrenin.",
+        "iconName": "FaHeartbeat"
+      },
+      {
+        "href": "/saglik/yumurtlama-donemi-hesaplama",
+        "title": "Yumurtlama Dönemi Hesaplama",
+        "description": "Yumurtlama dönemi ve doğurganlık penceresi hesaplaması, artık kapsamlı Adet Günü Hesaplama aracımızın bir parçasıdır.",
+        "iconName": "FaHeartbeat"
+      }
+    ]
   }
-] 
+]
