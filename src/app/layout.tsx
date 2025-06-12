@@ -1,15 +1,17 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import localFont from 'next/font/local';
+import { Inter } from "next/font/google";
 import "./globals.css"; // globals.css dosyasını import ediyoruz
 import StatsDisplay from "@/components/StatsDisplay";
 import Header from "@/components/Header"; 
 import Footer from "@/components/Footer";
 import Script from "next/script";
 
-const inter = localFont({
-  src: '../public/fonts/Inter-Regular.woff2',
+const inter = Inter({ 
+  subsets: ["latin"],
   display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial']
 });
 
 export const metadata: Metadata = {
