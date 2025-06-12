@@ -33,16 +33,39 @@ function getAllPagesRecursive(dir, baseRoute) {
 function generateNavData() {
   try {
     const allowedCategories = [
-      'kredi', 'muhasebe', 'saglik', 'finans', 'vergi', 'egitim', 'sinav', 'matematik', 'otomobil', 'yatirim', 'tasarruf', 'hesaplamalar', 'toplama'
+      'kredi', 'muhasebe', 'saglik', 'finans', 'vergi', 'egitim', 'sinav', 'matematik', 'otomobil', 'yatirim', 'tasarruf', 'toplama'
     ];
     const categories = [];
     const dirs = fs.readdirSync(appDir, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory() && allowedCategories.includes(dirent.name.toLowerCase()))
       .map(dirent => dirent.name);
 
+    let yuzdeHesaplamaLink = null;
+    // Özel: hesaplamalar/yuzde-hesaplama'yı matematik'e taşı
+    const hesaplamalarPath = path.join(appDir, 'hesaplamalar');
+    if (fs.existsSync(hesaplamalarPath)) {
+      const yuzdePath = path.join(hesaplamalarPath, 'yuzde-hesaplama');
+      const pageFile = path.join(yuzdePath, 'page.tsx');
+      if (fs.existsSync(pageFile)) {
+        yuzdeHesaplamaLink = {
+          name: 'Yüzde Hesaplama',
+          href: '/hesaplamalar/yuzde-hesaplama',
+          iconName: getSubIconName('yuzde-hesaplama')
+        };
+      }
+    }
+
     for (const dir of dirs) {
+      if (dir === 'hesaplamalar') continue; // Hesaplamalar menüye eklenmeyecek
       const categoryPath = path.join(appDir, dir);
-      const subLinks = getAllPagesRecursive(categoryPath, '/' + dir);
+      let subLinks = getAllPagesRecursive(categoryPath, '/' + dir);
+      // Matematik'e özel olarak Yüzde Hesaplama ekle
+      if (dir === 'matematik' && yuzdeHesaplamaLink) {
+        // Eğer zaten varsa ekleme
+        if (!subLinks.some(link => link.href === yuzdeHesaplamaLink.href)) {
+          subLinks.unshift(yuzdeHesaplamaLink);
+        }
+      }
       if (subLinks.length > 0) {
         const category = {
           name: dir.charAt(0).toUpperCase() + dir.slice(1),

@@ -168,17 +168,6 @@
       ]
     },
     {
-      "name": "Hesaplamalar",
-      "iconName": "FaFolder",
-      "subLinks": [
-        {
-          "name": "Yuzde Hesaplama",
-          "href": "/hesaplamalar/yuzde-hesaplama",
-          "iconName": "FaFile"
-        }
-      ]
-    },
-    {
       "name": "Kredi",
       "iconName": "FaMoneyBillWave",
       "subLinks": [
@@ -258,6 +247,11 @@
       "name": "Matematik",
       "iconName": "FaSquareRootAlt",
       "subLinks": [
+        {
+          "name": "Yüzde Hesaplama",
+          "href": "/hesaplamalar/yuzde-hesaplama",
+          "iconName": "FaFile"
+        },
         {
           "name": "Alan Hesaplama",
           "href": "/matematik/alan-hesaplama",
