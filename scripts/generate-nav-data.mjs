@@ -9,6 +9,27 @@ const rootDir = path.join(__dirname, '..');
 const appDir = path.join(rootDir, 'src', 'app');
 
 // Klasör yapısını tarayarak menü verilerini oluştur
+function getAllPagesRecursive(dir, baseRoute) {
+  let results = [];
+  const list = fs.readdirSync(dir, { withFileTypes: true });
+  for (const file of list) {
+    const fullPath = path.join(dir, file.name);
+    if (file.isDirectory()) {
+      results = results.concat(getAllPagesRecursive(fullPath, baseRoute + '/' + file.name));
+    } else if (file.isFile() && file.name === 'page.tsx') {
+      // Alt menü adı, route'un son parçası
+      const parts = baseRoute.split('/').filter(Boolean);
+      const slug = parts[parts.length - 1];
+      results.push({
+        name: formatTitle(slug),
+        href: baseRoute,
+        iconName: getSubIconName(slug)
+      });
+    }
+  }
+  return results;
+}
+
 function generateNavData() {
   try {
     const allowedCategories = [
@@ -21,19 +42,12 @@ function generateNavData() {
 
     for (const dir of dirs) {
       const categoryPath = path.join(appDir, dir);
-      const files = fs.readdirSync(categoryPath, { withFileTypes: true })
-        .filter(dirent => dirent.isFile() && dirent.name.endsWith('.tsx'))
-        .map(dirent => dirent.name);
-
-      if (files.length > 0) {
+      const subLinks = getAllPagesRecursive(categoryPath, '/' + dir);
+      if (subLinks.length > 0) {
         const category = {
           name: dir.charAt(0).toUpperCase() + dir.slice(1),
           iconName: getIconName(dir),
-          subLinks: files.map(file => ({
-            name: formatTitle(file),
-            href: `/${dir}/${file.replace('.tsx', '')}`,
-            iconName: getSubIconName(file)
-          }))
+          subLinks
         };
         categories.push(category);
       }

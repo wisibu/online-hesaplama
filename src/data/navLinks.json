@@ -1,12 +1,816 @@
 {
   "categories": [
     {
+      "name": "Egitim",
+      "iconName": "FaGraduationCap",
+      "subLinks": [
+        {
+          "name": "Ders Notu Hesaplama",
+          "href": "/egitim/ders-notu-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "E Okul Not Hesaplama",
+          "href": "/egitim/e-okul-not-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Lise Ders Puani Hesaplama",
+          "href": "/egitim/lise-ders-puani-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Lise Mezuniyet Puani Hesaplama",
+          "href": "/egitim/lise-mezuniyet-puani-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Lise Ortalama Hesaplama",
+          "href": "/egitim/lise-ortalama-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Lise Ybp Hesaplama",
+          "href": "/egitim/lise-ybp-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Okula Baslama Yasi Hesaplama",
+          "href": "/egitim/okula-baslama-yasi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Takdir Tesekkur Hesaplama",
+          "href": "/egitim/takdir-tesekkur-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Universite Not Ortalamasi Hesaplama",
+          "href": "/egitim/universite-not-ortalamasi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Vize Final Ortalama Hesaplama",
+          "href": "/egitim/vize-final-ortalama-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Finans",
+      "iconName": "FaChartLine",
+      "subLinks": [
+        {
+          "name": "Altin Hesaplama",
+          "href": "/finans/altin-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Basit Faiz Hesaplama",
+          "href": "/finans/basit-faiz-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bilesik Buyume Hesaplama",
+          "href": "/finans/bilesik-buyume-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bilesik Faiz Hesaplama",
+          "href": "/finans/bilesik-faiz-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Birikim Hesaplama",
+          "href": "/finans/birikim-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bono Hesaplama",
+          "href": "/finans/bono-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Doviz Hesaplama",
+          "href": "/finans/doviz-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Enflasyon Hesaplama",
+          "href": "/finans/enflasyon-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Faiz Hesaplama",
+          "href": "/finans/faiz-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gecmis Altin Fiyatlari Hesaplama",
+          "href": "/finans/gecmis-altin-fiyatlari-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gecmis Doviz Kurlari Hesaplama",
+          "href": "/finans/gecmis-doviz-kurlari-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Iban Dogrulama",
+          "href": "/finans/iban-dogrulama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ic Ve Dis Iskonto Hesaplama",
+          "href": "/finans/ic-ve-dis-iskonto-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ic Verim Orani Hesaplama",
+          "href": "/finans/ic-verim-orani-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kira Artis Orani Hesaplama",
+          "href": "/finans/kira-artis-orani-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Net Bugunku Deger Hesaplama",
+          "href": "/finans/net-bugunku-deger-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ortalama Vade Hesaplama",
+          "href": "/finans/ortalama-vade-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Parasal Deger Hesaplama",
+          "href": "/finans/parasal-deger-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Reel Getiri Hesaplama",
+          "href": "/finans/reel-getiri-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Repo Hesaplama",
+          "href": "/finans/repo-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Sermaye Ve Temettu Hesaplama",
+          "href": "/finans/sermaye-ve-temettu-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Hesaplamalar",
+      "iconName": "FaFolder",
+      "subLinks": [
+        {
+          "name": "Yuzde Hesaplama",
+          "href": "/hesaplamalar/yuzde-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Kredi",
+      "iconName": "FaMoneyBillWave",
+      "subLinks": [
+        {
+          "name": "Ihtiyac Kredisi Hesaplama",
+          "href": "/kredi/ihtiyac-kredisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Is Yeri Kredisi Hesaplama",
+          "href": "/kredi/is-yeri-kredisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Konut Kredisi Hesaplama",
+          "href": "/kredi/konut-kredisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kredi Dosya Masrafi Hesaplama",
+          "href": "/kredi/kredi-dosya-masrafi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kredi Erken Kapatma Cezasi Hesaplama",
+          "href": "/kredi/kredi-erken-kapatma-cezasi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kredi Gecikme Faizi Hesaplama",
+          "href": "/kredi/kredi-gecikme-faizi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kredi Karti Asgari Odeme Hesaplama",
+          "href": "/kredi/kredi-karti-asgari-odeme-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kredi Karti Asgari Odeme Tutari Hesaplama",
+          "href": "/kredi/kredi-karti-asgari-odeme-tutari-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kredi Karti Gecikme Faizi Hesaplama",
+          "href": "/kredi/kredi-karti-gecikme-faizi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kredi Karti Islem Taksitlendirme Hesaplama",
+          "href": "/kredi/kredi-karti-islem-taksitlendirme-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kredi Karti Taksitli Nakit Avans Hesaplama",
+          "href": "/kredi/kredi-karti-taksitli-nakit-avans-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Tasit Kredisi Hesaplama",
+          "href": "/kredi/tasit-kredisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ticari Arac Kredisi Hesaplama",
+          "href": "/kredi/ticari-arac-kredisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ticari Ihtiyac Kredisi Hesaplama",
+          "href": "/kredi/ticari-ihtiyac-kredisi-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Matematik",
+      "iconName": "FaSquareRootAlt",
+      "subLinks": [
+        {
+          "name": "Alan Hesaplama",
+          "href": "/matematik/alan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Altin Oran Hesaplama",
+          "href": "/matematik/altin-oran-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Asal Carpan Hesaplama",
+          "href": "/matematik/asal-carpan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Asal Carpanlara Ayirma Hesaplama",
+          "href": "/matematik/asal-carpanlara-ayirma-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Basamak Degeri Hesaplama",
+          "href": "/matematik/basamak-degeri-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Basit Faiz Hesaplama",
+          "href": "/matematik/basit-faiz-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bilesik Faiz Hesaplama",
+          "href": "/matematik/bilesik-faiz-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bolunebilme Kurallari Hesaplama",
+          "href": "/matematik/bolunebilme-kurallari-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Cevre Hesaplama",
+          "href": "/matematik/cevre-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ebob Ekok Hesaplama",
+          "href": "/matematik/ebob-ekok-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Faiz Hesaplama",
+          "href": "/matematik/faiz-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Faktoriyel Hesaplama",
+          "href": "/matematik/faktoriyel-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Hacim Hesaplama",
+          "href": "/matematik/hacim-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Inc Hesaplama",
+          "href": "/matematik/inc-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Koklu Sayi Hesaplama",
+          "href": "/matematik/koklu-sayi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kombinasyon Hesaplama",
+          "href": "/matematik/kombinasyon-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Metrekare Hesaplama",
+          "href": "/matematik/metrekare-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Mil Hesaplama",
+          "href": "/matematik/mil-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Moduler Aritmetik Hesaplama",
+          "href": "/matematik/moduler-aritmetik-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Oran Hesaplama",
+          "href": "/matematik/oran-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Permutasyon Hesaplama",
+          "href": "/matematik/permutasyon-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Rastgele Sayi Hesaplama",
+          "href": "/matematik/rastgele-sayi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Sayi Okunusu Hesaplama",
+          "href": "/matematik/sayi-okunusu-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Sayi Yuvarlama Hesaplama",
+          "href": "/matematik/sayi-yuvarlama-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Standart Sapma Hesaplama",
+          "href": "/matematik/standart-sapma-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Taban Donusumu Hesaplama",
+          "href": "/matematik/taban-donusumu-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Toplama Hesaplayici",
+          "href": "/matematik/toplama-hesaplayici",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Uslu Sayi Hesaplama",
+          "href": "/matematik/uslu-sayi-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Muhasebe",
+      "iconName": "FaCalculator",
+      "subLinks": [
+        {
+          "name": "Agi Nedir",
+          "href": "/muhasebe/agi-nedir",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Amortisman Hesaplama",
+          "href": "/muhasebe/amortisman-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Binek Arac Gider Kisitlamasi Hesaplama",
+          "href": "/muhasebe/binek-arac-gider-kisitlamasi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Brutten Nete Maas Hesaplama",
+          "href": "/muhasebe/brutten-nete-maas-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Dogum Izni Hesaplama",
+          "href": "/muhasebe/dogum-izni-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Emeklilik Borclanmasi Hesaplama",
+          "href": "/muhasebe/emeklilik-borclanmasi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Emeklilik Hesaplama",
+          "href": "/muhasebe/emeklilik-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Emeklilik Hesaplama Ne Zaman Emekli Olurum",
+          "href": "/muhasebe/emeklilik-hesaplama-ne-zaman-emekli-olurum",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Fazla Mesai Ucreti Hesaplama",
+          "href": "/muhasebe/fazla-mesai-ucreti-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gecikme Faizi Ve Zammi Hesaplama",
+          "href": "/muhasebe/gecikme-faizi-ve-zammi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gecikme Zammi Hesaplama",
+          "href": "/muhasebe/gecikme-zammi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gelir Vergisi Hesaplama",
+          "href": "/muhasebe/gelir-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Huzur Hakki Hesaplama",
+          "href": "/muhasebe/huzur-hakki-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ihbar Tazminati Hesaplama",
+          "href": "/muhasebe/ihbar-tazminati-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Iskonto Hesaplama",
+          "href": "/muhasebe/iskonto-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Issizlik Maasi Hesaplama",
+          "href": "/muhasebe/issizlik-maasi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kidem Tazminati Hesaplama",
+          "href": "/muhasebe/kidem-tazminati-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kidem Ve Ihbar Tazminati Hesaplama",
+          "href": "/muhasebe/kidem-ve-ihbar-tazminati-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kisa Calisma Odenegi Hesaplama",
+          "href": "/muhasebe/kisa-calisma-odenegi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Maas Hesaplama",
+          "href": "/muhasebe/maas-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Netten Brute Maas Hesaplama",
+          "href": "/muhasebe/netten-brute-maas-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Serbest Meslek Makbuzu Hesaplama",
+          "href": "/muhasebe/serbest-meslek-makbuzu-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yeniden Degerleme Orani Hesaplama",
+          "href": "/muhasebe/yeniden-degerleme-orani-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yillik Izin Hesaplama",
+          "href": "/muhasebe/yillik-izin-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yillik Izin Ucreti Hesaplama",
+          "href": "/muhasebe/yillik-izin-ucreti-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yolluk Hesaplama",
+          "href": "/muhasebe/yolluk-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Otomobil",
+      "iconName": "FaCar",
+      "subLinks": [
+        {
+          "name": "Aylik Arac Kredisi Hesaplama",
+          "href": "/otomobil/aylik-arac-kredisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yakit Tuketimi Hesaplama",
+          "href": "/otomobil/yakit-tuketimi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yolculuk Suresi Hesaplama",
+          "href": "/otomobil/yolculuk-suresi-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
       "name": "Saglik",
       "iconName": "FaHeartbeat",
       "subLinks": [
         {
-          "name": "BebekGelisimClient",
-          "href": "/saglik/BebekGelisimClient",
+          "name": "Adet Gunu Hesaplama",
+          "href": "/saglik/adet-gunu-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Asi Takvimi Hesaplama",
+          "href": "/saglik/asi-takvimi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bazal Metabolizma Hizi Hesaplama",
+          "href": "/saglik/bazal-metabolizma-hizi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bebek Boyu Hesaplama",
+          "href": "/saglik/bebek-boyu-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bebek Kilosu Hesaplama",
+          "href": "/saglik/bebek-kilosu-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bel Kalca Orani Hesaplama",
+          "href": "/saglik/bel-kalca-orani-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gebelik Hesaplama",
+          "href": "/saglik/gebelik-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gunluk Kalori Ihtiyaci Hesaplama",
+          "href": "/saglik/gunluk-kalori-ihtiyaci-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gunluk Karbonhidrat Ihtiyaci Hesaplama",
+          "href": "/saglik/gunluk-karbonhidrat-ihtiyaci-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gunluk Kreatin Dozu Hesaplama",
+          "href": "/saglik/gunluk-kreatin-dozu-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gunluk Makro Besin Ihtiyaci Hesaplama",
+          "href": "/saglik/gunluk-makro-besin-ihtiyaci-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gunluk Protein Ihtiyaci Hesaplama",
+          "href": "/saglik/gunluk-protein-ihtiyaci-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gunluk Su Ihtiyaci Hesaplama",
+          "href": "/saglik/gunluk-su-ihtiyaci-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gunluk Yag Ihtiyaci Hesaplama",
+          "href": "/saglik/gunluk-yag-ihtiyaci-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ideal Kilo Hesaplama",
+          "href": "/saglik/ideal-kilo-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kalori Ihtiyaci Hesaplama",
+          "href": "/saglik/kalori-ihtiyaci-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Sigara Maliyeti Hesaplama",
+          "href": "/saglik/sigara-maliyeti-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Sutyen Bedeni Hesaplama",
+          "href": "/saglik/sutyen-bedeni-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Vucut Kitle Indeksi Hesaplama",
+          "href": "/saglik/vucut-kitle-indeksi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Vucut Yag Orani Hesaplama",
+          "href": "/saglik/vucut-yag-orani-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yasam Suresi Hesaplama",
+          "href": "/saglik/yasam-suresi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yumurtlama Donemi Hesaplama",
+          "href": "/saglik/yumurtlama-donemi-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Sinav",
+      "iconName": "FaClipboardList",
+      "subLinks": [
+        {
+          "name": "Aks Puan Hesaplama",
+          "href": "/sinav/aks-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ales Puan Hesaplama",
+          "href": "/sinav/ales-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ayt Puan Hesaplama",
+          "href": "/sinav/ayt-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Dgs Puan Hesaplama",
+          "href": "/sinav/dgs-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Dgs Taban Puanlari Hesaplama",
+          "href": "/sinav/dgs-taban-puanlari-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Dib Mbsts Puan Hesaplama",
+          "href": "/sinav/dib-mbsts-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Dus Puan Hesaplama",
+          "href": "/sinav/dus-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ehliyet Sinavi Puan Hesaplama",
+          "href": "/sinav/ehliyet-sinavi-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Ekpss Puan Hesaplama",
+          "href": "/sinav/ekpss-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Eus Puan Hesaplama",
+          "href": "/sinav/eus-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Hakim Ve Savci Yrd Sinavi Puan Hesaplama",
+          "href": "/sinav/hakim-ve-savci-yrd-sinavi-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Hkim Ve Savci Yrd Sinavi Puan Hesaplama",
+          "href": "/sinav/hkim-ve-savci-yrd-sinavi-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Hmgs Puan Hesaplama",
+          "href": "/sinav/hmgs-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Isg Puan Hesaplama",
+          "href": "/sinav/isg-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Iyos Puan Hesaplama",
+          "href": "/sinav/iyos-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kpss Puan Hesaplama",
+          "href": "/sinav/kpss-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Lgs Puan Hesaplama",
+          "href": "/sinav/lgs-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Lise Lgs Taban Puanlari Hesaplama",
+          "href": "/sinav/lise-lgs-taban-puanlari-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Msu Puan Hesaplama",
+          "href": "/sinav/msu-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Obp Okul Puani Hesaplama",
+          "href": "/sinav/obp-okul-puani-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Polislik Pmyo Paem Poh Puan Hesaplama",
+          "href": "/sinav/polislik-pmyo-paem-poh-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Sts Puan Hesaplama",
+          "href": "/sinav/sts-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Tus Puan Hesaplama",
+          "href": "/sinav/tus-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yds Puan Hesaplama",
+          "href": "/sinav/yds-puan-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Yokdil Puan Hesaplama",
+          "href": "/sinav/yokdil-puan-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Tasarruf",
+      "iconName": "FaFolder",
+      "subLinks": [
+        {
+          "name": "Sigara Parasi Biriktirme Hesaplama",
+          "href": "/tasarruf/sigara-parasi-biriktirme-hesaplama",
           "iconName": "FaFile"
         }
       ]
@@ -16,13 +820,125 @@
       "iconName": "FaFolder",
       "subLinks": [
         {
-          "name": "Page",
-          "href": "/toplama/page",
+          "name": "Toplama",
+          "href": "/toplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Vergi",
+      "iconName": "FaFileInvoiceDollar",
+      "subLinks": [
+        {
+          "name": "Damga Vergisi Hesaplama",
+          "href": "/vergi/damga-vergisi-hesaplama",
           "iconName": "FaFile"
         },
         {
-          "name": "Toplama Client",
-          "href": "/toplama/toplama-client",
+          "name": "Deger Artis Kazanci Vergisi Hesaplama",
+          "href": "/vergi/deger-artis-kazanci-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Degerli Konut Vergisi Hesaplama",
+          "href": "/vergi/degerli-konut-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Emlak Vergisi Hesaplama",
+          "href": "/vergi/emlak-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gecikme Zammi Hesaplama",
+          "href": "/vergi/gecikme-zammi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gelir Vergisi Hesaplama",
+          "href": "/vergi/gelir-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Gumruk Vergisi Hesaplama",
+          "href": "/vergi/gumruk-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kambiyo Vergisi Hesaplama",
+          "href": "/vergi/kambiyo-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kdv Hesaplama",
+          "href": "/vergi/kdv-hesaplama",
+          "iconName": "FaPercentage"
+        },
+        {
+          "name": "Kdv Tevkifati Hesaplama",
+          "href": "/vergi/kdv-tevkifati-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kira Stopaj Hesaplama",
+          "href": "/vergi/kira-stopaj-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kira Vergisi Hesaplama",
+          "href": "/vergi/kira-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Konaklama Vergisi Hesaplama",
+          "href": "/vergi/konaklama-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Kurumlar Vergisi Hesaplama",
+          "href": "/vergi/kurumlar-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Mtv Hesaplama",
+          "href": "/vergi/mtv-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Otv Hesaplama",
+          "href": "/vergi/otv-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Stopaj Hesaplama",
+          "href": "/vergi/stopaj-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Veraset Ve Intikal Vergisi Hesaplama",
+          "href": "/vergi/veraset-ve-intikal-vergisi-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Vergi Gecikme Faizi Hesaplama",
+          "href": "/vergi/vergi-gecikme-faizi-hesaplama",
+          "iconName": "FaFile"
+        }
+      ]
+    },
+    {
+      "name": "Yatirim",
+      "iconName": "FaFolder",
+      "subLinks": [
+        {
+          "name": "Basit Faiz Hesaplama",
+          "href": "/yatirim/basit-faiz-hesaplama",
+          "iconName": "FaFile"
+        },
+        {
+          "name": "Bilesik Faiz Hesaplama",
+          "href": "/yatirim/bilesik-faiz-hesaplama",
           "iconName": "FaFile"
         }
       ]
