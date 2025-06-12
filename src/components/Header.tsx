@@ -1,121 +1,105 @@
 // src/components/Header.tsx
 "use client";
 
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useState } from 'react';
+import navLinksData from '@/data/navLinks.json';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import navLinks from '@/data/navLinks.json';
-import * as Icons from 'react-icons/fa';
+import { iconMap } from '@/utils/iconMap';
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openMobileCategory, setOpenMobileCategory] = useState<string | null>(null);
+  const [openDesktopCategory, setOpenDesktopCategory] = useState<string | null>(null);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-    if (isMenuOpen) {
-      setActiveCategory(null);
-    }
-  };
-
-  const handleCategoryClick = (category: string) => {
-    setActiveCategory(activeCategory === category ? null : category);
-  };
+  // Masaüstü: hover ile alt menü açılır
+  // Mobil: kategoriye tıklayınca alt menü açılır
 
   return (
-    <header className="bg-white shadow-md">
-      <nav className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
-            HesaplaOnline
-          </Link>
-
-          {/* Mobil menü butonu */}
-          <button
-            onClick={toggleMenu}
-            className="md:hidden text-gray-600 hover:text-gray-900"
-          >
-            {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-          </button>
-
-          {/* Masaüstü menüsü */}
-          <div className="hidden md:flex space-x-6">
-            {navLinks.categories.map((category) => {
-              const Icon = Icons[category.iconName as keyof typeof Icons];
-              return (
-                <div key={category.name} className="relative group">
-                  <button
-                    onClick={() => handleCategoryClick(category.name)}
-                    className="flex items-center space-x-1 text-gray-600 hover:text-blue-600"
-                  >
-                    {Icon && <Icon className="mr-1" />}
-                    <span>{category.name}</span>
-                  </button>
-                  
-                  {/* Alt menü */}
-                  <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="py-2">
-                      {category.subLinks.map((link) => {
-                        const LinkIcon = Icons[link.iconName as keyof typeof Icons];
-                        return (
+    <header className="bg-white shadow sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <Link href="/" className="text-2xl font-bold text-blue-600">HesaplaOnline</Link>
+        {/* Masaüstü Menü */}
+        <nav className="hidden md:flex gap-6 items-center relative">
+          {navLinksData.categories.map((category) => {
+            const Icon = iconMap[category.iconName];
+            return (
+              <div
+                key={category.name}
+                className="relative group"
+                onMouseEnter={() => setOpenDesktopCategory(category.name)}
+                onMouseLeave={() => setOpenDesktopCategory(null)}
+              >
+                <button className="flex items-center gap-2 px-3 py-2 font-semibold text-gray-700 hover:text-blue-600 focus:outline-none">
+                  {Icon && <Icon className="text-lg" />} {category.name}
+                </button>
+                {/* Alt Menü */}
+                {openDesktopCategory === category.name && (
+                  <div className="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 animate-fade-in">
+                    <ul>
+                      {category.subLinks.map((link) => (
+                        <li key={link.href}>
                           <Link
-                            key={link.href}
                             href={link.href}
-                            className="flex items-center px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+                            className="block px-5 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded transition"
                           >
-                            {LinkIcon && <LinkIcon className="mr-2" />}
-                            <span>{link.name}</span>
+                            {link.name}
                           </Link>
-                        );
-                      })}
-                    </div>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Mobil menü */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4">
-            {navLinks.categories.map((category) => {
-              const Icon = Icons[category.iconName as keyof typeof Icons];
-              return (
-                <div key={category.name} className="mb-4">
-                  <button
-                    onClick={() => handleCategoryClick(category.name)}
-                    className="flex items-center w-full text-left text-gray-600 hover:text-blue-600"
-                  >
-                    {Icon && <Icon className="mr-2" />}
-                    <span>{category.name}</span>
-                  </button>
-                  
-                  {/* Mobil alt menü */}
-                  {activeCategory === category.name && (
-                    <div className="ml-6 mt-2 space-y-2">
-                      {category.subLinks.map((link) => {
-                        const LinkIcon = Icons[link.iconName as keyof typeof Icons];
-                        return (
-                          <Link
-                            key={link.href}
-                            href={link.href}
-                            className="flex items-center text-gray-600 hover:text-blue-600"
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {LinkIcon && <LinkIcon className="mr-2" />}
-                            <span>{link.name}</span>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </nav>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+        {/* Mobil Menü Butonu */}
+        <button
+          className="md:hidden text-2xl text-gray-700 focus:outline-none"
+          onClick={() => setIsMobileMenuOpen((v) => !v)}
+          aria-label="Menüyü Aç/Kapat"
+        >
+          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      </div>
+      {/* Mobil Menü */}
+      {isMobileMenuOpen && (
+        <nav className="md:hidden bg-white border-t border-gray-200 shadow-lg animate-fade-in px-4 pb-4">
+          {navLinksData.categories.map((category) => {
+            const Icon = iconMap[category.iconName];
+            const isOpen = openMobileCategory === category.name;
+            return (
+              <div key={category.name}>
+                <button
+                  className="w-full flex items-center justify-between gap-2 py-3 px-2 font-semibold text-gray-700 hover:text-blue-600 focus:outline-none"
+                  onClick={() => setOpenMobileCategory(isOpen ? null : category.name)}
+                  aria-expanded={isOpen}
+                >
+                  <span className="flex items-center gap-2">{Icon && <Icon className="text-lg" />} {category.name}</span>
+                  <span className={`transform transition-transform ${isOpen ? 'rotate-90' : ''}`}>▶</span>
+                </button>
+                {/* Alt Menü */}
+                {isOpen && (
+                  <ul className="pl-6 pb-2">
+                    {category.subLinks.map((link) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          className="block py-2 text-gray-700 hover:text-blue-600"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {link.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+      )}
     </header>
   );
 }
