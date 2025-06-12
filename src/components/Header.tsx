@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import navLinksData from '@/data/navLinks.json';
 import { createSlug } from '@/utils/slug';
+import { iconMap } from '@/utils/iconMap';
+import { Metadata } from 'next';
 
 interface NavLinkItem {
   name: string;
