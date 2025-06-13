@@ -67,14 +67,15 @@ export const metadata: Metadata = {
       { url: "/icons/apple-icon-180x180.png", sizes: "180x180", type: "image/png" },
     ],
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
   verification: {
     google: "google-site-verification-code", // Google Search Console doğrulama kodu buraya eklenecek
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID;
