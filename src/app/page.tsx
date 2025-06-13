@@ -11,6 +11,7 @@ import navLinksData from '@/data/navLinks.json';
 import { createSlug } from '@/utils/slug';
 import { iconMap } from '@/utils/iconMap';
 import { generateMetadata } from '@/components/SEO';
+import SearchBox from '@/components/SearchBox';
 
 export const metadata: Metadata = generateMetadata({
   title: 'Online Hesaplama - Hızlı ve Güvenilir Hesaplama Araçları',
@@ -28,15 +29,6 @@ const allCalculators = navLinksData.categories.flatMap(category =>
 );
 
 export default function HomePage() {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredCalculators = useMemo(() => {
-    if (!searchTerm) return [];
-    return allCalculators.filter(calculator =>
-      calculator.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm]);
-
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Hero Section */}
@@ -48,27 +40,7 @@ export default function HomePage() {
           <p className="mt-4 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
             Finans, sağlık, eğitim ve daha fazlası... Aradığınız tüm hesap makineleri bir arada. Hızlı, doğru ve tamamen ücretsiz.
           </p>
-          <div className="mt-8 max-w-xl mx-auto relative">
-            <input
-              type="text"
-              placeholder="Hesaplama aracı arayın (örn: KDV, Maaş, Kredi...)"
-              className="w-full px-5 py-4 text-lg text-gray-700 bg-white border-2 border-gray-300 rounded-full focus:outline-none focus:border-blue-500 transition duration-300 shadow-sm"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {filteredCalculators.length > 0 && searchTerm && (
-              <ul className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-80 overflow-y-auto">
-                {filteredCalculators.map((calculator, index) => (
-                  <li key={index} className="border-b border-gray-100 last:border-b-0">
-                    <Link href={calculator.href} className="block px-6 py-3 hover:bg-blue-50 transition duration-150">
-                      <p className="font-semibold text-gray-800">{calculator.name}</p>
-                      <p className="text-sm text-gray-500">{calculator.category}</p>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <SearchBox allCalculators={allCalculators} />
         </div>
       </section>
 
