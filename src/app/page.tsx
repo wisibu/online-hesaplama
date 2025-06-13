@@ -1,6 +1,4 @@
 // src/app/page.tsx
-"use client";
-
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import type { Metadata } from 'next';
