@@ -1,0 +1,26 @@
+# https://onlinehesaplama.com/robots.txt
+# Tüm arama motorları için kurallar
+User-agent: *
+Allow: /
+
+# Sitemap dosyasının konumu
+Sitemap: https://onlinehesaplama.com/sitemap.xml
+
+# Özel dizinler için kurallar
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Medya dosyaları için kurallar
+Allow: /*.js
+Allow: /*.css
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.svg
+Allow: /*.ico
+
+# Hızlı tarama için önerilen gecikme
+Crawl-delay: 1 

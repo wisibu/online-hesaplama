@@ -12,11 +12,14 @@ import { GiReceiveMoney } from "react-icons/gi";
 import navLinksData from '@/data/navLinks.json';
 import { createSlug } from '@/utils/slug';
 import { iconMap } from '@/utils/iconMap';
+import { generateMetadata } from '@/components/SEO';
 
-// export const metadata: Metadata = {
-//   title: "Online Hesaplama - Ücretsiz Online Hesaplama Araçları",
-//   description: "Kredi, vergi, sağlık, matematik ve daha birçok kategoride ihtiyacınız olan tüm hesaplama araçları OnlineHesaplama'da. Hızlı, doğru ve kullanıcı dostu.",
-// };
+export const metadata: Metadata = generateMetadata({
+  title: 'Online Hesaplama - Hızlı ve Güvenilir Hesaplama Araçları',
+  description: 'Kredi, vergi, matematik, finans ve daha birçok alanda hızlı ve güvenilir hesaplama araçları. Kullanıcı dostu arayüz ile tüm hesaplamalarınızı kolayca yapın.',
+  keywords: 'online hesaplama, hesaplama araçları, kredi hesaplama, vergi hesaplama, matematik hesaplama, finans hesaplama, ücretsiz hesaplama',
+  path: '/',
+});
 
 const allCalculators = navLinksData.categories.flatMap(category =>
   category.subLinks.map(link => ({

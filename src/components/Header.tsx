@@ -49,18 +49,32 @@ export default function Header() {
   const [openMobileCategory, setOpenMobileCategory] = useState<string | null>(null);
   const [openDesktopCategory, setOpenDesktopCategory] = useState<string | null>(null);
   const [isSubMenuHovered, setIsSubMenuHovered] = useState(false);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
   // Masaüstü: hover ile alt menü açılır, alt menüye geçince kapanmaz
   // Mobil: kategoriye tıklayınca alt menü açılır
 
   const handleMouseEnter = (category: string) => {
+    if (timeoutId) clearTimeout(timeoutId);
     setOpenDesktopCategory(category);
+    setIsSubMenuHovered(true);
   };
+
   const handleMouseLeave = () => {
-    // Sadece alt menüde hover yoksa kapat
-    setTimeout(() => {
-      if (!isSubMenuHovered) setOpenDesktopCategory(null);
-    }, 100);
+    const timeout = setTimeout(() => {
+      if (!isSubMenuHovered) {
+        setOpenDesktopCategory(null);
+      }
+    }, 300);
+    setTimeoutId(timeout);
+  };
+
+  const handleSubMenuMouseLeave = () => {
+    setIsSubMenuHovered(false);
+    const timeout = setTimeout(() => {
+      setOpenDesktopCategory(null);
+    }, 300);
+    setTimeoutId(timeout);
   };
 
   // Kategoriye tıklanınca ilgili kategoriye yönlendir
@@ -69,9 +83,11 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-blue-600">Online Hesaplama</Link>
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
+          Online Hesaplama
+        </Link>
         {/* Masaüstü Menü */}
         <nav className="hidden md:flex gap-6 items-center relative">
           {navLinksData.categories.map((category) => (
@@ -83,44 +99,29 @@ export default function Header() {
             >
               <Link
                 href={getCategoryHref(category.name)}
-                className="px-3 py-2 font-medium text-gray-700 hover:text-blue-600 focus:outline-none bg-transparent border-none cursor-pointer"
+                className="px-3 py-2 font-medium text-gray-700 hover:text-blue-600 transition-colors focus:outline-none bg-transparent border-none cursor-pointer"
               >
                 {turkceBaslik(category.name)}
               </Link>
               {/* Alt Menü */}
               {openDesktopCategory === category.name && (
                 <div
-                  className="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
-                  style={{ maxHeight: '336px', overflowY: 'auto' }} // 7*48px = 336px
+                  className="absolute left-0 mt-2 w-64 bg-white border border-gray-100 rounded-lg shadow-lg z-50"
+                  style={{ maxHeight: '400px', overflowY: 'auto' }}
                   onMouseEnter={() => setIsSubMenuHovered(true)}
-                  onMouseLeave={() => { setIsSubMenuHovered(false); setOpenDesktopCategory(null); }}
+                  onMouseLeave={handleSubMenuMouseLeave}
                 >
                   <ul className="py-2">
-                    {category.subLinks.map((link, idx) => (
-                      <li key={link.href} style={idx >= 7 ? { display: 'none' } : {}}>
+                    {category.subLinks.map((link) => (
+                      <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="block px-5 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded transition"
+                          className="block px-5 py-2.5 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
                         >
                           {turkceBaslik(link.name)}
                         </Link>
                       </li>
                     ))}
-                    {/* Fazla linkler için scroll */}
-                    {category.subLinks.length > 7 && (
-                      <>
-                        {category.subLinks.slice(7).map((link) => (
-                          <li key={link.href} style={{ display: 'list-item' }}>
-                            <Link
-                              href={link.href}
-                              className="block px-5 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded transition"
-                            >
-                              {turkceBaslik(link.name)}
-                            </Link>
-                          </li>
-                        ))}
-                      </>
-                    )}
                   </ul>
                 </div>
               )}
@@ -129,7 +130,7 @@ export default function Header() {
         </nav>
         {/* Mobil Menü Butonu */}
         <button
-          className="md:hidden text-2xl text-gray-700 focus:outline-none"
+          className="md:hidden p-2 text-gray-700 hover:text-blue-600 focus:outline-none transition-colors"
           onClick={() => setIsMobileMenuOpen((v) => !v)}
           aria-label="Menüyü Aç/Kapat"
         >
@@ -138,38 +139,40 @@ export default function Header() {
       </div>
       {/* Mobil Menü */}
       {isMobileMenuOpen && (
-        <nav className="md:hidden bg-white border-t border-gray-200 shadow-lg animate-fade-in px-4 pb-4">
-          {navLinksData.categories.map((category) => {
-            const isOpen = openMobileCategory === category.name;
-            return (
-              <div key={category.name}>
-                <button
-                  className="w-full flex items-center justify-between gap-2 py-3 px-2 font-medium text-gray-700 hover:text-blue-600 focus:outline-none bg-transparent border-none cursor-pointer"
-                  onClick={() => setOpenMobileCategory(isOpen ? null : category.name)}
-                  aria-expanded={isOpen}
-                >
-                  <span>{turkceBaslik(category.name)}</span>
-                  <span className={`transform transition-transform ${isOpen ? 'rotate-90' : ''}`}>▶</span>
-                </button>
-                {/* Alt Menü */}
-                {isOpen && (
-                  <ul className="pl-6 pb-2" style={{ maxHeight: '336px', overflowY: 'auto' }}>
-                    {category.subLinks.map((link) => (
-                      <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          className="block py-2 text-gray-700 hover:text-blue-600"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          {turkceBaslik(link.name)}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
+        <nav className="md:hidden bg-white border-t border-gray-100 shadow-sm animate-fade-in">
+          <div className="max-w-5xl mx-auto px-4">
+            {navLinksData.categories.map((category) => {
+              const isOpen = openMobileCategory === category.name;
+              return (
+                <div key={category.name} className="border-b border-gray-100 last:border-b-0">
+                  <button
+                    className="w-full flex items-center justify-between gap-2 py-4 px-2 font-medium text-gray-700 hover:text-blue-600 focus:outline-none bg-transparent border-none cursor-pointer transition-colors"
+                    onClick={() => setOpenMobileCategory(isOpen ? null : category.name)}
+                    aria-expanded={isOpen}
+                  >
+                    <span>{turkceBaslik(category.name)}</span>
+                    <span className={`transform transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}>▶</span>
+                  </button>
+                  {/* Alt Menü */}
+                  {isOpen && (
+                    <ul className="pl-6 pb-4 space-y-2">
+                      {category.subLinks.map((link) => (
+                        <li key={link.href}>
+                          <Link
+                            href={link.href}
+                            className="block py-2 text-gray-600 hover:text-blue-600 transition-colors"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            {turkceBaslik(link.name)}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </nav>
       )}
     </header>

@@ -1,106 +1,136 @@
+import { generateCalculatorMetadata } from '@/components/CalculatorLayout';
+import CalculatorLayout from '@/components/CalculatorLayout';
 import type { Metadata } from 'next';
-import CalculatorUI, { InputField, CalculationResult } from '@/components/CalculatorUI';
-import RichContent from '@/components/RichContent';
-import { formatCurrency } from '@/utils/formatting';
 
-const pageConfig = {
-  title: "Basit Faiz Hesaplama Aracı | OnlineHesaplama",
-  description: "Anapara, faiz oranı ve süre bazında basit faiz getirisi ve toplam birikimi kolayca hesaplayın. Yıllık, aylık veya günlük faiz seçenekleriyle esnek hesaplama yapın.",
-  keywords: ["basit faiz hesaplama", "faiz hesaplama", "yatırım getirisi", "mevduat faizi hesaplama", "anapara faiz"],
-  calculator: {
-    title: "Basit Faiz Hesaplama",
-    description: (
-      <p className="text-sm text-gray-600">
-        Yatırımınızın basit faiz yöntemiyle ne kadar getiri sağlayacağını hesaplayın.
-      </p>
-    ),
-    inputFields: [
-      { id: 'principal', label: 'Anapara Tutarı (₺)', type: 'number', placeholder: '10000' },
-      { id: 'interestRate', label: 'Yıllık Faiz Oranı (%)', type: 'number', placeholder: '45' },
-      { id: 'term', label: 'Süre', type: 'number', placeholder: '32' },
-      { id: 'termType', label: 'Süre Türü', type: 'select', options: [
-            { value: 'days', label: 'Gün' },
-            { value: 'months', label: 'Ay' },
-            { value: 'years', label: 'Yıl' },
-      ], defaultValue: 'days' }
-    ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
-      'use server';
-      const principal = Number(inputs.principal);
-      const annualRate = Number(inputs.interestRate) / 100;
-      const term = Number(inputs.term);
-      const termType = inputs.termType;
+export const metadata: Metadata = generateCalculatorMetadata({
+  title: 'Basit Faiz Hesaplama',
+  description: 'Basit faiz yöntemiyle yatırımınızın ne kadar getiri sağlayacağını kolayca hesaplayın. Anapara, faiz oranı ve vade süresini girerek hemen sonucu öğrenin.',
+  keywords: 'basit faiz hesaplama, faiz hesaplama, yatırım hesaplama, faiz getirisi hesaplama, mevduat faizi hesaplama, faiz oranı hesaplama',
+  path: '/finans/basit-faiz-hesaplama',
+});
 
-      if (principal <= 0 || annualRate <= 0 || term <= 0) {
-        return null;
-      }
-      
-      let termInYears = term;
-      if (termType === 'days') termInYears = term / 365;
-      if (termType === 'months') termInYears = term / 12;
-
-      const interestAmount = principal * annualRate * termInYears;
-      const totalAmount = principal + interestAmount;
-
-      const summary: CalculationResult['summary'] = {
-        totalAmount: { type: 'result', label: 'Dönem Sonu Toplam Tutar', value: formatCurrency(totalAmount), isHighlighted: true },
-        totalInterest: { type: 'result', label: 'Toplam Faiz Getirisi', value: formatCurrency(interestAmount) },
-        principal: { type: 'info', label: 'Yatırılan Anapara', value: formatCurrency(principal) },
-      };
-
-      return { summary };
-    },
+const relatedTools = [
+  {
+    title: 'Bileşik Faiz Hesaplama',
+    href: '/finans/bilesik-faiz-hesaplama',
   },
-  content: {
-    sections: [
-      {
-        title: "Basit Faiz Nedir ve Nasıl Hesaplanır?",
-        content: (
-          <>
-            <p>
-              Basit faiz, bir yatırımın veya kredinin sadece başlangıçtaki anapara tutarı üzerinden hesaplanan faiz türüdür. Bu yöntemde, kazanılan faizler anaparaya eklenmez ve sonraki dönemlerde bu faizler üzerinden tekrar faiz işletilmez. Bu özelliğiyle, genellikle kısa vadeli hesaplamalar veya temel finansal analizler için kullanılır.
-            </p>
-            <p className="mt-2">
-              Formülü şu şekildedir: <strong>Faiz Tutarı = Anapara x Faiz Oranı x Süre</strong>
-            </p>
-          </>
-        )
-      }
-    ],
-    faqs: [
-        {
-            question: "Basit faiz ile bileşik faiz arasındaki fark nedir?",
-            answer: "Temel fark, faizin nasıl hesaplandığıdır. Basit faizde, faiz sadece ilk anapara üzerinden hesaplanır. Bileşik faizde ise, her dönemin sonunda kazanılan faiz anaparaya eklenir ve bir sonraki dönemde bu yeni toplam tutar üzerinden faiz hesaplanır. Bu nedenle, bileşik faiz 'faizin faizi' olarak da bilinir ve uzun vadede daha yüksek bir getiri sağlar."
-        },
-        {
-            question: "Bu hesaplayıcıda vergi (stopaj) neden dikkate alınmıyor?",
-            answer: "Mevduat faizi gibi reel piyasa ürünlerinde, elde edilen faiz getirisi üzerinden devlete stopaj (kaynakta kesinti vergisi) ödenir. Bu oran, yatırımın vadesine ve türüne göre değişebilir. Bu araç, temel bir finansal kavram olan 'basit faizi' hesapladığı için brüt sonuçları göstermektedir ve herhangi bir vergi kesintisi içermemektedir."
-        }
-    ]
-  }
-};
-
-export const metadata: Metadata = {
-  title: pageConfig.title,
-  description: pageConfig.description,
-  keywords: pageConfig.keywords,
-  openGraph: {
-    title: pageConfig.title,
-    description: pageConfig.description,
+  {
+    title: 'Kredi Hesaplama',
+    href: '/kredi/kredi-hesaplama',
   },
-};
+  {
+    title: 'Mevduat Faizi Hesaplama',
+    href: '/finans/mevduat-faizi-hesaplama',
+  },
+];
 
-export default function Page() {
+export default function BasitFaizHesaplama() {
   return (
-    <>
-      <CalculatorUI 
-        title={pageConfig.calculator.title} 
-        inputFields={pageConfig.calculator.inputFields} 
-        calculate={pageConfig.calculator.calculate} 
-        description={pageConfig.calculator.description}
-        resultTitle="Basit Faiz Getirisi Sonuçları"
-      />
-      <RichContent sections={pageConfig.content.sections} faqs={pageConfig.content.faqs} />
-    </>
+    <CalculatorLayout
+      title="Basit Faiz Hesaplama"
+      description="Basit faiz yöntemiyle yatırımınızın ne kadar getiri sağlayacağını kolayca hesaplayın."
+      category="Finans"
+      path="/finans/basit-faiz-hesaplama"
+      keywords="basit faiz hesaplama, faiz hesaplama"
+      relatedTools={relatedTools}
+    >
+      <div className="space-y-6">
+        <div className="form-group">
+          <label htmlFor="anapara" className="block text-sm font-medium text-gray-700">
+            Anapara Tutarı (₺)
+          </label>
+          <input
+            type="number"
+            id="anapara"
+            name="anapara"
+            min="0"
+            step="0.01"
+            placeholder="Örn: 10000"
+            className="mt-1"
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="faizOrani" className="block text-sm font-medium text-gray-700">
+            Yıllık Faiz Oranı (%)
+          </label>
+          <input
+            type="number"
+            id="faizOrani"
+            name="faizOrani"
+            min="0"
+            max="100"
+            step="0.01"
+            placeholder="Örn: 45"
+            className="mt-1"
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="sure" className="block text-sm font-medium text-gray-700">
+            Vade Süresi
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="number"
+              id="sure"
+              name="sure"
+              min="1"
+              placeholder="Örn: 12"
+              className="mt-1"
+              required
+            />
+            <select
+              id="sureBirim"
+              name="sureBirim"
+              className="mt-1"
+              defaultValue="ay"
+            >
+              <option value="gun">Gün</option>
+              <option value="ay">Ay</option>
+              <option value="yil">Yıl</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full btn btn-primary"
+        >
+          Hesapla
+        </button>
+
+        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          <h2 className="text-lg font-semibold mb-4">Sonuçlar</h2>
+          <div className="space-y-2">
+            <p className="flex justify-between">
+              <span className="text-gray-600">Anapara:</span>
+              <span className="font-medium">₺0.00</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-gray-600">Faiz Tutarı:</span>
+              <span className="font-medium">₺0.00</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-gray-600">Toplam Tutar:</span>
+              <span className="font-medium">₺0.00</span>
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">Basit Faiz Nedir?</h2>
+          <p className="text-gray-600 mb-4">
+            Basit faiz, bir yatırımın veya kredinin sadece başlangıçtaki anapara tutarı üzerinden hesaplanan faiz türüdür. 
+            Bu yöntemde, kazanılan faizler anaparaya eklenmez ve sonraki dönemlerde bu faizler üzerinden tekrar faiz işletilmez.
+          </p>
+          <p className="text-gray-600">
+            Basit faiz hesaplama formülü: Faiz Tutarı = Anapara × Faiz Oranı × Süre
+          </p>
+        </div>
+      </div>
+    </CalculatorLayout>
   );
 }

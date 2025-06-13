@@ -3,6 +3,133 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.2s ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Soft transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Container width limit */
+.container {
+  max-width: 1024px !important;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-100 p-6;
+}
+
+/* Input styles */
+input, select, textarea {
+  @apply w-full px-4 py-2 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200;
+}
+
+/* Button styles */
+.btn {
+  @apply px-6 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-400;
+}
+
+/* Form group spacing */
+.form-group {
+  @apply space-y-2 mb-4;
+}
+
+.form-group label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+/* Table styles */
+table {
+  @apply w-full border-collapse;
+}
+
+th, td {
+  @apply px-4 py-2 border-b border-gray-200 text-left;
+}
+
+th {
+  @apply bg-gray-50 font-medium text-gray-700;
+}
+
+/* List styles */
+ul.nav-list {
+  @apply space-y-1;
+}
+
+ul.nav-list li {
+  @apply text-gray-600 hover:text-blue-600 cursor-pointer;
+}
+
 :root {
   /* --background: #ffffff; */ /* Artık layout.tsx'ten yönetildiği için yoruma alındı veya silinebilir */
   --foreground: #171717; /* Açık tema için varsayılan yazı rengi */
