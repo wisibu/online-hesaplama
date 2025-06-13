@@ -121,29 +121,51 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-xl p-6 md:p-8 border border-gray-200">
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-xl p-6 md:p-8 border border-gray-200 max-w-md w-full mx-auto">
             {description && <div className="mb-6">{description}</div>}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+            <div className="grid grid-cols-1 gap-y-5">
                 {inputFields.map((field) => {
                     const shouldDisplay = field.displayCondition ? inputs[field.displayCondition.field] === field.displayCondition.value : true;
                     if (!shouldDisplay) return null;
-                    
                     return (
-                        <div key={field.id} className={field.type === 'checkbox' ? 'md:col-span-2 flex items-center' : ''}>
-                           {field.type !== 'checkbox' && <label htmlFor={field.id} className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>}
-                           {field.type === 'select' ? (
-                                <select id={field.id} value={String(inputs[field.id])} onChange={(e) => handleInputChange(field.id, e.target.value)} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm" {...field.props}>
-                                    {field.options?.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        <div key={field.id} className={field.type === 'checkbox' ? 'flex items-center' : ''}>
+                            {field.type !== 'checkbox' && <label htmlFor={field.id} className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>}
+                            {field.type === 'select' ? (
+                                <select
+                                    id={field.id}
+                                    name={field.id}
+                                    className="mt-1 max-w-xs w-full"
+                                    value={inputs[field.id] as string}
+                                    onChange={e => handleInputChange(field.id, e.target.value)}
+                                    {...field.props}
+                                >
+                                    {field.options?.map(opt => (
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    ))}
                                 </select>
                             ) : field.type === 'checkbox' ? (
-                                <div className="flex items-center">
-                                    <input id={field.id} type="checkbox" checked={!!inputs[field.id]} onChange={(e) => handleInputChange(field.id, e.target.checked)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" {...field.props} />
-                                    <label htmlFor={field.id} className="ml-2 block text-sm font-medium text-gray-800">{field.label}</label>
-                                </div>
+                                <input
+                                    type="checkbox"
+                                    id={field.id}
+                                    name={field.id}
+                                    className="mr-2"
+                                    checked={!!inputs[field.id]}
+                                    onChange={e => handleInputChange(field.id, e.target.checked)}
+                                    {...field.props}
+                                />
                             ) : (
-                                <input type={field.type} id={field.id} value={String(inputs[field.id])} onChange={(e) => handleInputChange(field.id, e.target.value)} placeholder={field.placeholder} className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" {...field.props} />
+                                <input
+                                    type={field.type}
+                                    id={field.id}
+                                    name={field.id}
+                                    className="mt-1 max-w-xs w-full"
+                                    value={inputs[field.id] as string | number}
+                                    onChange={e => handleInputChange(field.id, e.target.value)}
+                                    placeholder={field.placeholder}
+                                    {...field.props}
+                                />
                             )}
-                            {field.note && <p className="text-xs text-gray-500 mt-1">{field.note}</p>}
+                            {field.note && <div className="text-xs text-gray-500 mt-1">{field.note}</div>}
                         </div>
                     );
                 })}

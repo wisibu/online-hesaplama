@@ -52,7 +52,7 @@ const CalculatorResult: React.FC<CalculatorResultProps> = ({ result, resultTitle
     if (errorEntry) {
         const [key, errorItem] = errorEntry;
         return (
-            <div id="result" className="mt-8 bg-white rounded-xl shadow-xl p-6 md:p-8 border border-gray-200">
+            <div id="result" className="mt-8 bg-white rounded-xl shadow-xl p-6 md:p-8 border border-gray-200 max-w-md w-full mx-auto">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">{resultTitle}</h2>
                 <div key={key} className="bg-red-50 border border-red-200 rounded-lg p-4">
                     <p className="font-semibold text-red-700">{errorItem.label}: <span className="font-normal">{errorItem.value}</span></p>
@@ -62,7 +62,7 @@ const CalculatorResult: React.FC<CalculatorResultProps> = ({ result, resultTitle
     }
 
     return (
-        <div id="result" className="mt-8 bg-white rounded-xl shadow-xl p-6 md:p-8 border border-gray-200">
+        <div id="result" className="mt-8 bg-white rounded-xl shadow-xl p-6 md:p-8 border border-gray-200 max-w-md w-full mx-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">{resultTitle}</h2>
 
             <div className="space-y-4">
