@@ -2,7 +2,8 @@ import React from 'react';
 import { generateMetadata } from './SEO';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Breadcrumb } from './Breadcrumb';
+import { Breadcrumb } from '@/components/Breadcrumb';
+import ShareButtons from './ShareButtons';
 
 interface CalculatorLayoutProps {
   children: React.ReactNode;
@@ -101,29 +102,7 @@ export default function CalculatorLayout({
             {/* Paylaş */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
               <h2 className="text-xl font-semibold mb-4">Paylaş</h2>
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(title)}`, '_blank')}
-                  className="text-gray-600 hover:text-blue-600 transition-colors"
-                  aria-label="Twitter'da Paylaş"
-                >
-                  Twitter
-                </button>
-                <button
-                  onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')}
-                  className="text-gray-600 hover:text-blue-600 transition-colors"
-                  aria-label="Facebook'ta Paylaş"
-                >
-                  Facebook
-                </button>
-                <button
-                  onClick={() => window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(title)}`, '_blank')}
-                  className="text-gray-600 hover:text-blue-600 transition-colors"
-                  aria-label="LinkedIn'de Paylaş"
-                >
-                  LinkedIn
-                </button>
-              </div>
+              <ShareButtons title={title} />
             </div>
           </aside>
         </div>

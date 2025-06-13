@@ -1,91 +1,89 @@
-import type { Metadata } from 'next';
-import CalculatorUI, { InputField, CalculationResult } from '@/components/CalculatorUI';
-import { formatCurrency } from '@/utils/formatting';
+'use client';
+
+import CalculatorUI from '@/components/CalculatorUI';
 import RichContent from '@/components/RichContent';
 
-const BRUT_ASKERI_UCRET_2024 = 20002.50;
-const KCO_TAVAN_TUTARI = BRUT_ASKERI_UCRET_2024 * 1.5;
-
 const pageConfig = {
-  title: "Kısa Çalışma Ödeneği (KÇÖ) Hesaplama | OnlineHesaplama",
-  description: "Son 12 aylık brüt maaşınıza göre alabileceğiniz aylık kısa çalışma ödeneği tutarını (brüt ve net) hesaplayın.",
-  keywords: ["kısa çalışma ödeneği hesaplama", "kçö hesaplama", "kçö maaşı", "işkur kçö"],
   calculator: {
     title: "Kısa Çalışma Ödeneği Hesaplama",
     description: (
       <p className="text-sm text-gray-600">
-        Sigortalının son 12 aylık prime esas kazançları (brüt maaş) ortalamasına göre ödenecek aylık net tutarı hesaplayın.
+        Kısa çalışma ödeneğinizi kolayca hesaplayın. Brüt maaş, çalışma süresi ve diğer detaylar ile ödenecek tutarı öğrenin.
       </p>
     ),
     inputFields: [
-      { id: 'avgGrossSalary', label: 'Son 12 Aylık Ortalama Brüt Maaşınız', type: 'number', placeholder: '22500' },
-    ] as InputField[],
-    calculate: async (inputs: { [key:string]: string | number | boolean }): Promise<CalculationResult | null> => {
+      { id: 'brutMaas', label: 'Brüt Maaş (₺)', type: 'number' as const, placeholder: '10000' },
+      { id: 'calismaSuresi', label: 'Çalışma Süresi (Yıl)', type: 'number' as const, placeholder: '3' },
+      { id: 'kisaCalismaSuresi', label: 'Kısa Çalışma Süresi (Gün)', type: 'number' as const, placeholder: '30' },
+    ],
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<any> => {
       'use server';
+      
+      const brutMaas = Number(inputs.brutMaas);
+      const calismaSuresi = Number(inputs.calismaSuresi);
+      const kisaCalismaSuresi = Number(inputs.kisaCalismaSuresi);
 
-      const avgGrossSalary = Number(inputs.avgGrossSalary);
-
-      if (isNaN(avgGrossSalary) || avgGrossSalary <= 0) {
-        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen geçerli bir ortalama brüt maaş girin.' } } };
+      if (!brutMaas || !calismaSuresi || !kisaCalismaSuresi) {
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
       }
 
-      let monthlyGrossKCO = avgGrossSalary * 0.60;
-      let isCapped = false;
-      
-      if (monthlyGrossKCO > KCO_TAVAN_TUTARI) {
-        monthlyGrossKCO = KCO_TAVAN_TUTARI;
-        isCapped = true;
-      }
-      
-      const stampDuty = monthlyGrossKCO * 0.00759;
-      const netKCO = monthlyGrossKCO - stampDuty;
+      const gunlukBrutMaas = brutMaas / 30;
+      const kisaCalismaOdenegi = gunlukBrutMaas * kisaCalismaSuresi * 0.6; // %60'ı ödenir
 
-      const summary: CalculationResult['summary'] = {
-        netKCO: { type: 'result', label: 'Aylık Net Kısa Çalışma Ödeneği', value: formatCurrency(netKCO), isHighlighted: true },
-        avgGrossSalary: { type: 'info', label: 'Ortalama Brüt Kazanç', value: formatCurrency(avgGrossSalary) },
-        monthlyGrossKCO: { type: 'info', label: 'Aylık Brüt Kısa Çalışma Ödeneği', value: formatCurrency(monthlyGrossKCO) },
-        ...(isCapped && { capInfo: { type: 'info', label: 'Bilgi', value: `Ödenek, brüt asgari ücretin %150'si olan ${formatCurrency(KCO_TAVAN_TUTARI)} tavanını aşamaz.` } }),
-        stampDuty: { type: 'info', label: 'Damga Vergisi Kesintisi', value: formatCurrency(stampDuty) },
+      return {
+        summary: {
+          brutMaas: { type: 'result', label: 'Brüt Maaş', value: brutMaas },
+          gunlukBrutMaas: { type: 'result', label: 'Günlük Brüt Maaş', value: gunlukBrutMaas },
+          kisaCalismaOdenegi: { type: 'result', label: 'Kısa Çalışma Ödeneği', value: kisaCalismaOdenegi },
+        },
       };
-
-      return { summary };
     },
   },
-   content: {
+  content: {
     sections: [
       {
-        title: "Kısa Çalışma Ödeneği (KÇÖ) Nedir?",
-        content: (
-          <p>
-            Kısa çalışma ödeneği; genel ekonomik, sektörel, bölgesel kriz veya zorlayıcı sebeplerle işyerindeki haftalık çalışma sürelerinin geçici olarak en az üçte bir oranında azaltılması veya süreklilik koşulu aranmaksızın işyerinde faaliyetin tamamen veya kısmen en az dört hafta süreyle durdurulması hallerinde, işyerinde üç ayı aşmamak üzere sigortalılara çalışamadıkları dönem için gelir desteği sağlayan bir uygulamadır.
-          </p>
-        )
-      }
+        title: 'Kısa Çalışma Ödeneği Nedir?',
+        content: `
+          <p>Kısa çalışma ödeneği, işyerinde geçici olarak çalışma sürelerinin azaltılması veya işin tamamen durdurulması durumunda, 
+          işçilere ödenen bir ödemedir. Bu ödeme, işçinin normal maaşının belirli bir yüzdesi olarak hesaplanır.</p>
+          <p>Kısa çalışma ödeneği şu durumlarda ödenir:</p>
+          <ul>
+            <li>Genel ekonomik kriz</li>
+            <li>Bölgesel ekonomik kriz</li>
+            <li>Sezonluk işler</li>
+            <li>İşyerinde geçici olarak çalışma sürelerinin azaltılması</li>
+          </ul>
+        `,
+      },
+      {
+        title: 'Kısa Çalışma Ödeneği Nasıl Hesaplanır?',
+        content: `
+          <p>Kısa çalışma ödeneği hesaplama formülü:</p>
+          <p>Kısa Çalışma Ödeneği = (Brüt Maaş / 30) × Kısa Çalışma Süresi × 0.6</p>
+          <p>Örneğin:</p>
+          <ul>
+            <li>Brüt Maaş: 10.000 TL</li>
+            <li>Günlük Brüt Maaş: 10.000 / 30 = 333.33 TL</li>
+            <li>Kısa Çalışma Süresi: 30 gün</li>
+          </ul>
+          <p>Kısa Çalışma Ödeneği = 333.33 × 30 × 0.6 = 5.999.94 TL</p>
+        `,
+      },
     ],
     faqs: [
       {
-        question: "Kısa çalışma ödeneğinden kimler yararlanabilir?",
-        answer: "Ödenekten yararlanabilmek için, işçinin kısa çalışmanın başladığı tarihten önceki son 120 gün hizmet akdine tabi olması ve son üç yıl içinde en az 450 gün sigortalı olarak çalışıp işsizlik sigortası primi ödemiş olması gerekmektedir."
+        question: 'Kısa çalışma ödeneği kimlere ödenir?',
+        answer: 'Kısa çalışma ödeneği, işyerinde geçici olarak çalışma sürelerinin azaltılması veya işin tamamen durdurulması durumunda, işçilere ödenir. İşçinin en az 450 gün prim ödemiş olması gerekir.',
       },
       {
-        question: "Ödenek nasıl hesaplanır?",
-        answer: "Günlük kısa çalışma ödeneği; sigortalının son on iki aylık prime esas kazançları dikkate alınarak hesaplanan günlük ortalama brüt kazancının %60'ıdır. Bu şekilde hesaplanan kısa çalışma ödeneği miktarı, aylık asgari ücretin brüt tutarının %150'sini geçemez."
+        question: 'Kısa çalışma ödeneği ne kadar süre ödenir?',
+        answer: 'Kısa çalışma ödeneği, en fazla 3 ay süreyle ödenir. Bu süre, gerekli görülmesi halinde 6 aya kadar uzatılabilir.',
       },
       {
-        question: "KÇÖ'den vergi kesilir mi?",
-        answer: "Kısa çalışma ödeneğinden sadece binde 7.59 oranında Damga Vergisi kesilir. Gelir vergisi veya SGK primi kesintisi yapılmaz."
-      }
-    ]
-  }
-};
-
-export const metadata: Metadata = {
-  title: pageConfig.title,
-  description: pageConfig.description,
-  keywords: pageConfig.keywords,
-  openGraph: {
-    title: pageConfig.title,
-    description: pageConfig.description,
+        question: 'Kısa çalışma ödeneği vergiye tabi midir?',
+        answer: 'Evet, kısa çalışma ödeneği gelir vergisine tabidir. Ancak, işçinin işyerinde çalıştığı süreye göre belirli bir tutara kadar olan kısmı vergiden muaf tutulur.',
+      },
+    ],
   },
 };
 

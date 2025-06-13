@@ -1,12 +1,10 @@
-import type { Metadata } from 'next';
+'use client';
+
 import CalculatorUI, { InputField, CalculationResult } from '@/components/CalculatorUI';
 import RichContent from '@/components/RichContent';
 import { formatCurrency } from '@/utils/formatting';
 
 const pageConfig = {
-  title: "Bileşik Faiz Hesaplama (Yıllık Detaylı) | OnlineHesaplama",
-  description: "Yatırımınızın bileşik faiz ile gelecekteki değerini hesaplayın. Anapara, faiz oranı, süre ve ek yatırım detayları ile yıllık döküm alın.",
-  keywords: ["bileşik faiz hesaplama", "yatırım hesaplama", "faiz getirisi", "gelecekteki değer hesaplama", "faizin faizi"],
   calculator: {
     title: "Bileşik Faiz Hesaplama",
     description: (
@@ -28,105 +26,110 @@ const pageConfig = {
     ] as InputField[],
     calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
       'use server';
+      
       const principal = Number(inputs.principal);
-      const annualRate = Number(inputs.annualRate) / 100;
+      const annualRate = Number(inputs.annualRate);
       const years = Number(inputs.years);
       const compoundFrequency = Number(inputs.compoundFrequency);
-      const monthlyContribution = Number(inputs.monthlyContribution) || 0;
+      const monthlyContribution = Number(inputs.monthlyContribution);
 
-      if (principal < 0 || annualRate <= 0 || years <= 0 || compoundFrequency <= 0) {
-        return null;
+      if (!principal || !annualRate || !years || !compoundFrequency) {
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
       }
 
-      const ratePerPeriod = annualRate / compoundFrequency;
-      const periodsPerYear = compoundFrequency;
-      const totalPeriods = years * periodsPerYear;
-      
-      let futureValue = principal;
-      let totalInterest = 0;
-      let totalContributions = 0;
-      
-      const rows = [];
-      let currentBalance = principal;
+      const ratePerPeriod = annualRate / 100 / compoundFrequency;
+      const periods = years * compoundFrequency;
+      const monthlyRate = annualRate / 100 / 12;
 
-      for (let i = 1; i <= years; i++) {
-        const yearStartBalance = currentBalance;
-        let interestForYear = 0;
-        let contributionForYear = 0;
-        for (let j = 0; j < periodsPerYear; j++) {
-            if (j % (12 / periodsPerYear) === 0 && monthlyContribution > 0) {
-               currentBalance += monthlyContribution * (12 / periodsPerYear);
-               contributionForYear += monthlyContribution * (12 / periodsPerYear);
-            }
-            const interestThisPeriod = currentBalance * ratePerPeriod;
-            interestForYear += interestThisPeriod;
-            currentBalance += interestThisPeriod;
-        }
-        rows.push([
-          i,
-          formatCurrency(yearStartBalance),
-          formatCurrency(contributionForYear),
-          formatCurrency(interestForYear),
-          formatCurrency(currentBalance),
-        ]);
+      let futureValue = principal * Math.pow(1 + ratePerPeriod, periods);
+      
+      if (monthlyContribution > 0) {
+        const futureValueOfContributions = monthlyContribution * 
+          ((Math.pow(1 + monthlyRate, periods * 12) - 1) / monthlyRate);
+        futureValue += futureValueOfContributions;
       }
-      
-      futureValue = currentBalance;
-      totalContributions = monthlyContribution * 12 * years;
-      totalInterest = futureValue - principal - totalContributions;
 
-      const summary: CalculationResult['summary'] = {
-        futureValue: { type: 'result', label: 'Yatırımın Gelecekteki Değeri', value: formatCurrency(futureValue), isHighlighted: true },
-        totalInterest: { type: 'result', label: 'Toplam Faiz Kazancı', value: formatCurrency(totalInterest) },
-        totalContributions: { type: 'info', label: 'Toplam Ek Yatırım Tutarı', value: formatCurrency(totalContributions) },
-        principal: { type: 'info', label: 'Başlangıç Anaparası', value: formatCurrency(principal) },
+      const totalContributions = principal + (monthlyContribution * 12 * years);
+      const totalInterest = futureValue - totalContributions;
+
+      return {
+        summary: {
+          principal: { type: 'result', label: 'Başlangıç Anaparası', value: principal },
+          totalContributions: { type: 'result', label: 'Toplam Yatırım', value: totalContributions },
+          totalInterest: { type: 'result', label: 'Toplam Faiz Getirisi', value: totalInterest },
+          futureValue: { type: 'result', label: 'Gelecekteki Değer', value: futureValue },
+        },
+        table: {
+          headers: ['Yıl', 'Başlangıç Değeri', 'Yatırımlar', 'Faiz Getirisi', 'Yıl Sonu Değeri'],
+          rows: Array.from({ length: years }, (_, i) => {
+            const yearStart = i === 0 ? principal : futureValue;
+            const yearContributions = monthlyContribution * 12;
+            const yearInterest = (yearStart + yearContributions) * (annualRate / 100);
+            const yearEnd = yearStart + yearContributions + yearInterest;
+            return [
+              (i + 1).toString(),
+              formatCurrency(yearStart),
+              formatCurrency(yearContributions),
+              formatCurrency(yearInterest),
+              formatCurrency(yearEnd),
+            ];
+          }),
+        },
       };
-
-      const table = {
-        title: "Yıllık Getiri Dökümü",
-        headers: ["Yıl", "Yıl Başı Bakiye", "Yıllık Ek Yatırım", "Yıllık Faiz Kazancı", "Yıl Sonu Bakiye"],
-        rows: rows,
-      };
-
-      return { summary, table };
     },
   },
   content: {
     sections: [
-        {
-            title: "Bileşik Faiz: 'Faizin Faizi' Gücü",
-            content: (
-                 <>
-                    <p>
-                        Bileşik faiz, bir yatırımın sadece anaparası üzerinden değil, aynı zamanda birikmiş faizleri üzerinden de faiz kazanması prensibine dayanır. Bu, zamanla "kartopu etkisi" yaratarak yatırımın katlanarak büyümesini sağlar. Albert Einstein'ın "dünyanın sekizinci harikası" olarak tanımladığı bileşik getiri, uzun vadeli yatırım stratejilerinin temel taşıdır.
-                    </p>
-                    <p className='mt-2'>
-                        Hesaplama formülü şu şekildedir: <strong>Gelecekteki Değer = Anapara x (1 + Faiz Oranı / Faiz Eklenme Sıklığı) ^ (Süre x Faiz Eklenme Sıklığı)</strong>
-                    </p>
-                </>
-            )
-        }
+      {
+        title: 'Bileşik Faiz Nedir?',
+        content: `
+          <p>Bileşik faiz, bir yatırımın veya kredinin hem anapara hem de birikmiş faiz üzerinden hesaplanan faiz türüdür. 
+          Bu yöntemde, kazanılan faizler anaparaya eklenir ve sonraki dönemlerde bu toplam tutar üzerinden tekrar faiz işletilir.</p>
+          <p>Bileşik faiz, uzun vadeli yatırımlarda özellikle güçlü bir etkiye sahiptir. Örneğin, %10 yıllık faiz oranıyla 10.000 TL'lik bir yatırım:</p>
+          <ul>
+            <li>Basit faizde: 20.000 TL (10.000 TL anapara + 10.000 TL faiz)</li>
+            <li>Bileşik faizde: 25.937 TL (10.000 TL anapara + 15.937 TL faiz)</li>
+          </ul>
+          <p>Bu fark, yatırım süresi uzadıkça daha da belirgin hale gelir.</p>
+        `,
+      },
+      {
+        title: 'Bileşik Faiz Nasıl Hesaplanır?',
+        content: `
+          <p>Bileşik faiz hesaplama formülü:</p>
+          <p>A = P(1 + r/n)^(nt)</p>
+          <p>Burada:</p>
+          <ul>
+            <li>A = Gelecekteki değer</li>
+            <li>P = Başlangıç anaparası</li>
+            <li>r = Yıllık faiz oranı (ondalık olarak)</li>
+            <li>n = Yılda faiz eklenme sıklığı</li>
+            <li>t = Yıl cinsinden süre</li>
+          </ul>
+          <p>Örneğin, 10.000 TL'lik bir yatırım için:</p>
+          <ul>
+            <li>Yıllık %10 faiz oranı</li>
+            <li>Aylık faiz eklenmesi (n=12)</li>
+            <li>5 yıllık süre</li>
+          </ul>
+          <p>A = 10.000(1 + 0.10/12)^(12*5) = 16.453 TL</p>
+        `,
+      },
     ],
     faqs: [
-        {
-            question: "Faiz eklenme sıklığı (Compound Frequency) ne anlama geliyor?",
-            answer: "Bu, faizin ne sıklıkla hesaplanıp anaparanıza eklendiğini belirtir. Örneğin, 'Aylık' seçeneği, bankanın her ay sonunda faizi hesaplayıp bakiyenize ekleyeceği anlamına gelir. Bir sonraki ay, bu yeni ve daha yüksek bakiye üzerinden faiz kazanırsınız. Sıklık ne kadar artarsa (örneğin aylık, yıllık yerine), bileşik getirinin etkisi o kadar büyük olur."
-        },
-        {
-            question: "Aylık ek yatırım yapmak sonucu nasıl etkiler?",
-            answer: "Düzenli olarak ek yatırım yapmak (tasarruf), bileşik getirinin gücünü katlayarak artırır. Her ay eklediğiniz tutar da faiz kazanmaya başlar ve ana birikiminizin çok daha hızlı büyümesini sağlar. Bu, uzun vadeli finansal hedeflere (emeklilik, ev almak vb.) ulaşmak için en etkili yöntemlerden biridir."
-        }
-    ]
-  }
-};
-
-export const metadata: Metadata = {
-  title: pageConfig.title,
-  description: pageConfig.description,
-  keywords: pageConfig.keywords,
-  openGraph: {
-    title: pageConfig.title,
-    description: pageConfig.description,
+      {
+        question: 'Bileşik faiz neden önemlidir?',
+        answer: 'Bileşik faiz, uzun vadeli yatırımlarda paranın zaman değerini en iyi şekilde değerlendirmenizi sağlar. Faizin de faiz kazanması sayesinde, yatırımınız üstel olarak büyür ve zamanla daha yüksek getiriler elde edersiniz.',
+      },
+      {
+        question: 'Faiz eklenme sıklığı nasıl etkiler?',
+        answer: 'Faiz eklenme sıklığı ne kadar yüksekse (örneğin aylık yerine günlük), o kadar fazla bileşik etki oluşur. Ancak bu fark genellikle küçüktür ve bankaların uyguladığı faiz oranlarına göre değişebilir.',
+      },
+      {
+        question: 'Düzenli ek yatırım yapmak neden önemli?',
+        answer: 'Düzenli ek yatırımlar, bileşik faizin etkisini daha da güçlendirir. Her ay yapılan küçük yatırımlar, uzun vadede büyük bir fark yaratabilir. Örneğin, aylık 1.000 TL ek yatırımla 30 yılda milyonlarca TL birikebilir.',
+      },
+    ],
   },
 };
 
@@ -137,8 +140,7 @@ export default function Page() {
         title={pageConfig.calculator.title} 
         inputFields={pageConfig.calculator.inputFields} 
         calculate={pageConfig.calculator.calculate} 
-        description={pageConfig.calculator.description}
-        resultTitle="Bileşik Faiz Getirisi Sonuçları"
+        description={pageConfig.calculator.description} 
       />
       <RichContent sections={pageConfig.content.sections} faqs={pageConfig.content.faqs} />
     </>

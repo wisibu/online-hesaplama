@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';
+'use client';
+
 import CalculatorUI, { InputField, CalculationResult } from '@/components/CalculatorUI';
 import RichContent from '@/components/RichContent';
 import { formatCurrency } from '@/utils/formatting';
@@ -36,119 +37,91 @@ const pageConfig = {
     title: "Kıdem ve İhbar Tazminatı Hesaplama",
     description: (
       <p className="text-sm text-gray-600">
-        İşe başlangıç/bitiş tarihlerinizi ve son giydirilmiş brüt ücretinizi girerek haklarınızı öğrenin.
+        Kıdem ve ihbar tazminatınızı kolayca hesaplayın. Brüt maaş, çalışma süresi ve diğer detaylar ile tazminat tutarınızı öğrenin.
       </p>
     ),
     inputFields: [
-      { id: 'startDate', label: 'İşe Giriş Tarihi', type: 'date', defaultValue: new Date(new Date().setFullYear(new Date().getFullYear() - 3)).toISOString().split('T')[0] },
-      { id: 'endDate', label: 'İşten Çıkış Tarihi', type: 'date', defaultValue: new Date().toISOString().split('T')[0] },
-      { id: 'brutUcret', label: 'Son Giydirilmiş Brüt Ücret (TL)', type: 'number', placeholder: '40000' },
-      { id: 'istenAyrilis', label: 'İşten Ayrılış Şekli', type: 'select', options: [
-            { value: 'istenCikarildi', label: 'İşveren Tarafından Çıkarıldım (Kod 22 hariç)' },
-            { value: 'hakliFesih', label: 'Haklı Nedenle Feshettim (Askerlik, Emeklilik, Sağlık vb.)' },
-            { value: 'istifa', label: 'İstifa Ettim (Haklı Neden Olmadan)' },
-            { value: 'anlasma', label: 'Anlaşarak Ayrıldım (İkale)' },
-      ], defaultValue: 'istenCikarildi' }
-    ] as InputField[],
-    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<CalculationResult | null> => {
-        'use server';
-        
-        const startStr = inputs.startDate as string;
-        const endStr = inputs.endDate as string;
-        const brutUcret = Number(inputs.brutUcret);
-        const istenAyrilis = inputs.istenAyrilis as string;
+      { id: 'brutMaas', label: 'Brüt Maaş (₺)', type: 'number' as const, placeholder: '10000' },
+      { id: 'calismaSuresi', label: 'Çalışma Süresi (Yıl)', type: 'number' as const, placeholder: '3' },
+      { id: 'ihbarSuresi', label: 'İhbar Süresi (Gün)', type: 'number' as const, placeholder: '14' },
+    ],
+    calculate: async (inputs: { [key: string]: string | number | boolean }): Promise<any> => {
+      'use server';
+      
+      const brutMaas = Number(inputs.brutMaas);
+      const calismaSuresi = Number(inputs.calismaSuresi);
+      const ihbarSuresi = Number(inputs.ihbarSuresi);
 
-        if (!startStr || !endStr || !brutUcret || brutUcret <= 0) {
-            return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
-        }
+      if (!brutMaas || !calismaSuresi || !ihbarSuresi) {
+        return { summary: { error: { type: 'error', label: 'Hata', value: 'Lütfen tüm alanları doğru bir şekilde doldurun.' } } };
+      }
 
-        const startDate = new Date(startStr);
-        const endDate = new Date(endStr);
-        const hizmetSuresiMs = endDate.getTime() - startDate.getTime();
-        const hizmetSuresiGun = Math.floor(hizmetSuresiMs / (1000 * 60 * 60 * 24));
-        const hizmetSuresiYil = hizmetSuresiGun / 365.25;
+      const gunlukBrutMaas = brutMaas / 30;
+      const kidemTazminati = gunlukBrutMaas * 30 * calismaSuresi;
+      const ihbarTazminati = gunlukBrutMaas * ihbarSuresi;
+      const toplamTazminat = kidemTazminati + ihbarTazminati;
 
-        const summary: CalculationResult['summary'] = {};
-        
-        // Kıdem Tazminatı Hesaplama
-        if (hizmetSuresiYil >= 1 && (istenAyrilis === 'istenCikarildi' || istenAyrilis === 'hakliFesih' || istenAyrilis === 'anlasma')) {
-            const kidemEsasUcret = Math.min(brutUcret, KIDEM_TAVANI);
-            const brutKidemTazminati = kidemEsasUcret * hizmetSuresiYil;
-            const damgaVergisiKidem = brutKidemTazminati * DAMGA_VERGISI_ORANI;
-            const netKidemTazminati = brutKidemTazminati - damgaVergisiKidem;
-
-            summary.brutKidem = { type: 'info', label: 'Brüt Kıdem Tazminatı', value: formatCurrency(brutKidemTazminati) };
-            summary.netKidem = { type: 'result', label: 'Net Kıdem Tazminatı', value: formatCurrency(netKidemTazminati), isHighlighted: true };
-        } else {
-             summary.kidemDurum = { type: 'info', label: 'Kıdem Tazminatı', value: "Hesaplama koşulları (en az 1 yıl çalışma ve geçerli fesih nedeni) sağlanmıyor." };
-        }
-
-        // İhbar Tazminatı Hesaplama
-        if(istenAyrilis === 'istenCikarildi' || istenAyrilis === 'istifa') {
-            const hizmetSuresiAy = hizmetSuresiGun / 30.44;
-            let ihbarSuresiHafta = 0;
-            if (hizmetSuresiAy < 6) ihbarSuresiHafta = 2;
-            else if (hizmetSuresiAy < 18) ihbarSuresiHafta = 4;
-            else if (hizmetSuresiAy < 36) ihbarSuresiHafta = 6;
-            else ihbarSuresiHafta = 8;
-            
-            const brutIhbarTazminati = (brutUcret / 30) * (ihbarSuresiHafta * 7);
-            const gelirVergisi = calculateIncomeTax(brutIhbarTazminati);
-            const damgaVergisiIhbar = brutIhbarTazminati * DAMGA_VERGISI_ORANI;
-            const netIhbarTazminati = brutIhbarTazminati - gelirVergisi - damgaVergisiIhbar;
-            
-            const odenecekTaraf = istenAyrilis === 'istenCikarildi' ? 'İşveren Tarafından Ödenir' : 'İşçi Tarafından Ödenir';
-
-            summary.ihbarSuresi = { type: 'info', label: 'Yasal İhbar Süresi', value: `${ihbarSuresiHafta} Hafta`};
-            summary.brutIhbar = { type: 'info', label: `Brüt İhbar Tazminatı (${odenecekTaraf})`, value: formatCurrency(brutIhbarTazminati) };
-            summary.netIhbar = { type: 'result', label: `Net İhbar Tazminatı (${odenecekTaraf})`, value: formatCurrency(netIhbarTazminati), isHighlighted: true };
-        } else {
-            summary.ihbarDurum = { type: 'info', label: 'İhbar Tazminatı', value: "İhbar tazminatı doğmadı (haklı fesih/anlaşma)." };
-        }
-          
-        return { summary };
+      return {
+        summary: {
+          brutMaas: { type: 'result', label: 'Brüt Maaş', value: brutMaas },
+          gunlukBrutMaas: { type: 'result', label: 'Günlük Brüt Maaş', value: gunlukBrutMaas },
+          kidemTazminati: { type: 'result', label: 'Kıdem Tazminatı', value: kidemTazminati },
+          ihbarTazminati: { type: 'result', label: 'İhbar Tazminatı', value: ihbarTazminati },
+          toplamTazminat: { type: 'result', label: 'Toplam Tazminat', value: toplamTazminat },
+        },
+      };
     },
   },
   content: {
     sections: [
       {
-        title: "Kıdem ve İhbar Tazminatı Nedir?",
-        content: (
-          <p>
-            İş sözleşmesinin sona ermesi durumunda işçinin veya işverenin belirli yasal hakları doğar. <strong>Kıdem Tazminatı</strong>, en az bir yıl çalışmış bir işçinin, kanunda belirtilen haklı nedenlerle işten ayrılması veya işveren tarafından işten çıkarılması durumunda, çalıştığı her yıl için 30 günlük giydirilmiş brüt ücreti tutarında aldığı bir tazminattır. <strong>İhbar Tazminatı</strong> ise, iş sözleşmesini bildirim sürelerine uymadan fesheden tarafın karşı tarafa ödemesi gereken bedeldir.
-          </p>
-        )
-      }
+        title: 'Kıdem ve İhbar Tazminatı Nedir?',
+        content: `
+          <p>Kıdem tazminatı, işçinin işyerinde belirli bir süre çalıştıktan sonra işten ayrılması durumunda ödenen bir tazminattır. 
+          İhbar tazminatı ise, işverenin işçiyi işten çıkarmadan önce belirli bir süre önceden haber vermesi gereken süre için ödenen tazminattır.</p>
+          <p>Kıdem tazminatı şu durumlarda ödenir:</p>
+          <ul>
+            <li>İşveren tarafından işten çıkarılma</li>
+            <li>İşçinin kendi isteğiyle işten ayrılması (belirli koşullar altında)</li>
+            <li>İş sözleşmesinin sona ermesi</li>
+          </ul>
+        `,
+      },
+      {
+        title: 'Kıdem ve İhbar Tazminatı Nasıl Hesaplanır?',
+        content: `
+          <p>Kıdem tazminatı hesaplama formülü:</p>
+          <p>Kıdem Tazminatı = (Brüt Maaş / 30) × 30 × Çalışma Süresi</p>
+          <p>İhbar tazminatı hesaplama formülü:</p>
+          <p>İhbar Tazminatı = (Brüt Maaş / 30) × İhbar Süresi</p>
+          <p>Örneğin:</p>
+          <ul>
+            <li>Brüt Maaş: 10.000 TL</li>
+            <li>Günlük Brüt Maaş: 10.000 / 30 = 333.33 TL</li>
+            <li>Çalışma Süresi: 3 yıl</li>
+            <li>İhbar Süresi: 14 gün</li>
+          </ul>
+          <p>Kıdem Tazminatı = 333.33 × 30 × 3 = 29.999.70 TL</p>
+          <p>İhbar Tazminatı = 333.33 × 14 = 4.666.62 TL</p>
+          <p>Toplam Tazminat = 29.999.70 + 4.666.62 = 34.666.32 TL</p>
+        `,
+      },
     ],
     faqs: [
-       {
-        question: "Kıdem tazminatı tavanı nedir?",
-        answer: "Devlet tarafından her 6 ayda bir belirlenen bir üst sınırdır. İşçinin giydirilmiş brüt ücreti ne kadar yüksek olursa olsun, kıdem tazminatı hesaplamasında bu tavan tutarından fazlası dikkate alınamaz. 2024 yılının ilk yarısı için bu tavan 35.058,58 TL'dir."
+      {
+        question: 'Kıdem ve ihbar tazminatı kimlere ödenir?',
+        answer: 'Kıdem tazminatı, en az 1 yıl çalışmış olan işçilere ödenir. İhbar tazminatı ise, işveren tarafından işten çıkarılan tüm işçilere ödenir. İşçinin kendi isteğiyle işten ayrılması durumunda ihbar tazminatı ödenmez.',
       },
       {
-        question: "Hangi durumlarda hem kıdem hem ihbar tazminatı alınır?",
-        answer: "İşçinin, haklı bir nedeni olmaksızın işveren tarafından işten çıkarılması durumunda, hem kıdem tazminatına (1 yıldan fazla çalıştıysa) hem de ihbar tazminatına hak kazanır."
+        question: 'Kıdem ve ihbar tazminatı vergiye tabi midir?',
+        answer: 'Evet, kıdem ve ihbar tazminatı gelir vergisine tabidir. Ancak, işçinin işyerinde çalıştığı süreye göre belirli bir tutara kadar olan kısmı vergiden muaf tutulur.',
       },
       {
-        question: "İstifa edersem tazminat alabilir miyim?",
-        answer: "Genellikle, kendi isteğiyle istifa eden (haklı bir nedeni olmayan) bir işçi kıdem tazminatı alamaz. Ayrıca, yasal bildirim sürelerine uymadan istifa ederse, işverene ihbar tazminatı ödemekle yükümlü olur."
+        question: 'Kıdem ve ihbar tazminatı ne zaman ödenir?',
+        answer: 'Kıdem ve ihbar tazminatı, işçinin işten çıkarılması durumunda, iş sözleşmesinin sona erdiği tarihte ödenir. İşveren, bu tutarı işçiye nakit olarak veya banka hesabına havale yoluyla ödemek zorundadır.',
       },
-       {
-        question: "Tazminatlardan hangi vergiler kesilir?",
-        answer: "Kıdem tazminatı gelir vergisinden muaftır, sadece damga vergisi kesilir. İhbar tazminatı ise hem gelir vergisine hem de damga vergisine tabidir; SGK primi kesilmez."
-      }
-    ]
+    ],
   }
-};
-
-export const metadata: Metadata = {
-  title: pageConfig.title,
-  description: pageConfig.description,
-  keywords: pageConfig.keywords,
-  openGraph: {
-    title: pageConfig.title,
-    description: pageConfig.description,
-  },
 };
 
 export default function Page() {
